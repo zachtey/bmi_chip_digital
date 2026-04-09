@@ -1,0 +1,29 @@
+# synthesis generated files
+synth/outputs/
+synth/reports/
+*.log
+*.cmd
+*.jou
+
+# innovus generated files
+backend/db/
+backend/outputs/
+backend/reports/
+*.enc
+*.dat
+*.rpt
+*.sdf
+*.spef
+
+# simulation generated files
+INCA_libs/
+xcelium.d/
+*.shm
+*.trn
+*.vcd
+*.fsdb
+
+# editor/system
+.DS_Store
+*.swp
+*.tmp
