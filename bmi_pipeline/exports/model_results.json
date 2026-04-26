@@ -1,0 +1,30 @@
+{
+  "data": "Chestek NWB 001201",
+  "sessions": 3,
+  "window_ms": 300,
+  "channels": 16,
+  "speed_filter_percentile": 50,
+  "results_final": {
+    "SBP + Linear": 0.39782554978996787,
+    "SBP + MLP": 0.39584877687175685,
+    "Conv + MLP": 0.39770200148257967
+  },
+  "results_best": {
+    "SBP + Linear": 0.43550778354336545,
+    "SBP + MLP": 0.4461329379787497,
+    "Conv + MLP": 0.4032616753150482
+  },
+  "quantized": 0.3973313565604151,
+  "train_dist": [
+    13648,
+    6205,
+    5475,
+    7048
+  ],
+  "test_dist": [
+    3413,
+    1589,
+    1349,
+    1743
+  ]
+}
