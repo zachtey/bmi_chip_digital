@@ -273,7 +273,8 @@ def compute_sbp(adc_win):
         acc = np.int32(0)
         for s in range(SAMPLES):
             acc += abs(int(adc_win[ch,s]) - 128)
-        out[ch] = acc // SAMPLES
+        #out[ch] = acc // SAMPLES
+        out[ch] = acc >> 8     # divide by 256 instead of 250, matches hardware exactly
     return out
 
 def golden_model(adc_win):
