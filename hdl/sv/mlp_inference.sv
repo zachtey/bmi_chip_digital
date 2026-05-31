@@ -165,7 +165,7 @@ module mlp_inference #(
         end
     endgenerate
 
-    always @(posedge clk) begin
+    always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             state      <= S_IDLE;
             done       <= 1'b0;

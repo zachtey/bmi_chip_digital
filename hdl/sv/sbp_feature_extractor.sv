@@ -72,7 +72,7 @@ module sbp_feature_extraction #(
 
     reg [1:0] state;
 
-    always @(posedge clk) begin
+    always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             state    <= IDLE;
             done     <= 1'b0;

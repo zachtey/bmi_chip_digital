@@ -39,7 +39,7 @@ module sample_collection #(
 
     integer i, j;
 
-    always @(posedge clk) begin
+    always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             // ── Reset everything ─────────────────────────────
             window_ready <= 1'b0;
