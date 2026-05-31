@@ -1,0 +1,934 @@
+Cadence Genus(TM) Synthesis Solution.
+Copyright 2018 Cadence Design Systems, Inc. All rights reserved worldwide.
+Cadence and the Cadence logo are registered trademarks and Genus is a trademark
+of Cadence Design Systems, Inc. in the United States and other countries.
+
+Version: 18.14-s037_1, built Wed Mar 27 10:19:21 PDT 2019
+Options: -files syn.tcl 
+Date:    Sun May 31 09:35:22 2026
+Host:    huntress.ece.northwestern.edu (x86_64 w/Linux 4.18.0-553.125.1.el8_10.x86_64) (8cores*8cpus*1physical cpu*Intel(R) Core(TM) i7-9700 CPU @ 3.00GHz 12288KB) (32477792KB)
+OS:      Red Hat Enterprise Linux release 8.10 (Ootpa)
+
+Checking out license: Genus_Synthesis
+
+Loading tool scripts...
+
+Finished loading tool scripts (5 seconds elapsed).
+
+#@ Processing -files option
+@genus 1> source syn.tcl
+#@ Begin verbose source syn.tcl
+@file(syn.tcl) 7: read_hdl -sv ../rtl/sample_collection.sv
+@file(syn.tcl) 8: read_hdl -sv ../rtl/sbp_feature_extractor.sv
+@file(syn.tcl) 9: read_hdl -sv ../rtl/mlp_inference.sv
+@file(syn.tcl) 10: read_hdl -sv ../rtl/argmax.sv
+@file(syn.tcl) 11: read_hdl -sv ../rtl/output_formatter.sv
+@file(syn.tcl) 12: read_hdl -sv ../rtl/spi_slave.sv
+@file(syn.tcl) 13: read_hdl -sv ../rtl/bmi_chip_top.sv
+@file(syn.tcl) 16: set_db library     /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib
+
+Threads Configured:3
+
+  Message Summary for Library slow_vdd1v0_basicCells.lib:
+  *******************************************************
+  Could not find an attribute in the library. [LBR-436]: 574
+  Missing a function attribute in the output pin definition. [LBR-518]: 1
+  *******************************************************
+ 
+Info    : Created nominal operating condition. [LBR-412]
+        : Operating condition '_nominal_' was created for the PVT values (1.000000, 0.900000, 125.000000) in library 'slow_vdd1v0_basicCells.lib'.
+        : The nominal operating condition represents either the nominal PVT values if specified in the library source, or the default PVT values (1.0, 1.0, 1.0).
+Warning : Library cell has no output pins defined. [LBR-9]
+        : Library cell 'ANTENNA' must have an output pin.
+        : Add the missing output pin(s), then reload the library. Otherwise, the library cell will be marked as unusable and as timing model.
+Warning : Library cell has no output pins defined. [LBR-9]
+        : Library cell 'ANTENNA' must have an output pin.
+Warning : Library cell has no output pins defined. [LBR-9]
+        : Library cell 'DECAP10' must have an output pin.
+Warning : Library cell has no output pins defined. [LBR-9]
+        : Library cell 'DECAP10' must have an output pin.
+Warning : Library cell has no output pins defined. [LBR-9]
+        : Library cell 'DECAP2' must have an output pin.
+Warning : Library cell has no output pins defined. [LBR-9]
+        : Library cell 'DECAP2' must have an output pin.
+Warning : Library cell has no output pins defined. [LBR-9]
+        : Library cell 'DECAP3' must have an output pin.
+Warning : Library cell has no output pins defined. [LBR-9]
+        : Library cell 'DECAP3' must have an output pin.
+Warning : Library cell has no output pins defined. [LBR-9]
+        : Library cell 'DECAP4' must have an output pin.
+Warning : Library cell has no output pins defined. [LBR-9]
+        : Library cell 'DECAP4' must have an output pin.
+Warning : Library cell has no output pins defined. [LBR-9]
+        : Library cell 'DECAP5' must have an output pin.
+Warning : Library cell has no output pins defined. [LBR-9]
+        : Library cell 'DECAP5' must have an output pin.
+Warning : Library cell has no output pins defined. [LBR-9]
+        : Library cell 'DECAP6' must have an output pin.
+Warning : Library cell has no output pins defined. [LBR-9]
+        : Library cell 'DECAP6' must have an output pin.
+Warning : Library cell has no output pins defined. [LBR-9]
+        : Library cell 'DECAP7' must have an output pin.
+Warning : Library cell has no output pins defined. [LBR-9]
+        : Library cell 'DECAP7' must have an output pin.
+Warning : Library cell has no output pins defined. [LBR-9]
+        : Library cell 'DECAP8' must have an output pin.
+Warning : Library cell has no output pins defined. [LBR-9]
+        : Library cell 'DECAP8' must have an output pin.
+Warning : Library cell has no output pins defined. [LBR-9]
+        : Library cell 'DECAP9' must have an output pin.
+Warning : Library cell has no output pins defined. [LBR-9]
+        : Library cell 'DECAP9' must have an output pin.
+  Setting attribute of root '/': 'library' = /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib
+@file(syn.tcl) 17: set_db lef_library [list \
+    /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/lef/gsclib045_tech.lef \
+    /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/lef/gsclib045_macro.lef]
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M2_M1_HV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M2_M1_VV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M2_M1_VH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M2_M1_HH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M2_M1_2x1_HV_E' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M2_M1_2x1_HV_W' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M2_M1_1x2_HV_N' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M2_M1_1x2_HV_S' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M3_M2_VH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M3_M2_HH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M3_M2_HV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M3_M2_VV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M3_M2_M_NH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M3_M2_M_SH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M3_M2_2x1_VH_E' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M3_M2_2x1_VH_W' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M3_M2_1x2_VH_N' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M3_M2_1x2_VH_S' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M4_M3_HV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M4_M3_VV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M4_M3_VH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M4_M3_HH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M4_M3_M_EV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M4_M3_M_WV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M4_M3_2x1_HV_E' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M4_M3_2x1_HV_W' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M4_M3_1x2_HV_N' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M4_M3_1x2_HV_S' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M5_M4_VH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M5_M4_HH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M5_M4_HV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M5_M4_VV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M5_M4_M_NH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M5_M4_M_SH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M5_M4_2x1_VH_E' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M5_M4_2x1_VH_W' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M5_M4_1x2_VH_N' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M5_M4_1x2_VH_S' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M6_M5_HV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M6_M5_VV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M6_M5_VH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M6_M5_HH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M6_M5_M_EV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M6_M5_M_WV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M6_M5_2x1_HV_E' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M6_M5_2x1_HV_W' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M6_M5_1x2_HV_N' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M6_M5_1x2_HV_S' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M7_M6_VH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M7_M6_HH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M7_M6_HV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M7_M6_VV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M7_M6_M_NH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M7_M6_M_SH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M7_M6_2x1_VH_E' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M7_M6_2x1_VH_W' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M7_M6_1x2_VH_N' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M7_M6_1x2_VH_S' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M8_M7_HV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M8_M7_VV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M8_M7_VH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M8_M7_HH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M8_M7_M_EV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M8_M7_M_WV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M8_M7_2x1_HV_E' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M8_M7_2x1_HV_W' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M8_M7_1x2_HV_N' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M8_M7_1x2_HV_S' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M9_M8_VH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M9_M8_HH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M9_M8_HV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M9_M8_VV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M9_M8_M_NH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M9_M8_M_SH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M9_M8_2x1_VH_E' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M9_M8_2x1_VH_W' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M9_M8_1x2_VH_N' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M9_M8_1x2_VH_S' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M10_M9_HV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M10_M9_VV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M10_M9_VH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M10_M9_HH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M10_M9_2x1_HV_E' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M10_M9_2x1_HV_W' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M10_M9_1x2_HV_N' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M10_M9_1x2_HV_S' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M11_M10_VH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M11_M10_HH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M11_M10_HV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M11_M10_VV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M11_M10_M_NH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M11_M10_M_SH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M11_M10_2x1_VH_E' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M11_M10_2x1_VH_W' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M11_M10_1x2_VH_N' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M11_M10_1x2_VH_S' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M2_M1_2x1_HH_E' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M2_M1_2x1_HH_W' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M2_M1_2x1_HH_C' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M2_M1_1x2_VV_N' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M2_M1_1x2_VV_S' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M2_M1_1x2_VV_C' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M2_M1_2x2_HV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M3_M2_2x2_VH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M4_M3_2x2_HV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M5_M4_2x2_VH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M6_M5_2x2_HV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M7_M6_2x2_VH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M8_M7_2x2_HV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M9_M8_2x2_VH' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M10_M9_2x2_HV' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M11_M10_VH_NEW' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M11_M10_HH_NEW' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M11_M10_HV_NEW' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M11_M10_VV_NEW' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M11_M10_M_NH_NEW' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M11_M10_M_SH_NEW' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M11_M10_1x2_VH_N_NEW' has no resistance value.
+Info    : Via with no resistance will have a value of '0.0' assigned. [PHYS-129]
+        : Via 'M11_M10_1x2_VH_S_NEW' has no resistance value.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'ExtVSS' on cell 'FSWNX1' without MUSTJOINALLPORTS in the pin property.
+        : This means that only one port would be connected, which may not be the expected behavior. Should consider adding MUSTJOINALLPORTS property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VDD' on cell 'FSWNX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'ExtVSS' on cell 'FSWX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VDD' on cell 'FSWX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'ExtVDD' on cell 'HSWDNX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'HSWDNX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'ExtVDD' on cell 'HSWDX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'HSWDX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'ExtVDD' on cell 'HSWNX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'HSWNX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'ExtVDD' on cell 'HSWX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'HSWX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'ISOHLDX1_OFF' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'ISOHX1_OFF' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'ISOLX1_OFF' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'ISONLX1_OFF' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'LSHL_ISOH_X1_FROM_OFF' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'LSHL_ISOL_X1_FROM_OFF' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'LSHL_ISONH_X1_FROM_OFF' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'LSHL_ISONL_X1_FROM_OFF' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'LSHLX1_FROM' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'LSLH_ISOH_X1_FROM_OFF' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'LSLH_ISOH_X1_TO_ON' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'LSLH_ISOL_X1_FROM_OFF' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'LSLH_ISOL_X1_TO_ON' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'LSLH_ISONH_X1_FROM_OFF' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'LSLH_ISONH_X1_TO_ON' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'LSLH_ISONL_X1_FROM_OFF' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'LSLH_ISONL_X1_TO_ON' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'LSLHX1_FROM' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'LSLHX1_TO' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'PBUFX2' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'PINVX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'RDFFNQX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'RDFFNRQX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'RDFFNRX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'RDFFNSQX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'RDFFNSRQX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'RDFFNSRX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'RDFFNSX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'RDFFNX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'RDFFQX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'RDFFRQX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'RDFFRX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'RDFFSQX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'RDFFSRQX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'RDFFSRX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'RDFFSX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'RDFFX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'RTLATRX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'RTLATSRX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'RTLATX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'SRDFFNQX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'SRDFFNRQX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'SRDFFNRX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'SRDFFNSQX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'SRDFFNSRQX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'SRDFFNSRX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'SRDFFNSX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'SRDFFNX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'SRDFFQX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'SRDFFRQX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'SRDFFRX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'SRDFFSQX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'SRDFFSRQX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'SRDFFSRX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'SRDFFSX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'SRDFFX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'ExtVDD' on cell 'HSWBX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'HSWBX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'ExtVDDB' on cell 'HSWBX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'ExtVDD' on cell 'HSWCX1' without MUSTJOINALLPORTS in the pin property.
+Warning : Multiple ports are found on a pin without MUSTJOINALLPORTS in the pin property. [PHYS-2381]
+        : Multiple ports are found on pin 'VSS' on cell 'HSWCX1' without MUSTJOINALLPORTS in the pin property.
+
+  According to lef_library, there are total 11 routing layers [ V(5) / H(6) ]
+
+  Library has 324 usable logic and 128 usable sequential lib-cells.
+  Setting attribute of root '/': 'lef_library' = /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/lef/gsclib045_tech.lef /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/lef/gsclib045_macro.lef
+@file(syn.tcl) 22: elaborate
+Info    : Elaborating Design. [ELAB-1]
+        : Elaborating top-level block 'bmi_chip_top' from file '../rtl/bmi_chip_top.sv'.
+Warning : Using default parameter value for module elaboration. [CDFG-818]
+        : Elaborating block 'bmi_chip_top' with default parameters value.
+Warning : Unreachable statements for case item. [CDFG-472]
+        : Case item 'default' in module 'mlp_inference_N_IN8_N_HIDDEN8_N_OUT4_IN_WIDTH8_W_WIDTH8_ACC_WIDTH32_SCORE_WIDTH32_HIDDEN_BIAS_SCALE85_OUTPUT_BIAS_SCALE109' in file '../rtl/mlp_inference.sv' on line 181.
+Info    : Done Elaborating Design. [ELAB-3]
+        : Done elaborating 'bmi_chip_top'.
+Checking for analog nets...
+Check completed for analog nets.
+Checking for source RTL...
+Check completed for source RTL.
+UM:  flow.cputime  flow.realtime  timing.setup.tns  timing.setup.wns  snapshot
+UM:            12             14                                      elaborate
+@file(syn.tcl) 23: current_design bmi_chip_top
+@file(syn.tcl) 26: read_sdc bmi_chip_top.sdc
+Statistics for commands executed by read_sdc:
+ "all_outputs"              - successful      1 , failed      0 (runtime  0.00)
+ "create_clock"             - successful      3 , failed      0 (runtime  0.00)
+ "current_design"           - successful      2 , failed      0 (runtime  0.00)
+ "get_clocks"               - successful      3 , failed      0 (runtime  0.00)
+ "get_ports"                - successful      8 , failed      0 (runtime  0.00)
+ "set_clock_groups"         - successful      1 , failed      0 (runtime  0.00)
+ "set_input_delay"          - successful      3 , failed      0 (runtime  0.00)
+ "set_load"                 - successful      1 , failed      0 (runtime  0.00)
+ "set_max_fanout"           - successful      1 , failed      0 (runtime  0.00)
+ "set_max_transition"       - successful      1 , failed      0 (runtime  0.00)
+ "set_output_delay"         - successful      2 , failed      0 (runtime  0.00)
+Total runtime 0.0
+@file(syn.tcl) 29: syn_generic
+Info    : Deleting instances not driving any primary outputs. [GLO-34]
+        : Deleting 2073 hierarchical instances.
+        : Optimizations such as constant propagation or redundancy removal could change the connections so a hierarchical instance does not drive any primary outputs anymore. To see the list of deleted hierarchical instances, set the 'information_level' attribute to 2 or above. If the message is truncated set the message attribute 'truncate' to false to see the complete list. To prevent this optimization, set the 'delete_unloaded_insts' root/subdesign attribute to 'false' or 'preserve' instance attribute to 'true'.
+Info    : Replacing a flip-flop with a logic constant 0. [GLO-12]
+        : The instance is 'u_sbp/state_reg[1]'.
+        : To prevent this optimization, set the 'optimize_constant_0_flops' root attribute to 'false' or 'optimize_constant_0_seq' instance attribute to 'false'.
+Info    : Replacing a flip-flop with a logic constant 0. [GLO-12]
+        : The instance is 'u_fmt/packet_data_reg[66]'.
+Info    : Replacing a flip-flop with a logic constant 0. [GLO-12]
+        : The instance is 'u_fmt/packet_data_reg[67]'.
+Info    : Replacing a flip-flop with a logic constant 0. [GLO-12]
+        : The instance is 'u_fmt/packet_data_reg[68]'.
+Info    : Replacing a flip-flop with a logic constant 0. [GLO-12]
+        : The instance is 'u_fmt/packet_data_reg[69]'.
+Info    : Replacing a flip-flop with a logic constant 0. [GLO-12]
+        : The instance is 'u_fmt/packet_data_reg[70]'.
+Info    : Replacing a flip-flop with a logic constant 0. [GLO-12]
+        : The instance is 'u_fmt/packet_data_reg[71]'.
+Info    : Replacing a flip-flop with a logic constant 0. [GLO-12]
+        : The instance is 'u_fmt/packet_data_reg[72]'.
+Info    : Replacing a flip-flop with a logic constant 0. [GLO-12]
+        : The instance is 'u_fmt/packet_data_reg[74]'.
+Info    : Replacing a flip-flop with a logic constant 0. [GLO-12]
+        : The instance is 'u_fmt/packet_data_reg[76]'.
+Info    : Replacing a flip-flop with a logic constant 0. [GLO-12]
+        : The instance is 'u_fmt/packet_data_reg[78]'.
+Info    : Deleting instances not driving any primary outputs. [GLO-34]
+        : Deleting 11 sequential instances.
+Info    : Deleting instances not driving any primary outputs. [GLO-34]
+        : Deleting 24 hierarchical instances.
+Current PLE settings:
+
+Aspect ratio        : 1.00
+Shrink factor       : 1.00
+Scale of res/length : 1.00
+Scale of cap/length : 1.00
+Net derating factor : 1.00
+Thermal factor      : 1.00
+Via Resistance      : 0.00 ohm (from default)
+Site size           : 1.91 um (from lef [tech+cell])
+
+                                   Capacitance  
+  Layer                             / Length         Data source:
+Name        Direction Utilization  (pF/micron)       lef_library
+------------------------------------------------
+Metal1          H         0.00        0.000412  
+Metal2          V         1.00        0.000416  
+Metal3          H         1.00        0.000416  
+Metal4          V         1.00        0.000416  
+Metal5          H         1.00        0.000416  
+Metal6          V         1.00        0.000416  
+Metal7          H         1.00        0.000416  
+Metal8          V         1.00        0.000416  
+Metal9          H         1.00        0.000416  
+Metal10         V         1.00        0.000444  
+Metal11         H         1.00        0.000444  
+
+                                    Resistance   
+  Layer                              / Length         Data source:
+Name        Direction Utilization  (ohm/micron)       lef_library
+-------------------------------------------------
+Metal1          H         0.00         1.226667  
+Metal2          V         1.00         0.755000  
+Metal3          H         1.00         0.755000  
+Metal4          V         1.00         0.755000  
+Metal5          H         1.00         0.755000  
+Metal6          V         1.00         0.755000  
+Metal7          H         1.00         0.755000  
+Metal8          V         1.00         0.267500  
+Metal9          H         1.00         0.267500  
+Metal10         V         1.00         0.097273  
+Metal11         H         1.00         0.095455  
+
+                                        Area     
+  Layer                               / Length        Data source:
+Name        Direction Utilization     (micron)        lef_library
+-------------------------------------------------
+Metal1          H         0.00         0.060000  
+Metal2          V         1.00         0.080000  
+Metal3          H         1.00         0.080000  
+Metal4          V         1.00         0.080000  
+Metal5          H         1.00         0.080000  
+Metal6          V         1.00         0.080000  
+Metal7          H         1.00         0.080000  
+Metal8          V         1.00         0.080000  
+Metal9          H         1.00         0.080000  
+Metal10         V         1.00         0.220000  
+Metal11         H         1.00         0.220000  
+
+Info    : Synthesizing. [SYNTH-1]
+        : Synthesizing 'bmi_chip_top' to generic gates using 'medium' effort.
+  Setting attribute of design 'bmi_chip_top': 'is_excp_dupcln' = false
+PBS_Generic-Start - Elapsed_Time 0, CPU_Time 0.0
+stamp 'PBS_Generic-Start' being created for table 'pbs_debug'
+
+  Total Time (Wall) |  Stage Time (Wall)  |   % (Wall)   |    Date - Time     |  Memory   | Stage
+--------------------+---------------------+--------------+--------------------+-----------+----------------------
+ 00:00:13(00:00:12) |  00:00:00(00:00:00) |   0.0(  0.0) |    9:35:37 (May31) |  455.3 MB | PBS_Generic-Start
+--------------------+---------------------+--------------+--------------------+-----------+----------------------
+Number of threads: 8 * 1   (id: pbs_debug, time_info v1.57)
+Info: (*N*) indicates data that was populated from previously saved time_info database
+Info: CPU time includes time of parent + longest thread
+Info    : Partition Based Synthesis execution skipped. [PHYS-752]
+        : Design size is less than the partition size '100000' for distributed generic optimization to kick in.
+Info    : Deleting instances not driving any primary outputs. [GLO-34]
+        : Deleting 1 hierarchical instance.
+Current PLE settings:
+
+Aspect ratio        : 1.00
+Shrink factor       : 1.00
+Scale of res/length : 1.00
+Scale of cap/length : 1.00
+Net derating factor : 1.00
+Thermal factor      : 1.00
+Via Resistance      : 0.00 ohm (from default)
+Site size           : 1.91 um (from lef [tech+cell])
+
+                                   Capacitance  
+  Layer                             / Length         Data source:
+Name        Direction Utilization  (pF/micron)       lef_library
+------------------------------------------------
+Metal1          H         0.00        0.000412  
+Metal2          V         1.00        0.000416  
+Metal3          H         1.00        0.000416  
+Metal4          V         1.00        0.000416  
+Metal5          H         1.00        0.000416  
+Metal6          V         1.00        0.000416  
+Metal7          H         1.00        0.000416  
+Metal8          V         1.00        0.000416  
+Metal9          H         1.00        0.000416  
+Metal10         V         1.00        0.000444  
+Metal11         H         1.00        0.000444  
+
+                                    Resistance   
+  Layer                              / Length         Data source:
+Name        Direction Utilization  (ohm/micron)       lef_library
+-------------------------------------------------
+Metal1          H         0.00         1.226667  
+Metal2          V         1.00         0.755000  
+Metal3          H         1.00         0.755000  
+Metal4          V         1.00         0.755000  
+Metal5          H         1.00         0.755000  
+Metal6          V         1.00         0.755000  
+Metal7          H         1.00         0.755000  
+Metal8          V         1.00         0.267500  
+Metal9          H         1.00         0.267500  
+Metal10         V         1.00         0.097273  
+Metal11         H         1.00         0.095455  
+
+                                        Area     
+  Layer                               / Length        Data source:
+Name        Direction Utilization     (micron)        lef_library
+-------------------------------------------------
+Metal1          H         0.00         0.060000  
+Metal2          V         1.00         0.080000  
+Metal3          H         1.00         0.080000  
+Metal4          V         1.00         0.080000  
+Metal5          H         1.00         0.080000  
+Metal6          V         1.00         0.080000  
+Metal7          H         1.00         0.080000  
+Metal8          V         1.00         0.080000  
+Metal9          H         1.00         0.080000  
+Metal10         V         1.00         0.220000  
+Metal11         H         1.00         0.220000  
+
+Info    : Deleting instances not driving any primary outputs. [GLO-34]
+        : Deleting 3 sequential instances.
+Info    : Pre-processed datapath logic. [DPOPT-6]
+        : Pre-processing optimizations applied to datapath logic in 'bmi_chip_top':
+          mux_reduce(2) 
+Info    : Optimizing datapath logic. [DPOPT-1]
+        : Optimizing datapath logic in 'bmi_chip_top'.
+Info    : Implementing datapath configurations. [DPOPT-3]
+        : Implementing datapath configurations for 'CDN_DP_region_3033'
+Info    : Done implementing datapath configurations. [DPOPT-4]
+        : Selected 'very_fast' configuration 4 for module 'CDN_DP_region_3033'.
+          Optimizations applied to 'very_fast' configuration:
+            rewriting(0), factoring(0), sharing(0), cmultcse(0), downsizing(0), speculation(0)
+Info    : Implementing datapath configurations. [DPOPT-3]
+        : Implementing datapath configurations for 'CDN_DP_region_3030'
+Info    : Done implementing datapath configurations. [DPOPT-4]
+        : Selected 'very_fast' configuration 4 for module 'CDN_DP_region_3030'.
+          Optimizations applied to 'very_fast' configuration:
+            rewriting(0), factoring(0), sharing(0), cmultcse(0), downsizing(0), speculation(0)
+Info    : Implementing datapath configurations. [DPOPT-3]
+        : Implementing datapath configurations for 'CDN_DP_region_3034'
+Info    : Done implementing datapath configurations. [DPOPT-4]
+        : Selected 'very_fast' configuration 4 for module 'CDN_DP_region_3034'.
+          Optimizations applied to 'very_fast' configuration:
+            rewriting(0), factoring(0), sharing(0), cmultcse(0), downsizing(0), speculation(0)
+Info    : Implementing datapath configurations. [DPOPT-3]
+        : Implementing datapath configurations for 'CDN_DP_region_3032'
+Info    : Done implementing datapath configurations. [DPOPT-4]
+        : Selected 'very_fast' configuration 4 for module 'CDN_DP_region_3032'.
+          Optimizations applied to 'very_fast' configuration:
+            rewriting(0), factoring(0), sharing(0), cmultcse(0), downsizing(0), speculation(0)
+Info    : Implementing datapath configurations. [DPOPT-3]
+        : Implementing datapath configurations for 'CDN_DP_region'
+Info    : Done implementing datapath configurations. [DPOPT-4]
+        : Selected 'very_fast' configuration 4 for module 'CDN_DP_region'.
+          Optimizations applied to 'very_fast' configuration:
+            rewriting(0), factoring(0), sharing(0), cmultcse(0), downsizing(0), speculation(0)
+Info    : Implementing datapath configurations. [DPOPT-3]
+        : Implementing datapath configurations for 'CDN_DP_region_3031'
+Info    : Done implementing datapath configurations. [DPOPT-4]
+        : Selected 'very_fast' configuration 4 for module 'CDN_DP_region_3031'.
+          Optimizations applied to 'very_fast' configuration:
+            rewriting(0), factoring(0), sharing(0), cmultcse(0), downsizing(0), speculation(0)
+Info    : Done optimizing datapath logic. [DPOPT-2]
+        : Done optimizing datapath logic in 'bmi_chip_top'.
+Info    : Attempting to launch a super-threading server. [ST-120]
+        : Attempting to Launch server 1 of 8.
+        : The tool is entering super-threading mode and is launching a CPU server process.  This is enabled by the root attribute 'super_thread_servers' or 'auto_super_thread'.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_0' is process '3074440' on this host.
+        : The tool is entering super-threading mode and has established a connection with a CPU server process.  This is enabled by the root attributes 'super_thread_servers' or 'auto_super_thread'.
+  Resetting attribute of root '/': 'hide_timing_condition_clones' = 
+                  Library loading done successfully on server 'localhost_1_0'.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_1' is forked process '3074985' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_2' is forked process '3074987' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_3' is forked process '3074997' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_4' is forked process '3075007' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_5' is forked process '3075009' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_6' is forked process '3075019' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_7' is forked process '3075029' on this host.
+        Distributing super-thread jobs: sample_collection_N_CH8_N_SAMPLES250_ADC_WIDTH8 mlp_inference_N_IN8_N_HIDDEN8_N_OUT4_IN_WIDTH8_W_WIDTH8_ACC_WIDTH32_SCORE_WIDTH32_HIDDEN_BIAS_SCALE85_OUTPUT_BIAS_SCALE109 spi_slave_PKT_BYTES10 sbp_feature_extraction_N_CH8_N_SAMPLES250_ADC_WIDTH8_SBP_WIDTH8
+          Sending 'sample_collection_N_CH8_N_SAMPLES250_ADC_WIDTH8' to server 'localhost_1_0'...
+            Sent 'sample_collection_N_CH8_N_SAMPLES250_ADC_WIDTH8' to server 'localhost_1_0'.
+          Sending 'mlp_inference_N_IN8_N_HIDDEN8_N_OUT4_IN_WIDTH8_W_WIDTH8_ACC_WIDTH32_SCORE_WIDTH32_HIDDEN_BIAS_SCALE85_OUTPUT_BIAS_SCALE109' to server 'localhost_1_3'...
+            Sent 'mlp_inference_N_IN8_N_HIDDEN8_N_OUT4_IN_WIDTH8_W_WIDTH8_ACC_WIDTH32_SCORE_WIDTH32_HIDDEN_BIAS_SCALE85_OUTPUT_BIAS_SCALE109' to server 'localhost_1_3'.
+          Sending 'spi_slave_PKT_BYTES10' to server 'localhost_1_2'...
+            Sent 'spi_slave_PKT_BYTES10' to server 'localhost_1_2'.
+          Sending 'sbp_feature_extraction_N_CH8_N_SAMPLES250_ADC_WIDTH8_SBP_WIDTH8' to server 'localhost_1_5'...
+            Sent 'sbp_feature_extraction_N_CH8_N_SAMPLES250_ADC_WIDTH8_SBP_WIDTH8' to server 'localhost_1_5'.
+          Received 'spi_slave_PKT_BYTES10' from server 'localhost_1_2'. (270 ms elapsed)
+          Received 'mlp_inference_N_IN8_N_HIDDEN8_N_OUT4_IN_WIDTH8_W_WIDTH8_ACC_WIDTH32_SCORE_WIDTH32_HIDDEN_BIAS_SCALE85_OUTPUT_BIAS_SCALE109' from server 'localhost_1_3'. (643 ms elapsed)
+          Received 'sample_collection_N_CH8_N_SAMPLES250_ADC_WIDTH8' from server 'localhost_1_0'. (2430 ms elapsed)
+          Received 'sbp_feature_extraction_N_CH8_N_SAMPLES250_ADC_WIDTH8_SBP_WIDTH8' from server 'localhost_1_5'. (36370 ms elapsed)
+
++-----------+-------------------------------+-----+----------------------+---------------------------+
+|   Host    |            Machine            | CPU | Physical Memory (MB) | Peak Physical Memory (MB) |
++-----------+-------------------------------+-----+----------------------+---------------------------+
+| localhost | huntress.ece.northwestern.edu |  8  |        837.7         |           837.7           |
++-----------+-------------------------------+-----+----------------------+---------------------------+
+
++---------------+----------------------+---------------------------+
+|    Server     | Physical Memory (MB) | Peak Physical Memory (MB) |
++---------------+----------------------+---------------------------+
+| localhost_1_7 |       27.5 [1]       |          [1] [2]          |
+| localhost_1_2 |       41.4 [1]       |          [1] [2]          |
+| localhost_1_3 |       44.4 [1]       |          [1] [2]          |
+| localhost_1_0 |      462.1 [3]       |         462.1 [3]         |
+| localhost_1_1 |       27.5 [1]       |          [1] [2]          |
+| localhost_1_6 |       27.5 [1]       |          [1] [2]          |
+| localhost_1_4 |       27.5 [1]       |          [1] [2]          |
+| localhost_1_5 |       57.6 [1]       |          [1] [2]          |
++---------------+----------------------+---------------------------+
+[1] Memory is included in parent localhost_1_0.
+[2] Peak physical memory is not available for forked background servers.
+[3] Memory of child processes is included.
+
+Current PLE settings:
+
+Aspect ratio        : 1.00
+Shrink factor       : 1.00
+Scale of res/length : 1.00
+Scale of cap/length : 1.00
+Net derating factor : 1.00
+Thermal factor      : 1.00
+Via Resistance      : 0.00 ohm (from default)
+Site size           : 1.91 um (from lef [tech+cell])
+
+                                   Capacitance  
+  Layer                             / Length         Data source:
+Name        Direction Utilization  (pF/micron)       lef_library
+------------------------------------------------
+Metal1          H         0.00        0.000412  
+Metal2          V         1.00        0.000416  
+Metal3          H         1.00        0.000416  
+Metal4          V         1.00        0.000416  
+Metal5          H         1.00        0.000416  
+Metal6          V         1.00        0.000416  
+Metal7          H         1.00        0.000416  
+Metal8          V         1.00        0.000416  
+Metal9          H         1.00        0.000416  
+Metal10         V         1.00        0.000444  
+Metal11         H         1.00        0.000444  
+
+                                    Resistance   
+  Layer                              / Length         Data source:
+Name        Direction Utilization  (ohm/micron)       lef_library
+-------------------------------------------------
+Metal1          H         0.00         1.226667  
+Metal2          V         1.00         0.755000  
+Metal3          H         1.00         0.755000  
+Metal4          V         1.00         0.755000  
+Metal5          H         1.00         0.755000  
+Metal6          V         1.00         0.755000  
+Metal7          H         1.00         0.755000  
+Metal8          V         1.00         0.267500  
+Metal9          H         1.00         0.267500  
+Metal10         V         1.00         0.097273  
+Metal11         H         1.00         0.095455  
+
+                                        Area     
+  Layer                               / Length        Data source:
+Name        Direction Utilization     (micron)        lef_library
+-------------------------------------------------
+Metal1          H         0.00         0.060000  
+Metal2          V         1.00         0.080000  
+Metal3          H         1.00         0.080000  
+Metal4          V         1.00         0.080000  
+Metal5          H         1.00         0.080000  
+Metal6          V         1.00         0.080000  
+Metal7          H         1.00         0.080000  
+Metal8          V         1.00         0.080000  
+Metal9          H         1.00         0.080000  
+Metal10         V         1.00         0.220000  
+Metal11         H         1.00         0.220000  
+
+Mapper: Libraries have:
+	domain _default_: 324 combo usable cells and 128 sequential usable cells
+Updating ST server settings
+  Resetting attribute of root '/': 'hide_timing_condition_clones' = 
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_8' is forked process '3077041' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_9' is forked process '3077043' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_10' is forked process '3077061' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_11' is forked process '3077087' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_12' is forked process '3077105' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_13' is forked process '3077107' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_14' is forked process '3077109' on this host.
+Multi-threaded constant propagation [1|0] ...
+Updating ST server settings
+  Resetting attribute of root '/': 'hide_timing_condition_clones' = 
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_15' is forked process '3077413' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_16' is forked process '3077415' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_17' is forked process '3077441' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_18' is forked process '3077451' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_19' is forked process '3077453' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_20' is forked process '3077463' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_21' is forked process '3077465' on this host.
+Info    : Replacing the synchronous part of an always feeding back flip-flop with a logic constant. [GLO-45]
+        : The instance is 'u_mlp/hidden_act_reg[7][31]'. The constant is '0'.
+        : To prevent this optimization, set 'optimize_constant_feedback_seqs' root attribute to 'false'. The instance attribute 'optimize_constant_feedback_seq' controls this optimization. 
+Info    : Replacing the synchronous part of an always feeding back flip-flop with a logic constant. [GLO-45]
+        : The instance is 'u_mlp/hidden_act_reg[6][31]'. The constant is '0'.
+Info    : Replacing the synchronous part of an always feeding back flip-flop with a logic constant. [GLO-45]
+        : The instance is 'u_mlp/hidden_act_reg[5][31]'. The constant is '0'.
+Info    : Replacing the synchronous part of an always feeding back flip-flop with a logic constant. [GLO-45]
+        : The instance is 'u_mlp/hidden_act_reg[4][31]'. The constant is '0'.
+Info    : Replacing the synchronous part of an always feeding back flip-flop with a logic constant. [GLO-45]
+        : The instance is 'u_mlp/hidden_act_reg[3][31]'. The constant is '0'.
+Info    : Replacing the synchronous part of an always feeding back flip-flop with a logic constant. [GLO-45]
+        : The instance is 'u_mlp/hidden_act_reg[2][31]'. The constant is '0'.
+Info    : Replacing the synchronous part of an always feeding back flip-flop with a logic constant. [GLO-45]
+        : The instance is 'u_mlp/hidden_act_reg[1][31]'. The constant is '0'.
+Info    : Replacing the synchronous part of an always feeding back flip-flop with a logic constant. [GLO-45]
+        : The instance is 'u_mlp/hidden_act_reg[0][31]'. The constant is '0'.
+Info    : Replacing a flip-flop with a logic constant 0. [GLO-12]
+        : The instance is 'u_mlp/hidden_act_reg[7][31]'.
+Info    : Replacing a flip-flop with a logic constant 0. [GLO-12]
+        : The instance is 'u_mlp/hidden_act_reg[6][31]'.
+Info    : Replacing a flip-flop with a logic constant 0. [GLO-12]
+        : The instance is 'u_mlp/hidden_act_reg[5][31]'.
+Info    : Replacing a flip-flop with a logic constant 0. [GLO-12]
+        : The instance is 'u_mlp/hidden_act_reg[4][31]'.
+Info    : Replacing a flip-flop with a logic constant 0. [GLO-12]
+        : The instance is 'u_mlp/hidden_act_reg[3][31]'.
+Info    : Replacing a flip-flop with a logic constant 0. [GLO-12]
+        : The instance is 'u_mlp/hidden_act_reg[2][31]'.
+Info    : Replacing a flip-flop with a logic constant 0. [GLO-12]
+        : The instance is 'u_mlp/hidden_act_reg[1][31]'.
+Info    : Replacing a flip-flop with a logic constant 0. [GLO-12]
+        : The instance is 'u_mlp/hidden_act_reg[0][31]'.
+        Distributing super-thread jobs: sample_collection_N_CH8_N_SAMPLES250_ADC_WIDTH8 sbp_feature_extraction_N_CH8_N_SAMPLES250_ADC_WIDTH8_SBP_WIDTH8
+          Sending 'sample_collection_N_CH8_N_SAMPLES250_ADC_WIDTH8' to server 'localhost_1_0'...
+            Sent 'sample_collection_N_CH8_N_SAMPLES250_ADC_WIDTH8' to server 'localhost_1_0'.
+          Sending 'sbp_feature_extraction_N_CH8_N_SAMPLES250_ADC_WIDTH8_SBP_WIDTH8' to server 'localhost_1_20'...
+            Sent 'sbp_feature_extraction_N_CH8_N_SAMPLES250_ADC_WIDTH8_SBP_WIDTH8' to server 'localhost_1_20'.
+          Received 'sbp_feature_extraction_N_CH8_N_SAMPLES250_ADC_WIDTH8_SBP_WIDTH8' from server 'localhost_1_20'. (1191 ms elapsed)
+          Received 'sample_collection_N_CH8_N_SAMPLES250_ADC_WIDTH8' from server 'localhost_1_0'. (3009 ms elapsed)
+Updating ST server settings
+  Resetting attribute of root '/': 'hide_timing_condition_clones' = 
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_22' is forked process '3078011' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_23' is forked process '3078013' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_24' is forked process '3078015' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_25' is forked process '3078033' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_26' is forked process '3078059' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_27' is forked process '3078085' on this host.
+Info    : Connection established with super-threading server. [ST-110]
+        : The server 'localhost_1_28' is forked process '3078087' on this host.
+        Distributing super-thread jobs: sample_collection_N_CH8_N_SAMPLES250_ADC_WIDTH8 sbp_feature_extraction_N_CH8_N_SAMPLES250_ADC_WIDTH8_SBP_WIDTH8
+          Sending 'sample_collection_N_CH8_N_SAMPLES250_ADC_WIDTH8' to server 'localhost_1_0'...
+            Sent 'sample_collection_N_CH8_N_SAMPLES250_ADC_WIDTH8' to server 'localhost_1_0'.
+          Sending 'sbp_feature_extraction_N_CH8_N_SAMPLES250_ADC_WIDTH8_SBP_WIDTH8' to server 'localhost_1_26'...
+            Sent 'sbp_feature_extraction_N_CH8_N_SAMPLES250_ADC_WIDTH8_SBP_WIDTH8' to server 'localhost_1_26'.
+          Received 'sbp_feature_extraction_N_CH8_N_SAMPLES250_ADC_WIDTH8_SBP_WIDTH8' from server 'localhost_1_26'. (1233 ms elapsed)
+          Received 'sample_collection_N_CH8_N_SAMPLES250_ADC_WIDTH8' from server 'localhost_1_0'. (2986 ms elapsed)
+Info    : Deleting instances not driving any primary outputs. [GLO-34]
+        : Deleting 8 sequential instances.
+Updating ST server settings
