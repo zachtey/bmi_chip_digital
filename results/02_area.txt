@@ -1,0 +1,67 @@
+================================================================
+  AREA REPORT  —  bmi_chip_top
+  Cadence Genus 18.14  |  GPDK045 RVT  |  PVT_0P9V_125C
+================================================================
+
+----------------------------------------------------------------
+  TOTAL DESIGN
+----------------------------------------------------------------
+  Total Standard Cells  :  41,354
+  Cell Area             :  207,681.9 µm²
+  Net / Routing Area    :   59,512.5 µm²
+  TOTAL AREA            :  267,194.4 µm²
+
+  Equivalent square die :  517 µm × 517 µm  (digital core only)
+
+----------------------------------------------------------------
+  BLOCK BREAKDOWN
+----------------------------------------------------------------
+
+  ┌────────────────────────────────┬────────┬────────────┬───────────┬───────┐
+  │ Block                          │ Cells  │ Cell Area  │ Total Area│   %   │
+  ├────────────────────────────────┼────────┼────────────┼───────────┼───────┤
+  │ sample_collection  (u_sc)      │ 20,391 │ 140,926 µm²│ 156,675 µm│ 58.6% │
+  │ sbp_feature_extract (u_sbp)    │ 16,582 │  47,567 µm²│  66,698 µm│ 25.0% │
+  │ MLP + argmax + fmt + SPI *     │  4,381 │  19,189 µm²│  43,821 µm│ 16.4% │
+  ├────────────────────────────────┼────────┼────────────┼───────────┼───────┤
+  │ TOTAL  (bmi_chip_top)          │ 41,354 │ 207,682 µm²│ 267,194 µm│ 100%  │
+  └────────────────────────────────┴────────┴────────────┴───────────┴───────┘
+
+  * MLP + argmax + output_formatter + spi_slave combined
+    (not broken out individually in the area report)
+
+----------------------------------------------------------------
+  WHY sample_collection IS SO LARGE
+----------------------------------------------------------------
+  sample_collection stores the full ADC window as flip-flops:
+
+    8 channels × 250 samples × 8 bits = 16,000 flip-flops
+
+  In GPDK045, one DFFRHQX1 ≈ 8.4 µm²
+  → 16,000 × 8.4 µm² ≈ 134,400 µm²  (matches the 140,926 µm² cell area)
+
+  To reduce: replace the register file with an SRAM macro
+  from a memory compiler. A 2000×8 SRAM would be ~5,000-8,000 µm²
+  (15-20× smaller), but requires a memory compiler not included
+  in the gsclib045 standard cell library.
+
+----------------------------------------------------------------
+  AREA DISTRIBUTION (visual)
+----------------------------------------------------------------
+
+  sample_collection  ████████████████████████████████████  58.6%
+  sbp_extraction     █████████████████                     25.0%
+  MLP + rest         ████████                              16.4%
+
+----------------------------------------------------------------
+  CELL TYPES USED  (from synthesized netlist)
+----------------------------------------------------------------
+  Sequential  : DFFRHQX1, DFFRHQX2, DFFRHQX4
+                SDFFRHQX1, SDFFRHQX4  (scan-enabled, MLP weights)
+                DFFSX1  (set-based, for collecting/reset logic)
+  Combinational: AND, OR, NAND, NOR, XOR, XNOR, AOI, OAI families
+                 ADDFX1, ADDHX1  (full/half adders, carry chain)
+                 BUFX, INVX, CLKAND, CLKINV  (buffering/clock)
+                 MXI, AO, OA compound gates  (mux/complex logic)
+
+================================================================

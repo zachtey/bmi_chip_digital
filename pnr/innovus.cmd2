@@ -1,0 +1,88 @@
+#######################################################
+#                                                     
+#  Innovus Command Logging File                     
+#  Created on Mon Jun  1 03:25:46 2026                
+#                                                     
+#######################################################
+
+#@(#)CDS: Innovus v16.20-p002_1 (64bit) 11/08/2016 11:31 (Linux 2.6.18-194.el5)
+#@(#)CDS: NanoRoute 16.20-p002_1 NR161103-1425/16_20-UB (database version 2.30, 354.6.1) {superthreading v1.34}
+#@(#)CDS: AAE 16.20-p004 (64bit) 11/08/2016 (Linux 2.6.18-194.el5)
+#@(#)CDS: CTE 16.20-p008_1 () Oct 29 2016 08:26:57 ( )
+#@(#)CDS: SYNTECH 16.20-p001_1 () Oct 27 2016 11:33:00 ( )
+#@(#)CDS: CPE v16.20-p011
+#@(#)CDS: IQRC/TQRC 15.2.5-s803 (64bit) Tue Sep 13 18:23:58 PDT 2016 (Linux 2.6.18-194.el5)
+
+set_global _enable_mmmc_by_default_flow      $CTE::mmmc_default
+suppressMessage ENCEXT-2799
+getDrawView
+loadWorkspace -name Physical
+win
+set init_gnd_net VSS
+set init_pwr_net VDD
+set init_lef_file {
+  /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045_tech/lef/gsclib045_tech.lef
+  /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/lef/gsclib045_macro.lef
+}
+set init_verilog /home/vcs5888/CE392/bmi_chip/digital/syn/bmi_chip_top_syn.v
+set init_mmmc_file /home/vcs5888/CE392/bmi_chip/digital/pnr/bmi_chip_top_gpdk.view
+set init_top_cell bmi_chip_top
+init_design
+setDesignMode -process 45
+floorPlan -r 1.0 0.60 4 4 4 4
+saveDesign 01_after_floorplan.enc
+globalNetConnect VDD -type pgpin -pin VDD -inst *
+globalNetConnect VSS -type pgpin -pin VSS -inst *
+globalNetConnect VDD -type tiehi
+globalNetConnect VSS -type tielo
+saveDesign 02_after_globalnet.enc
+editPin -pin {adc_channel[2] adc_channel[1] adc_channel[0] adc_sample[0] adc_sample[1] adc_sample[2] adc_sample[3] adc_sample[4] adc_sample[5] adc_sample[6] adc_sample[7]} -side TOP -layer Metal4 -spreadType RANGE -start {440 596} -end {590 596} -spacing 2 -pinWidth 0.4 -pinDepth 0.8
+editPin -pin {spi_sclk spi_cs_n spi_miso scan_en scan_clk scan_in rst_n clk} -side RIGHT -layer Metal4 -spreadType RANGE -start {596 250} -end {596 430} -spacing 2 -pinWidth 0.4 -pinDepth 0.8
+saveDesign 03_after_correct_signal_pins.enc
+addRing -nets {VDD VSS} -type core_rings -follow core -layer {top Metal5 bottom Metal5 left Metal4 right Metal4} -width 1 -spacing 1 -offset 0
+addStripe -nets {VDD VSS} -layer Metal4 -direction vertical -width 1 -spacing 1 -set_to_set_distance 40 -start_offset 20
+sroute -connect {corePin floatingStripe padRing} -nets {VDD VSS}
+verifyConnectivity -type special -nets {VDD VSS}
+saveDesign 04_after_pg_pre_place.enc
+setPlaceMode -congEffort auto -timingDriven 1 -clkGateAware 1
+placeDesign
+optDesign -preCTS -numPaths 200
+optDesign -postCTS -hold -numPaths 200
+clockDesign -specFile ./Clock_gpdk.ctstch -outDir clock_report
+optDesign -postCTS -numPaths 200
+optDesign -postCTS -hold -numPaths 200
+saveDesign 06_postCTS.enc
+addFiller -cell {FILL64 FILL32 FILL16 FILL8 FILL4 FILL2 FILL1} -prefix FILLER
+saveDesign 07_after_filler.enc
+setNanoRouteMode -quiet -routeTopRoutingLayer 6
+routeDesign -globalDetail
+verifyConnectivity -type special -nets {VDD VSS}
+verifyConnectivity -type all -error 1000 -warning 50
+verify_drc -report bmi_final_check_correct_pins.drc.rpt -limit 1000
+setAnalysisMode -analysisType onChipVariation -cppr both
+timeDesign -postRoute -pathReports -drvReports -slackReports -numPaths 50
+selectInst FILLER_impl0_30542
+zoomBox 45.712 462.033 198.007 314.244
+zoomBox 91.446 421.067 128.034 384.709
+zoomBox 100.456 410.415 109.410 403.932
+deselectAll
+selectWire 101.8600 405.6100 104.7400 405.6900 3 u_sc/n_2887
+zoomBox 103.198 409.674 105.067 407.752
+timeDesign -postRoute -hold -pathReports -slackReports -numPaths 50
+saveDesign bmi_final_clean_correct_pins.enc
+saveNetlist bmi_chip_top_clean_correct_pins_nophy.v -excludeLeafCell
+write_sdf bmi_chip_top_clean_correct_pins.sdf
+streamOut bmi_chip_top_clean_correct_pins.gds -mapFile /vol/eecs391/GPDK045/gpdk045_v_6_0/soce/streamOut.map -libName DesignLib -units 2000 -mode ALL -merge /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/gds/gsclib045.gds
+verifyConnectivity -type special -nets {VDD VSS}
+verifyConnectivity -type all -error 1000 -warning 50
+verify_drc -report bmi_final_check_correct_pins.drc.rpt -limit 1000
+streamOut bmi_chip_top_clean_correct_pins.gds -mapFile /vol/eecs391/GPDK045/gpdk045_v_6_0/soce/streamOut.map -libName DesignLib -units 2000 -mode ALL -merge /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/gds/gsclib045.gds
+fit
+zoomBox 430.341 621.503 514.097 583.073
+zoomBox 464.548 600.150 473.728 591.472
+panPage 1 0
+panPage 1 0
+panPage 1 0
+panPage 1 0
+panPage 1 0
+panPage 1 0

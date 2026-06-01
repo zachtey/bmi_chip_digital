@@ -756,19 +756,7 @@
 {"sequential":"true",
 "gint_phase_inversion":"false",
 "latch":"false",
-"object":"/designs/bmi_chip_top/instances_hier/u_sbp/instances_seq/acc_reg[6]",
-"type":"instance"},
-
-{"sequential":"true",
-"gint_phase_inversion":"false",
-"latch":"false",
 "object":"/designs/bmi_chip_top/instances_hier/u_sbp/instances_seq/acc_reg[15]",
-"type":"instance"},
-
-{"sequential":"true",
-"gint_phase_inversion":"false",
-"latch":"false",
-"object":"/designs/bmi_chip_top/instances_hier/u_sbp/instances_seq/ch_idx_reg[2]",
 "type":"instance"},
 
 {"sequential":"true",
@@ -786,19 +774,13 @@
 {"sequential":"true",
 "gint_phase_inversion":"false",
 "latch":"false",
-"object":"/designs/bmi_chip_top/instances_hier/u_sbp/instances_seq/samp_idx_reg[2]",
+"object":"/designs/bmi_chip_top/instances_hier/u_sbp/instances_seq/samp_idx_reg[4]",
 "type":"instance"},
 
 {"sequential":"true",
 "gint_phase_inversion":"false",
 "latch":"false",
 "object":"/designs/bmi_chip_top/instances_hier/u_sbp/instances_seq/samp_idx_reg[5]",
-"type":"instance"},
-
-{"sequential":"true",
-"gint_phase_inversion":"false",
-"latch":"false",
-"object":"/designs/bmi_chip_top/instances_hier/u_sbp/instances_seq/samp_idx_reg[7]",
 "type":"instance"},
 
 {"sequential":"true",
@@ -1212,6 +1194,12 @@
 {"sequential":"true",
 "gint_phase_inversion":"false",
 "latch":"false",
+"object":"/designs/bmi_chip_top/instances_hier/u_sbp/instances_seq/acc_reg[6]",
+"type":"instance"},
+
+{"sequential":"true",
+"gint_phase_inversion":"false",
+"latch":"false",
 "object":"/designs/bmi_chip_top/instances_hier/u_sbp/instances_seq/acc_reg[7]",
 "type":"instance"},
 
@@ -1272,19 +1260,31 @@
 {"sequential":"true",
 "gint_phase_inversion":"false",
 "latch":"false",
+"object":"/designs/bmi_chip_top/instances_hier/u_sbp/instances_seq/ch_idx_reg[2]",
+"type":"instance"},
+
+{"sequential":"true",
+"gint_phase_inversion":"false",
+"latch":"false",
+"object":"/designs/bmi_chip_top/instances_hier/u_sbp/instances_seq/samp_idx_reg[2]",
+"type":"instance"},
+
+{"sequential":"true",
+"gint_phase_inversion":"false",
+"latch":"false",
 "object":"/designs/bmi_chip_top/instances_hier/u_sbp/instances_seq/samp_idx_reg[3]",
 "type":"instance"},
 
 {"sequential":"true",
 "gint_phase_inversion":"false",
 "latch":"false",
-"object":"/designs/bmi_chip_top/instances_hier/u_sbp/instances_seq/samp_idx_reg[4]",
+"object":"/designs/bmi_chip_top/instances_hier/u_sbp/instances_seq/samp_idx_reg[6]",
 "type":"instance"},
 
 {"sequential":"true",
 "gint_phase_inversion":"false",
 "latch":"false",
-"object":"/designs/bmi_chip_top/instances_hier/u_sbp/instances_seq/samp_idx_reg[6]",
+"object":"/designs/bmi_chip_top/instances_hier/u_sbp/instances_seq/samp_idx_reg[7]",
 "type":"instance"},
 
 {"sequential":"true",
@@ -1302,6 +1302,12 @@
 {"sequential":"true",
 "gint_phase_inversion":"false",
 "latch":"false",
+"object":"/designs/bmi_chip_top/instances_hier/u_sc/instances_seq/adc_channel_reg[0]",
+"type":"instance"},
+
+{"sequential":"true",
+"gint_phase_inversion":"false",
+"latch":"false",
 "object":"/designs/bmi_chip_top/instances_hier/u_sc/instances_seq/adc_channel_reg[1]",
 "type":"instance"},
 
@@ -1309,6 +1315,24 @@
 "gint_phase_inversion":"false",
 "latch":"false",
 "object":"/designs/bmi_chip_top/instances_hier/u_sc/instances_seq/adc_channel_reg[2]",
+"type":"instance"},
+
+{"sequential":"true",
+"gint_phase_inversion":"false",
+"latch":"false",
+"object":"/designs/bmi_chip_top/instances_hier/u_sc/instances_seq/collecting_reg",
+"type":"instance"},
+
+{"sequential":"true",
+"gint_phase_inversion":"false",
+"latch":"false",
+"object":"/designs/bmi_chip_top/instances_hier/u_sc/instances_seq/done_count_reg[1]",
+"type":"instance"},
+
+{"sequential":"true",
+"gint_phase_inversion":"false",
+"latch":"false",
+"object":"/designs/bmi_chip_top/instances_hier/u_sc/instances_seq/done_count_reg[2]",
 "type":"instance"},
 
 {"sequential":"true",
@@ -97704,31 +97728,7 @@
 {"sequential":"true",
 "gint_phase_inversion":"false",
 "latch":"false",
-"object":"/designs/bmi_chip_top/instances_hier/u_sc/instances_seq/adc_channel_reg[0]",
-"type":"instance"},
-
-{"sequential":"true",
-"gint_phase_inversion":"false",
-"latch":"false",
-"object":"/designs/bmi_chip_top/instances_hier/u_sc/instances_seq/collecting_reg",
-"type":"instance"},
-
-{"sequential":"true",
-"gint_phase_inversion":"false",
-"latch":"false",
 "object":"/designs/bmi_chip_top/instances_hier/u_sc/instances_seq/done_count_reg[0]",
-"type":"instance"},
-
-{"sequential":"true",
-"gint_phase_inversion":"false",
-"latch":"false",
-"object":"/designs/bmi_chip_top/instances_hier/u_sc/instances_seq/done_count_reg[1]",
-"type":"instance"},
-
-{"sequential":"true",
-"gint_phase_inversion":"false",
-"latch":"false",
-"object":"/designs/bmi_chip_top/instances_hier/u_sc/instances_seq/done_count_reg[2]",
 "type":"instance"},
 
 {"sequential":"true",
@@ -98197,6 +98197,12 @@
 "gint_phase_inversion":"false",
 "latch":"false",
 "object":"/designs/bmi_chip_top/instances_seq/u_mlp_acc_reg[0]",
+"type":"instance"},
+
+{"sequential":"true",
+"gint_phase_inversion":"false",
+"latch":"false",
+"object":"/designs/bmi_chip_top/instances_seq/u_mlp_acc_reg[1]",
 "type":"instance"},
 
 {"sequential":"true",
@@ -106410,24 +106416,18 @@
 {"sequential":"true",
 "gint_phase_inversion":"false",
 "latch":"false",
-"object":"/designs/bmi_chip_top/instances_seq/u_mlp_acc_reg[1]",
-"type":"instance"},
-
-{"sequential":"true",
-"gint_phase_inversion":"false",
-"latch":"false",
 "object":"/designs/bmi_chip_top/instances_seq/u_spi_bit_cnt_reg[6]",
 "type":"instance"},
 
 {"index": "1", 
- "date": "Sun May 31 15:05:55 CDT 2026",
- "seconds": 1780257955.066993,
+ "date": "Sun May 31 21:15:59 CDT 2026",
+ "seconds": 1780280159.6182618,
  "netlist": "fv/bmi_chip_top/fv_map.v.gz", 
  "design_name": "bmi_chip_top", 
  "synth_workdir": "/home/vcs5888/CE392/bmi_chip/digital/syn", 
  "synthesis_command":"",
  "current_label": "fv_map", 
  "previous_label": "rtl", 
- "write_verif_file_runtime": 7.198688 
+ "write_verif_file_runtime": 7.801333 
  }
 ]

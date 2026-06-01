@@ -34,7 +34,35 @@ syn_opt
 report_timing > timing.rpt
 report_area   > area.rpt
 
-# -- Write gate-level netlist ---------------------------------
+# -- Write gate-level netlist (for Innovus PNR) ---------------
 write_hdl > bmi_chip_top_syn.v
+
+# -- Write Virtuoso symbol stub (for schematic import only) ---
+# This is a port-declaration-only file. It is NOT synthesized
+# and NOT used by Innovus. Import this .v into Virtuoso to
+# generate a symbol that includes VDD and VSS pins.
+set f [open "bmi_chip_top_sym.v" w]
+puts $f "// Virtuoso symbol import stub — do NOT use for synthesis or PNR"
+puts $f "// Import into Virtuoso to create a symbol with VDD/VSS pins"
+puts $f "module bmi_chip_top ("
+puts $f "    input  wire        clk,"
+puts $f "    input  wire        rst_n,"
+puts $f "    input  wire \[7:0\]  adc_sample,"
+puts $f "    output wire \[2:0\]  adc_channel,"
+puts $f "    input  wire        spi_sclk,"
+puts $f "    input  wire        spi_cs_n,"
+puts $f "    output wire        spi_miso,"
+puts $f "    input  wire        scan_en,"
+puts $f "    input  wire        scan_clk,"
+puts $f "    input  wire        scan_in,"
+puts $f "    inout  wire        VDD,"
+puts $f "    inout  wire        VSS"
+puts $f ");"
+puts $f "endmodule"
+close $f
+
+puts "\nOutputs:"
+puts "  bmi_chip_top_syn.v  — gate-level netlist for Innovus"
+puts "  bmi_chip_top_sym.v  — Virtuoso symbol stub (with VDD/VSS)"
 
 quit
