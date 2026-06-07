@@ -1,60 +1,105 @@
-// sbp_feature_extraction.v
+// sbp_feature_extraction.sv
+// Computes Spiking Band Power (SBP) for each of N_CH channels.
+// SBP[ch] = sum(|sample - 128|) >> 8  — mean absolute deviation proxy.
 //
-// Computes SBP (Spiking Band Power) for 8 channels.
-// SBP[ch] = sum(|sample - 128|) >> 8   (~mean absolute deviation)
-//
-// Uses ONE shared accumulator and processes channels sequentially.
-// Latency: 8 channels x 250 samples = 2000 clock cycles.
-//
-// Area: 1 accumulator (16-bit), 2 counters, small FSM.
-// No multipliers. No SRAM. Pure combinational + flip-flops.
+// Single shared accumulator, channels processed sequentially.
+// Latency: N_CH * N_SAMPLES = 2000 clock cycles.
+// No multipliers; absolute value is a subtraction mux.
+
 module sbp_feature_extraction #(
     parameter N_CH      = 8,
     parameter N_SAMPLES = 250,
     parameter ADC_WIDTH = 8,
-    parameter SBP_WIDTH = 8     // output feature width (sum >> 8 fits in 8 bits)
+    parameter SBP_WIDTH = 8
 )(
-    input  wire                              clk,
-    input  wire                              rst_n,
+    input  wire                         clk,
+    input  wire                         rst_n,
 
-    // Handshake
-    input  wire                              start,         // 1-cycle pulse from sample_collection
-    output reg                               done,          // 1-cycle pulse when all 8 features ready
+    input  wire                         start,
+    output logic                        done,
 
-    // Input: the full sample window from sample_collection
-    // 8 channels x 250 samples x 8 bits
-    input  wire [ADC_WIDTH-1:0]              sample_window [0:N_CH-1][0:N_SAMPLES-1],
-
-    // Output: one SBP value per channel
-    output reg  [SBP_WIDTH-1:0]              sbp_features [0:N_CH-1]
+    input  wire [ADC_WIDTH-1:0]         sample_window [0:N_CH-1][0:N_SAMPLES-1],
+    output logic [SBP_WIDTH-1:0]        sbp_features  [0:N_CH-1]
 );
 
-    // Accumulator
-    // Max value: 128 (max |x - 128|) x 250 samples = 32,000
-    // 15 bits needed (2^15 = 32768 > 32000). Use 16 for safety.
+    // Accumulator headroom: max |x-128| = 128; 128*250 = 32000 < 2^15. 16 bits.
     localparam ACC_WIDTH = 16;
-    reg [ACC_WIDTH-1:0] acc;
 
-    // Counters
-    reg [$clog2(N_CH)-1:0]      ch_idx;      // current channel being accumulated (0-7)
-    reg [$clog2(N_SAMPLES)-1:0] samp_idx;    // current sample within that channel (0-249)
+    typedef enum logic { IDLE, RUN } state_t;
 
-    // Absolute deviation
-    wire [ADC_WIDTH-1:0] current_sample;
-    wire [ADC_WIDTH-1:0] abs_dev;
+    state_t                          state,      next_state;
+    logic [ACC_WIDTH-1:0]            acc;
+    logic [$clog2(N_CH)-1:0]         ch_idx;
+    logic [$clog2(N_SAMPLES)-1:0]    samp_idx;
 
-    assign current_sample = sample_window[ch_idx][samp_idx];
-    assign abs_dev = (current_sample >= 8'd128)
-                   ? (current_sample - 8'd128)
-                   : (8'd128 - current_sample);
+    // Next-cycle values
+    logic [ACC_WIDTH-1:0]            next_acc;
+    logic [$clog2(N_CH)-1:0]         next_ch_idx;
+    logic [$clog2(N_SAMPLES)-1:0]    next_samp_idx;
+    logic [SBP_WIDTH-1:0]            next_sbp_features [0:N_CH-1];
+    logic                             next_done;
 
-    localparam IDLE = 2'd0;
-    localparam RUN  = 2'd1;
-    localparam DONE = 2'd2;
+    // -------------------------------------------------------------------------
+    // Combinational: absolute deviation and next-state logic
+    // -------------------------------------------------------------------------
+    logic [ADC_WIDTH-1:0] current_sample;
+    logic [ADC_WIDTH-1:0] abs_dev;
+    logic [ACC_WIDTH-1:0] acc_with_dev;
 
-    reg [1:0] state;
+    always_comb begin
+        current_sample = sample_window[ch_idx][samp_idx];
+        abs_dev        = (current_sample >= 8'd128) ? (current_sample - 8'd128)
+                                                     : (8'd128 - current_sample);
+        acc_with_dev   = acc + {{(ACC_WIDTH-ADC_WIDTH){1'b0}}, abs_dev};
 
-    always @(posedge clk or negedge rst_n) begin
+        // Defaults — hold all state
+        next_state    = state;
+        next_acc      = acc;
+        next_ch_idx   = ch_idx;
+        next_samp_idx = samp_idx;
+        next_done     = 1'b0;
+        for (int i = 0; i < N_CH; i++)
+            next_sbp_features[i] = sbp_features[i];
+
+        unique case (state)
+            IDLE: begin
+                if (start) begin
+                    next_acc      = '0;
+                    next_ch_idx   = '0;
+                    next_samp_idx = '0;
+                    next_state    = RUN;
+                end
+            end
+
+            RUN: begin
+                next_acc = acc_with_dev;
+
+                if (samp_idx == N_SAMPLES - 1) begin
+                    // Capture final accumulated value for this channel
+                    next_sbp_features[ch_idx] = acc_with_dev[ACC_WIDTH-1:8];
+                    next_acc      = '0;
+                    next_samp_idx = '0;
+
+                    if (ch_idx == N_CH - 1) begin
+                        next_done   = 1'b1;
+                        next_ch_idx = '0;
+                        next_state  = IDLE;
+                    end else begin
+                        next_ch_idx = ch_idx + 1;
+                    end
+                end else begin
+                    next_samp_idx = samp_idx + 1;
+                end
+            end
+
+            default: next_state = IDLE;
+        endcase
+    end
+
+    // -------------------------------------------------------------------------
+    // Sequential: registers
+    // -------------------------------------------------------------------------
+    always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             state    <= IDLE;
             done     <= 1'b0;
@@ -63,46 +108,14 @@ module sbp_feature_extraction #(
             samp_idx <= '0;
             for (int i = 0; i < N_CH; i++)
                 sbp_features[i] <= '0;
-
         end else begin
-            done <= 1'b0;    // default: deassert (done is a 1-cycle pulse)
-
-            case (state)
-
-                IDLE: begin
-                    if (start) begin
-                        acc      <= '0;
-                        ch_idx   <= '0;
-                        samp_idx <= '0;
-                        state    <= RUN;
-                    end
-                end
-
-                RUN: begin
-                    acc <= acc + {{(ACC_WIDTH-ADC_WIDTH){1'b0}}, abs_dev};
-
-                    if (samp_idx == N_SAMPLES - 1) begin
-                        sbp_features[ch_idx] <= (acc + {{(ACC_WIDTH-ADC_WIDTH){1'b0}}, abs_dev}) >> 8;
-
-                        samp_idx <= '0;
-                        acc      <= '0;
-
-                        if (ch_idx == N_CH - 1) begin
-                            done     <= 1'b1;
-                            ch_idx   <= '0;
-                            state    <= IDLE;
-                        end else begin
-                            ch_idx <= ch_idx + 1;
-                        end
-
-                    end else begin
-                        samp_idx <= samp_idx + 1;
-                    end
-                end
-
-                default: state <= IDLE;
-
-            endcase
+            state    <= next_state;
+            done     <= next_done;
+            acc      <= next_acc;
+            ch_idx   <= next_ch_idx;
+            samp_idx <= next_samp_idx;
+            for (int i = 0; i < N_CH; i++)
+                sbp_features[i] <= next_sbp_features[i];
         end
     end
 

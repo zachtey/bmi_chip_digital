@@ -1,57 +1,35 @@
-// ============================================================
-// spi_slave.v
+// spi_slave.sv
+// Shifts out a PKT_BYTES-byte packet over SPI Mode 0 (CPOL=0, CPHA=0).
 //
-// Shifts out the 10-byte packet over SPI when the master
-// drives SCLK while CS_N is low. SPI Mode 0 (CPOL=0, CPHA=0).
-//
-// ============================================================
-// BUG FIXES (Chris, May 2026):
-//
-//   ROOT CAUSE: Loading the packet on the first detected SCLK
-//   falling edge is not compatible with SPI Mode 0. In Mode 0,
-//   SCLK idles low and the master samples on the first rising
-//   edge, so the slave must already be driving bit 79 before
-//   that first rising edge arrives.
-//
-//   FIX: Once CS is active and packet_valid is high, preload the
-//   packet immediately in the system clock domain and drive
-//   miso_reg with packet_data[PKT_BITS-1]. Falling SCLK edges then
-//   update MISO for subsequent bits, and rising edges shift.
-//
-//   Other improvements:
-//     - Clear all state (bit_cnt, done, miso_reg) on CS deassert
-//       so each transaction starts fresh.
-//     - Restructured spi_miso as a simple registered output
-//       (clean, no multi-driver issues).
-// ============================================================
+// SCLK and CS_N are sampled through a 2-FF synchronizer before use.
+// Packet is preloaded into the shift register as soon as CS is active
+// so that bit[PKT_BITS-1] is already on MISO before the first rising SCLK
+// edge — required for SPI Mode 0.
+// Falling SCLK edges update MISO; rising edges shift and count.
 
 module spi_slave #(
     parameter PKT_BYTES = 10,
-    parameter PKT_BITS  = PKT_BYTES * 8   // 80
+    parameter PKT_BITS  = PKT_BYTES * 8
 )(
-    input  wire                  clk,
-    input  wire                  rst_n,
+    input  wire                clk,
+    input  wire                rst_n,
 
-    // External SPI pins
-    input  wire                  spi_sclk,
-    input  wire                  spi_cs_n,
-    output wire                  spi_miso,
+    input  wire                spi_sclk,
+    input  wire                spi_cs_n,
+    output wire                spi_miso,
 
-    // From output_formatter
-    input  wire [PKT_BITS-1:0]   packet_data,
-    input  wire                  packet_valid,
-
-    // To output_formatter
-    output reg                   packet_ready
+    input  wire [PKT_BITS-1:0] packet_data,
+    input  wire                packet_valid,
+    output logic               packet_ready
 );
 
-    // ======================================================
-    // 2-FF SYNCHRONIZER
-    // ======================================================
-    reg sclk_sync1, sclk_sync2;
-    reg cs_n_sync1, cs_n_sync2;
+    // =========================================================================
+    // 2-FF synchronizer for SCLK and CS_N
+    // =========================================================================
+    logic sclk_sync1, sclk_sync2;
+    logic cs_n_sync1, cs_n_sync2;
 
-    always @(posedge clk or negedge rst_n) begin
+    always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             sclk_sync1 <= 1'b0; sclk_sync2 <= 1'b0;
             cs_n_sync1 <= 1'b1; cs_n_sync2 <= 1'b1;
@@ -65,70 +43,95 @@ module spi_slave #(
     wire sclk_falling = (!sclk_sync1 &&  sclk_sync2);
     wire cs_active    = !cs_n_sync2;
 
-    // ======================================================
-    // SHIFT REGISTER + BIT COUNTER + STATE
-    // ======================================================
-    reg [PKT_BITS-1:0]         shift_reg;
-    reg [$clog2(PKT_BITS)-1:0] bit_cnt;
-    reg                        transmitting;
-    reg                        done;
-    reg                        miso_reg;
+    // =========================================================================
+    // FSM
+    // =========================================================================
+    typedef enum logic [1:0] { S_IDLE, S_TRANSMIT, S_DONE } state_t;
 
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
-            shift_reg    <= '0;
-            bit_cnt      <= '0;
-            transmitting <= 1'b0;
-            done         <= 1'b0;
-            miso_reg     <= 1'b0;
-            packet_ready <= 1'b0;
+    state_t                          state,      next_state;
+    logic [PKT_BITS-1:0]             shift_reg;
+    logic [$clog2(PKT_BITS)-1:0]     bit_cnt;
+    logic                             miso_reg;
 
+    // Next-cycle values
+    logic [PKT_BITS-1:0]             next_shift_reg;
+    logic [$clog2(PKT_BITS)-1:0]     next_bit_cnt;
+    logic                             next_miso_reg;
+    logic                             next_packet_ready;
+
+    // -------------------------------------------------------------------------
+    // Combinational: next-state and datapath
+    // -------------------------------------------------------------------------
+    always_comb begin
+        // Defaults — hold state
+        next_state        = state;
+        next_shift_reg    = shift_reg;
+        next_bit_cnt      = bit_cnt;
+        next_miso_reg     = miso_reg;
+        next_packet_ready = 1'b0;
+
+        // CS deassert resets to idle from any state
+        if (!cs_active) begin
+            next_state     = S_IDLE;
+            next_bit_cnt   = '0;
+            next_miso_reg  = 1'b0;
+            next_shift_reg = '0;
         end else begin
-            packet_ready <= 1'b0;
-
-            // -- Reset state when CS deasserts -------------
-            if (!cs_active) begin
-                transmitting <= 1'b0;
-                bit_cnt      <= '0;
-                done         <= 1'b0;
-                miso_reg     <= 1'b0;
-
-            end else begin
-                // Preload as soon as CS is active so SPI Mode 0 masters
-                // can sample bit 79 on the first SCLK rising edge.
-                if (!transmitting && !done && packet_valid) begin
-                    shift_reg    <= packet_data;
-                    bit_cnt      <= '0;
-                    transmitting <= 1'b1;
-                    miso_reg     <= packet_data[PKT_BITS-1];
+            unique case (state)
+                S_IDLE: begin
+                    // Preload as soon as CS is active so MISO is ready before
+                    // the master's first rising SCLK edge.
+                    if (packet_valid) begin
+                        next_shift_reg = packet_data;
+                        next_miso_reg  = packet_data[PKT_BITS-1];
+                        next_bit_cnt   = '0;
+                        next_state     = S_TRANSMIT;
+                    end
                 end
 
-                if (transmitting) begin
-                    // Drive MISO on falling edge (for bits 78..0)
-                    // Note: we use shift_reg AFTER it has been
-                    // shifted by the previous rising edge, so
-                    // shift_reg[79] always holds the next bit.
-                    if (sclk_falling) begin
-                        miso_reg <= shift_reg[PKT_BITS-1];
-                    end
+                S_TRANSMIT: begin
+                    // Update MISO on falling edge for next master sample
+                    if (sclk_falling)
+                        next_miso_reg = shift_reg[PKT_BITS-1];
 
-                    // Shift on rising edge
+                    // Shift on rising edge; detect last bit
                     if (sclk_rising) begin
-                        shift_reg <= shift_reg << 1;
-                        bit_cnt   <= bit_cnt + 1;
-
+                        next_shift_reg = shift_reg << 1;
+                        next_bit_cnt   = bit_cnt + 1;
                         if (bit_cnt == PKT_BITS - 1) begin
-                            transmitting <= 1'b0;
-                            done         <= 1'b1;
-                            packet_ready <= 1'b1;
+                            next_packet_ready = 1'b1;
+                            next_state        = S_DONE;
                         end
                     end
                 end
-            end
+
+                // Wait for CS to deassert (handled by the !cs_active priority above)
+                S_DONE: ;
+
+                default: next_state = S_IDLE;
+            endcase
         end
     end
 
-    // Simple registered output - no combinational override needed
+    // -------------------------------------------------------------------------
+    // Sequential: registers
+    // -------------------------------------------------------------------------
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            state        <= S_IDLE;
+            shift_reg    <= '0;
+            bit_cnt      <= '0;
+            miso_reg     <= 1'b0;
+            packet_ready <= 1'b0;
+        end else begin
+            state        <= next_state;
+            shift_reg    <= next_shift_reg;
+            bit_cnt      <= next_bit_cnt;
+            miso_reg     <= next_miso_reg;
+            packet_ready <= next_packet_ready;
+        end
+    end
+
     assign spi_miso = miso_reg;
 
 endmodule

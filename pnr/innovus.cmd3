@@ -1,0 +1,57 @@
+#######################################################
+#                                                     
+#  Innovus Command Logging File                     
+#  Created on Sat Jun  6 12:43:57 2026                
+#                                                     
+#######################################################
+
+#@(#)CDS: Innovus v16.20-p002_1 (64bit) 11/08/2016 11:31 (Linux 2.6.18-194.el5)
+#@(#)CDS: NanoRoute 16.20-p002_1 NR161103-1425/16_20-UB (database version 2.30, 354.6.1) {superthreading v1.34}
+#@(#)CDS: AAE 16.20-p004 (64bit) 11/08/2016 (Linux 2.6.18-194.el5)
+#@(#)CDS: CTE 16.20-p008_1 () Oct 29 2016 08:26:57 ( )
+#@(#)CDS: SYNTECH 16.20-p001_1 () Oct 27 2016 11:33:00 ( )
+#@(#)CDS: CPE v16.20-p011
+#@(#)CDS: IQRC/TQRC 15.2.5-s803 (64bit) Tue Sep 13 18:23:58 PDT 2016 (Linux 2.6.18-194.el5)
+
+set_global _enable_mmmc_by_default_flow      $CTE::mmmc_default
+suppressMessage ENCEXT-2799
+getDrawView
+loadWorkspace -name Physical
+win
+restoreDesign bmi_final_clean_correct_pins.enc.dat bmi_chip_top
+verifyConnectivity -type special -nets {VDD VSS}
+verifyConnectivity -type all -error 1000 -warning 50
+verify_drc -report digital_final_reports/final_drc.rpt -limit 1000
+redirect digital_final_reports/final_pg_connectivity.rpt {
+  verifyConnectivity -type special -nets {VDD VSS}
+}
+redirect digital_final_reports/final_full_connectivity.rpt {
+  verifyConnectivity -type all -error 1000 -warning 50
+}
+setDesignMode -process 45
+setAnalysisMode -analysisType onChipVariation -cppr both
+timeDesign -postRoute -pathReports -drvReports -slackReports -numPaths 50 -prefix digital_final_reports/setup_postroute
+setDesignMode -process 45
+setAnalysisMode -analysisType onChipVariation -cppr both
+redirect digital_final_reports/final_pg_connectivity.rpt {
+  verifyConnectivity -type special -nets {VDD VSS}
+}
+redirect digital_final_reports/final_full_connectivity.rpt {
+  verifyConnectivity -type all -error 1000 -warning 50
+}
+verify_drc -report digital_final_reports/final_drc.rpt -limit 1000
+timeDesign -postRoute -pathReports -drvReports -slackReports -numPaths 50 -prefix digital_final_reports/setup_postroute
+timeDesign -postRoute -hold -pathReports -slackReports -numPaths 50 -prefix digital_final_reports/hold_postroute
+report_timing -late -max_paths 10 -path_type full_clock > $RPT/critical_setup_paths.rpt
+report_timing -early -max_paths 10 -path_type full_clock > $RPT/critical_hold_paths.rpt
+report_constraint -all_violators > digital_final_reports/timing_violators.rpt
+report_area > digital_final_reports/area.rpt
+reportGateCount > digital_final_reports/gate_count.rpt
+summaryReport -outfile digital_final_reports/summary_report.rpt
+reportRoute -summary > digital_final_reports/route_summary.rpt
+reportCongestion > digital_final_reports/congestion.rpt
+report_ccopt_clock_trees > digital_final_reports/clock_tree_summary.rpt
+report_clock_timing -type summary > $RPT/clock_timing_summary.rpt
+setExtractRCMode -engine postRoute
+extractRC
+report_power > digital_final_reports/power_vectorless.rpt

@@ -1,0 +1,9 @@
+DIGITAL BACKEND FINAL REPORT SUMMARY
+====================================
+Design: bmi_chip_top
+Boundary: {0.0 0.0 596.6 596.6}
+Ports: clk rst_n {adc_sample[7]} {adc_sample[6]} {adc_sample[5]} {adc_sample[4]} {adc_sample[3]} {adc_sample[2]} {adc_sample[1]} {adc_sample[0]} {adc_channel[2]} {adc_channel[1]} {adc_channel[0]} spi_sclk spi_cs_n spi_miso scan_en scan_clk scan_in
+Instances: 109116
+Nets: 46595
+
+Generated reports are in digital_final_reports/

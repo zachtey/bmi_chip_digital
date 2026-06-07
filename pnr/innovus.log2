@@ -6588,3 +6588,8 @@ Merging GDS file /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/gds/gsclib045
 <CMD> panPage 1 0
 <CMD> panPage 1 0
 <CMD> panPage 1 0
+
+*** Memory Usage v#1 (Current mem = 2231.887M, initial mem = 175.422M) ***
+*** Message Summary: 117 warning(s), 2 error(s)
+
+--- Ending "Innovus" (totcpu=2:22:12, real=55:33:41, mem=2231.9M) ---

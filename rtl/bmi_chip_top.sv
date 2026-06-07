@@ -1,13 +1,9 @@
-// ============================================================
 // bmi_chip_top.sv
+// Top-level structural wrapper for the BMI digital signal-processing chain.
 //
-// Top-level integration of all BMI chip digital blocks.
-//
-// Data path:
+// Pipeline:
 //   ADC -> sample_collection -> sbp_feature_extraction
-//       -> mlp_inference -> argmax -> output_formatter
-//       -> spi_slave -> SPI pins
-// ============================================================
+//       -> mlp_inference -> argmax -> output_formatter -> spi_slave
 
 module bmi_chip_top #(
     parameter N_CH              = 8,
@@ -24,11 +20,10 @@ module bmi_chip_top #(
     parameter OUTPUT_BIAS_SCALE = 109,
     parameter PKT_BYTES         = 10
 )(
-    // System
     input  wire                    clk,
     input  wire                    rst_n,
 
-    // ADC interface - adc_channel drives the analog MUX select
+    // ADC interface — adc_channel drives the analog MUX select
     input  wire [ADC_WIDTH-1:0]    adc_sample,
     output wire [$clog2(N_CH)-1:0] adc_channel,
 
@@ -37,36 +32,31 @@ module bmi_chip_top #(
     input  wire                    spi_cs_n,
     output wire                    spi_miso,
 
-    // MLP scan chain
+    // Scan chain for MLP weight loading
     input  wire                    scan_en,
     input  wire                    scan_clk,
     input  wire                    scan_in
 );
 
-    // -- Internal wires ----------------------------------------
+    // -- Internal signals -----------------------------------------
 
-    // sample_collection -> sbp
     wire                          window_ready;
     wire [ADC_WIDTH-1:0]          sample_window [0:N_CH-1][0:N_SAMPLES-1];
 
-    // sbp -> mlp
     wire                          sbp_done;
     wire [SBP_WIDTH-1:0]          sbp_features [0:N_CH-1];
 
-    // mlp -> argmax
     wire                          mlp_done;
     wire signed [SCORE_WIDTH-1:0] class_scores [0:N_OUT-1];
 
-    // argmax -> output_formatter
     wire [1:0]                    predicted_class;
     wire                          decision_valid;
 
-    // output_formatter ↔ spi_slave
     wire [PKT_BYTES*8-1:0]        packet_data;
     wire                          packet_valid;
     wire                          packet_ready;
 
-    // -- Block instances ---------------------------------------
+    // -- Block instances ------------------------------------------
 
     sample_collection #(
         .N_CH(N_CH), .N_SAMPLES(N_SAMPLES), .ADC_WIDTH(ADC_WIDTH)

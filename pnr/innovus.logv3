@@ -1,0 +1,1783 @@
+[06/06 12:43:48      0s] 
+[06/06 12:43:48      0s] Cadence Innovus(TM) Implementation System.
+[06/06 12:43:48      0s] Copyright 2016 Cadence Design Systems, Inc. All rights reserved worldwide.
+[06/06 12:43:48      0s] 
+[06/06 12:43:48      0s] Version:	v16.20-p002_1, built Tue Nov 8 11:31:23 PST 2016
+[06/06 12:43:48      0s] Options:	
+[06/06 12:43:48      0s] Date:		Sat Jun  6 12:43:48 2026
+[06/06 12:43:48      0s] Host:		huntress.ece.northwestern.edu (x86_64 w/Linux 4.18.0-553.125.1.el8_10.x86_64) (8cores*8cpus*Intel(R) Core(TM) i7-9700 CPU @ 3.00GHz 12288KB)
+[06/06 12:43:48      0s] OS:		Red Hat Enterprise Linux release 8.10 (Ootpa)
+[06/06 12:43:48      0s] 
+[06/06 12:43:48      0s] License:
+[06/06 12:43:48      0s] 		invs	Innovus Implementation System	16.2	checkout succeeded
+[06/06 12:43:48      0s] 		8 CPU jobs allowed with the current license(s). Use setMultiCpuUsage to set your required CPU count.
+[06/06 12:43:57      4s] @(#)CDS: Innovus v16.20-p002_1 (64bit) 11/08/2016 11:31 (Linux 2.6.18-194.el5)
+[06/06 12:43:57      4s] @(#)CDS: NanoRoute 16.20-p002_1 NR161103-1425/16_20-UB (database version 2.30, 354.6.1) {superthreading v1.34}
+[06/06 12:43:57      4s] @(#)CDS: AAE 16.20-p004 (64bit) 11/08/2016 (Linux 2.6.18-194.el5)
+[06/06 12:43:57      4s] @(#)CDS: CTE 16.20-p008_1 () Oct 29 2016 08:26:57 ( )
+[06/06 12:43:57      4s] @(#)CDS: SYNTECH 16.20-p001_1 () Oct 27 2016 11:33:00 ( )
+[06/06 12:43:57      4s] @(#)CDS: CPE v16.20-p011
+[06/06 12:43:57      4s] @(#)CDS: IQRC/TQRC 15.2.5-s803 (64bit) Tue Sep 13 18:23:58 PDT 2016 (Linux 2.6.18-194.el5)
+[06/06 12:43:57      4s] @(#)CDS: OA 22.50-p051 Thu Aug  4 00:05:16 2016
+[06/06 12:43:57      4s] @(#)CDS: SGN 10.10-p124 (19-Aug-2014) (64 bit executable)
+[06/06 12:43:57      4s] @(#)CDS: RCDB 11.8
+[06/06 12:43:57      4s] --- Running on huntress.ece.northwestern.edu (x86_64 w/Linux 4.18.0-553.125.1.el8_10.x86_64) (8cores*8cpus*Intel(R) Core(TM) i7-9700 CPU @ 3.00GHz 12288KB) ---
+[06/06 12:43:57      4s] Create and set the environment variable TMPDIR to /tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2.
+
+[06/06 12:43:57      5s] 
+[06/06 12:43:57      5s] **INFO:  MMMC transition support version v31-84 
+[06/06 12:43:57      5s] 
+[06/06 12:43:57      5s] <CMD> set_global _enable_mmmc_by_default_flow      $CTE::mmmc_default
+[06/06 12:43:57      5s] <CMD> suppressMessage ENCEXT-2799
+[06/06 12:43:57      5s] <CMD> getDrawView
+[06/06 12:43:57      5s] <CMD> loadWorkspace -name Physical
+[06/06 12:43:57      5s] <CMD> win
+[06/06 12:45:24      8s] <CMD> restoreDesign bmi_final_clean_correct_pins.enc.dat bmi_chip_top
+[06/06 12:45:24      8s] Set Default Input Pin Transition as 0.1 ps.
+[06/06 12:45:24      8s] **WARN: (GLOBAL-100):	Global 'timing_enable_default_delay_arc' has become obsolete. It will be removed in the next release.
+[06/06 12:45:24      8s] #- Begin Load MMMC data ... (date=06/06 12:45:24, mem=492.6M)
+[06/06 12:45:24      8s] #- End Load MMMC data ... (date=06/06 12:45:24, total cpu=0:00:00.0, real=0:00:00.0, peak res=54.4M, current mem=492.6M)
+[06/06 12:45:24      8s] **WARN: (GLOBAL-100):	Global 'timing_disable_backward_compatible_mmmc_mode' has become obsolete. It will be removed in the next release.
+[06/06 12:45:24      8s] 
+[06/06 12:45:24      8s] Loading LEF file /home/vcs5888/CE392/bmi_chip/digital/pnr/bmi_final_clean_correct_pins.enc.dat/libs/lef/gsclib045_tech.lef ...
+[06/06 12:45:24      8s] **WARN: (IMPLF-155):	ViaRule only supports routing/cut layer, but poly layer found for viaRule 'M1_PO', 
+[06/06 12:45:24      8s] **WARN: (IMPLF-155):	ViaRule only supports routing/cut layer, but poly layer found for viaRule 'M1_DIFF', 
+[06/06 12:45:24      8s] **WARN: (IMPLF-155):	ViaRule only supports routing/cut layer, but poly layer found for viaRule 'M1_PSUB', 
+[06/06 12:45:24      8s] **WARN: (IMPLF-155):	ViaRule only supports routing/cut layer, but poly layer found for viaRule 'M1_PIMP', 
+[06/06 12:45:24      8s] **WARN: (IMPLF-155):	ViaRule only supports routing/cut layer, but poly layer found for viaRule 'M1_NIMP', 
+[06/06 12:45:24      8s] **WARN: (IMPLF-155):	ViaRule only supports routing/cut layer, but poly layer found for viaRule 'M1_NWELL', 
+[06/06 12:45:24      8s] 
+[06/06 12:45:24      8s] Loading LEF file /home/vcs5888/CE392/bmi_chip/digital/pnr/bmi_final_clean_correct_pins.enc.dat/libs/lef/gsclib045_macro.lef ...
+[06/06 12:45:24      8s] Set DBUPerIGU to M2 pitch 400.
+[06/06 12:45:24      8s] **WARN: (IMPLF-200):	Pin 'A' in macro 'ANTENNA' has no ANTENNAGATEAREA value defined. The library data is incomplete and some process antenna rules will not be checked correctly.
+[06/06 12:45:24      8s] Type 'man IMPLF-200' for more detail.
+[06/06 12:45:24      8s] 
+[06/06 12:45:24      8s] viaInitial starts at Sat Jun  6 12:45:24 2026
+viaInitial ends at Sat Jun  6 12:45:24 2026
+Loading view definition file from bmi_final_clean_correct_pins.enc.dat/viewDefinition.tcl
+[06/06 12:45:24      8s] Reading slow_lib timing library '/vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib' ...
+[06/06 12:45:24      8s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'CON' of cell 'ACHCONX2' is not defined in the library. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:24      8s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'CO' of cell 'ADDFHX1' is not defined in the library. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:24      8s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'S' of cell 'ADDFHX1' is not defined in the library. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:24      8s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'CO' of cell 'ADDFHX2' is not defined in the library. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:24      8s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'S' of cell 'ADDFHX2' is not defined in the library. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:24      8s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'CO' of cell 'ADDFHX4' is not defined in the library. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:24      8s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'S' of cell 'ADDFHX4' is not defined in the library. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:24      8s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'CO' of cell 'ADDFHXL' is not defined in the library. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:24      8s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'S' of cell 'ADDFHXL' is not defined in the library. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:24      8s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'CO' of cell 'ADDFX1' is not defined in the library. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:24      8s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'S' of cell 'ADDFX1' is not defined in the library. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:24      8s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'CO' of cell 'ADDFX2' is not defined in the library. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:24      8s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'S' of cell 'ADDFX2' is not defined in the library. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:24      8s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'CO' of cell 'ADDFX4' is not defined in the library. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:24      8s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'S' of cell 'ADDFX4' is not defined in the library. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:24      8s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'CO' of cell 'ADDFXL' is not defined in the library. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:24      8s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'S' of cell 'ADDFXL' is not defined in the library. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:24      8s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'CO' of cell 'ADDHX1' is not defined in the library. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:24      8s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'S' of cell 'ADDHX1' is not defined in the library. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:24      8s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'CO' of cell 'ADDHX2' is not defined in the library. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:24      8s] Message <TECHLIB-436> has exceeded the message display limit of '20'. Use 'set_message -no_limit -id list_of_msgIDs' to reset the message limit.
+[06/06 12:45:25      9s] **WARN: (TECHLIB-302):	No function defined for cell 'DECAP9'. The cell will only be used for analysis. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:25      9s] **WARN: (TECHLIB-302):	No function defined for cell 'DECAP8'. The cell will only be used for analysis. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:25      9s] **WARN: (TECHLIB-302):	No function defined for cell 'DECAP7'. The cell will only be used for analysis. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:25      9s] **WARN: (TECHLIB-302):	No function defined for cell 'DECAP6'. The cell will only be used for analysis. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:25      9s] **WARN: (TECHLIB-302):	No function defined for cell 'DECAP5'. The cell will only be used for analysis. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:25      9s] **WARN: (TECHLIB-302):	No function defined for cell 'DECAP4'. The cell will only be used for analysis. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:25      9s] **WARN: (TECHLIB-302):	No function defined for cell 'DECAP3'. The cell will only be used for analysis. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:25      9s] **WARN: (TECHLIB-302):	No function defined for cell 'DECAP2'. The cell will only be used for analysis. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:25      9s] **WARN: (TECHLIB-302):	No function defined for cell 'DECAP10'. The cell will only be used for analysis. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:25      9s] **WARN: (TECHLIB-302):	No function defined for cell 'ANTENNA'. The cell will only be used for analysis. (File /vol/eecs391/GPDK045/gsclib045_all_v4.8/gsclib045/timing/slow_vdd1v0_basicCells.lib)
+[06/06 12:45:25      9s] Read 489 cells in library 'slow_vdd1v0' 
+[06/06 12:45:25      9s] *** End library_loading (cpu=0.00min, mem=0.0M, fe_cpu=0.15min, fe_real=1.62min, fe_mem=525.2M) ***
+[06/06 12:45:25      9s] #- Begin Load netlist data ... (date=06/06 12:45:25, mem=525.2M)
+[06/06 12:45:25      9s] *** Begin netlist parsing (mem=525.2M) ***
+[06/06 12:45:25      9s] Created 489 new cells from 1 timing libraries.
+[06/06 12:45:25      9s] Reading netlist ...
+[06/06 12:45:25      9s] Backslashed names will retain backslash and a trailing blank character.
+[06/06 12:45:25      9s] Reading verilogBinary netlist '/home/vcs5888/CE392/bmi_chip/digital/pnr/bmi_final_clean_correct_pins.enc.dat/bmi_chip_top.v.bin'
+[06/06 12:45:25      9s] Reading binary database version 1
+[06/06 12:45:25      9s] 
+[06/06 12:45:25      9s] *** Memory Usage v#1 (Current mem = 1074.184M, initial mem = 183.422M) ***
+[06/06 12:45:25      9s] *** End netlist parsing (cpu=0:00:00.1, real=0:00:00.0, mem=1074.2M) ***
+[06/06 12:45:25      9s] #- End Load netlist data ... (date=06/06 12:45:25, total cpu=0:00:00.1, real=0:00:00.0, peak res=124.5M, current mem=1074.2M)
+[06/06 12:45:25      9s] Set top cell to bmi_chip_top.
+[06/06 12:45:25      9s] Hooked 489 DB cells to tlib cells.
+[06/06 12:45:25      9s] Starting recursive module instantiation check.
+[06/06 12:45:25      9s] No recursion found.
+[06/06 12:45:25      9s] Building hierarchical netlist for Cell bmi_chip_top ...
+[06/06 12:45:25      9s] *** Netlist is unique.
+[06/06 12:45:25      9s] ** info: there are 588 modules.
+[06/06 12:45:25      9s] ** info: there are 46179 stdCell insts.
+[06/06 12:45:25      9s] 
+[06/06 12:45:25      9s] *** Memory Usage v#1 (Current mem = 1098.184M, initial mem = 183.422M) ***
+[06/06 12:45:25      9s] *info: set bottom ioPad orient R0
+[06/06 12:45:25      9s] **WARN: (IMPFP-3961):	The techSite 'CornerSite' has no related standard cells in LEF/OA library. Cannot make calculations for this site type unless standard cell models of this type exist in the LEF/OA library. If the SITE is not used by the library you can ignore this warning or remove the SITE definition from the LEF/OA to avoid this message.
+[06/06 12:45:25      9s] Type 'man IMPFP-3961' for more detail.
+[06/06 12:45:25      9s] **WARN: (IMPFP-3961):	The techSite 'IOSite' has no related standard cells in LEF/OA library. Cannot make calculations for this site type unless standard cell models of this type exist in the LEF/OA library. If the SITE is not used by the library you can ignore this warning or remove the SITE definition from the LEF/OA to avoid this message.
+[06/06 12:45:25      9s] Type 'man IMPFP-3961' for more detail.
+[06/06 12:45:25      9s] Set Default Net Delay as 1000 ps.
+[06/06 12:45:25      9s] Set Default Net Load as 0.5 pF. 
+[06/06 12:45:25      9s] Set Default Input Pin Transition as 0.1 ps.
+[06/06 12:45:25      9s] Loading preference file bmi_final_clean_correct_pins.enc.dat/gui.pref.tcl ...
+[06/06 12:45:25      9s] Applying the recommended capacitance filtering threshold values for 45nm process node: total_c_th=0, relative_c_th=1 and coupling_c_th=0.1.
+[06/06 12:45:25      9s] 	These values will be used by all post-route extraction engines, including tQuantus, IQRC and Quantus QRC extraction.
+[06/06 12:45:25      9s] 	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all engines.
+[06/06 12:45:25      9s] 	The accuracy mode for postRoute effortLevel low extraction will be set to 'high'.
+[06/06 12:45:25      9s] 	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction mode will be 'medium' if Quantus QRC technology file is specified else 'low'.
+[06/06 12:45:25      9s] Updating process node dependent CCOpt properties for the 45nm process node.
+[06/06 12:45:25      9s] Extraction setup Started 
+[06/06 12:45:25      9s] Initializing multi-corner RC extraction with 1 active RC Corners ...
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2773):	The via resistance between layers M0 and M1 could not be determined from the LEF technology file because the via resistance specification is missing. A default of 4 Ohms will be used as via resistance between these layers.
+[06/06 12:45:25      9s] Type 'man IMPEXT-2773' for more detail.
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2773):	The via resistance between layers M1 and M2 could not be determined from the LEF technology file because the via resistance specification is missing. A default of 4 Ohms will be used as via resistance between these layers.
+[06/06 12:45:25      9s] Type 'man IMPEXT-2773' for more detail.
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2773):	The via resistance between layers M2 and M3 could not be determined from the LEF technology file because the via resistance specification is missing. A default of 4 Ohms will be used as via resistance between these layers.
+[06/06 12:45:25      9s] Type 'man IMPEXT-2773' for more detail.
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2773):	The via resistance between layers M3 and M4 could not be determined from the LEF technology file because the via resistance specification is missing. A default of 4 Ohms will be used as via resistance between these layers.
+[06/06 12:45:25      9s] Type 'man IMPEXT-2773' for more detail.
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2773):	The via resistance between layers M4 and M5 could not be determined from the LEF technology file because the via resistance specification is missing. A default of 4 Ohms will be used as via resistance between these layers.
+[06/06 12:45:25      9s] Type 'man IMPEXT-2773' for more detail.
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2773):	The via resistance between layers M5 and M6 could not be determined from the LEF technology file because the via resistance specification is missing. A default of 4 Ohms will be used as via resistance between these layers.
+[06/06 12:45:25      9s] Type 'man IMPEXT-2773' for more detail.
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2773):	The via resistance between layers M6 and M7 could not be determined from the LEF technology file because the via resistance specification is missing. A default of 4 Ohms will be used as via resistance between these layers.
+[06/06 12:45:25      9s] Type 'man IMPEXT-2773' for more detail.
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2773):	The via resistance between layers M7 and M8 could not be determined from the LEF technology file because the via resistance specification is missing. A default of 4 Ohms will be used as via resistance between these layers.
+[06/06 12:45:25      9s] Type 'man IMPEXT-2773' for more detail.
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2773):	The via resistance between layers M8 and M9 could not be determined from the LEF technology file because the via resistance specification is missing. A default of 4 Ohms will be used as via resistance between these layers.
+[06/06 12:45:25      9s] Type 'man IMPEXT-2773' for more detail.
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2773):	The via resistance between layers M9 and M10 could not be determined from the LEF technology file because the via resistance specification is missing. A default of 4 Ohms will be used as via resistance between these layers.
+[06/06 12:45:25      9s] Type 'man IMPEXT-2773' for more detail.
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2773):	The via resistance between layers M10 and M11 could not be determined from the LEF technology file because the via resistance specification is missing. A default of 4 Ohms will be used as via resistance between these layers.
+[06/06 12:45:25      9s] Type 'man IMPEXT-2773' for more detail.
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2766):	The sheet resistance for layer M1 is not defined in the cap table. Therefore, the LEF value 0.0736 will be used instead. To avoid this message, update the relevant cap table to include the sheet resistance for the specified layer and read it back in.
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2766):	The sheet resistance for layer M2 is not defined in the cap table. Therefore, the LEF value 0.0604 will be used instead. To avoid this message, update the relevant cap table to include the sheet resistance for the specified layer and read it back in.
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2766):	The sheet resistance for layer M3 is not defined in the cap table. Therefore, the LEF value 0.0604 will be used instead. To avoid this message, update the relevant cap table to include the sheet resistance for the specified layer and read it back in.
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2766):	The sheet resistance for layer M4 is not defined in the cap table. Therefore, the LEF value 0.0604 will be used instead. To avoid this message, update the relevant cap table to include the sheet resistance for the specified layer and read it back in.
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2766):	The sheet resistance for layer M5 is not defined in the cap table. Therefore, the LEF value 0.0604 will be used instead. To avoid this message, update the relevant cap table to include the sheet resistance for the specified layer and read it back in.
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2766):	The sheet resistance for layer M6 is not defined in the cap table. Therefore, the LEF value 0.0604 will be used instead. To avoid this message, update the relevant cap table to include the sheet resistance for the specified layer and read it back in.
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2766):	The sheet resistance for layer M7 is not defined in the cap table. Therefore, the LEF value 0.0604 will be used instead. To avoid this message, update the relevant cap table to include the sheet resistance for the specified layer and read it back in.
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2766):	The sheet resistance for layer M8 is not defined in the cap table. Therefore, the LEF value 0.0214 will be used instead. To avoid this message, update the relevant cap table to include the sheet resistance for the specified layer and read it back in.
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2766):	The sheet resistance for layer M9 is not defined in the cap table. Therefore, the LEF value 0.0214 will be used instead. To avoid this message, update the relevant cap table to include the sheet resistance for the specified layer and read it back in.
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2766):	The sheet resistance for layer M10 is not defined in the cap table. Therefore, the LEF value 0.0214 will be used instead. To avoid this message, update the relevant cap table to include the sheet resistance for the specified layer and read it back in.
+[06/06 12:45:25      9s] **WARN: (IMPEXT-2766):	The sheet resistance for layer M11 is not defined in the cap table. Therefore, the LEF value 0.021 will be used instead. To avoid this message, update the relevant cap table to include the sheet resistance for the specified layer and read it back in.
+[06/06 12:45:25      9s] Summary of Active RC-Corners : 
+[06/06 12:45:25      9s]  
+[06/06 12:45:25      9s]  Analysis View: slow_view
+[06/06 12:45:25      9s]     RC-Corner Name        : rc_typ
+[06/06 12:45:25      9s]     RC-Corner Index       : 0
+[06/06 12:45:25      9s]     RC-Corner Temperature : 25 Celsius
+[06/06 12:45:25      9s]     RC-Corner Cap Table   : ''
+[06/06 12:45:25      9s]     RC-Corner PreRoute Res Factor         : 1
+[06/06 12:45:25      9s]     RC-Corner PreRoute Cap Factor         : 1
+[06/06 12:45:25      9s]     RC-Corner PostRoute Res Factor        : 1 {1 1 1}
+[06/06 12:45:25      9s]     RC-Corner PostRoute Cap Factor        : 1 {1 1 1}
+[06/06 12:45:25      9s]     RC-Corner PostRoute XCap Factor       : 1 {1 1 1}
+[06/06 12:45:25      9s]     RC-Corner PreRoute Clock Res Factor   : 1	[Derived from Cap Table]
+[06/06 12:45:25      9s]     RC-Corner PreRoute Clock Cap Factor   : 1	[Derived from Cap Table]
+[06/06 12:45:25      9s]     RC-Corner PostRoute Clock Cap Factor  : 1 {1 1 1} 	[Derived from postRoute_cap (effortLevel low)]
+[06/06 12:45:25      9s]     RC-Corner PostRoute Clock Res Factor  : 1 {1 1 1} 	[Derived from postRoute_res (effortLevel low)]
+[06/06 12:45:25      9s] *Info: initialize multi-corner CTS.
+[06/06 12:45:25      9s] Reading timing constraints file '/home/vcs5888/CE392/bmi_chip/digital/pnr/bmi_final_clean_correct_pins.enc.dat/mmmc/modes/func_mode/func_mode.sdc' ...
+[06/06 12:45:25      9s] Current (total cpu=0:00:09.5, real=0:01:37, peak res=314.0M, current mem=747.9M)
+[06/06 12:45:25      9s] INFO (CTE): Constraints read successfully.
+[06/06 12:45:25      9s] Ending "Constraint file reading stats" (total cpu=0:00:00.1, real=0:00:00.0, peak res=330.7M, current mem=765.1M)
+[06/06 12:45:25      9s] Current (total cpu=0:00:09.6, real=0:01:37, peak res=330.7M, current mem=765.1M)
+[06/06 12:45:25      9s] Summary for sequential cells identification: 
+[06/06 12:45:25      9s] Identified SBFF number: 104
+[06/06 12:45:25      9s] Identified MBFF number: 0
+[06/06 12:45:25      9s] Identified SB Latch number: 0
+[06/06 12:45:25      9s] Identified MB Latch number: 0
+[06/06 12:45:25      9s] Not identified SBFF number: 16
+[06/06 12:45:25      9s] Not identified MBFF number: 0
+[06/06 12:45:25      9s] Not identified SB Latch number: 0
+[06/06 12:45:25      9s] Not identified MB Latch number: 0
+[06/06 12:45:25      9s] Number of sequential cells which are not FFs: 32
+[06/06 12:45:25      9s] 
+[06/06 12:45:25      9s] Total number of combinational cells: 327
+[06/06 12:45:25      9s] Total number of sequential cells: 152
+[06/06 12:45:25      9s] Total number of tristate cells: 10
+[06/06 12:45:25      9s] Total number of level shifter cells: 0
+[06/06 12:45:25      9s] Total number of power gating cells: 0
+[06/06 12:45:25      9s] Total number of isolation cells: 0
+[06/06 12:45:25      9s] Total number of power switch cells: 0
+[06/06 12:45:25      9s] Total number of pulse generator cells: 0
+[06/06 12:45:25      9s] Total number of always on buffers: 0
+[06/06 12:45:25      9s] Total number of retention cells: 0
+[06/06 12:45:25      9s] List of usable buffers: BUFX2 BUFX12 BUFX16 BUFX20 CLKBUFX2 BUFX3 BUFX4 BUFX6 BUFX8 CLKBUFX12 CLKBUFX16 CLKBUFX20 CLKBUFX3 CLKBUFX4 CLKBUFX6 CLKBUFX8
+[06/06 12:45:25      9s] Total number of usable buffers: 16
+[06/06 12:45:25      9s] List of unusable buffers:
+[06/06 12:45:25      9s] Total number of unusable buffers: 0
+[06/06 12:45:25      9s] List of usable inverters: CLKINVX1 CLKINVX2 CLKINVX12 CLKINVX16 CLKINVX20 CLKINVX4 CLKINVX3 CLKINVX6 CLKINVX8 INVX1 INVX2 INVX12 INVX16 INVX20 INVXL INVX3 INVX4 INVX6 INVX8
+[06/06 12:45:25      9s] Total number of usable inverters: 19
+[06/06 12:45:25      9s] List of unusable inverters:
+[06/06 12:45:25      9s] Total number of unusable inverters: 0
+[06/06 12:45:25      9s] List of identified usable delay cells: DLY1X1 DLY1X4 DLY2X1 DLY2X4 DLY3X1 DLY3X4 DLY4X1 DLY4X4
+[06/06 12:45:25      9s] Total number of identified usable delay cells: 8
+[06/06 12:45:25      9s] List of identified unusable delay cells:
+[06/06 12:45:25      9s] Total number of identified unusable delay cells: 0
+[06/06 12:45:25      9s] #- Begin Load floorplan data ... (date=06/06 12:45:25, mem=773.1M)
+[06/06 12:45:25      9s] Reading floorplan file - bmi_final_clean_correct_pins.enc.dat/bmi_chip_top.fp.gz (mem = 773.1M).
+[06/06 12:45:25      9s] *info: reset 46595 existing net BottomPreferredLayer and AvoidDetour
+[06/06 12:45:25      9s] Deleting old partition specification.
+[06/06 12:45:25      9s] Set FPlanBox to (0 0 1193200 1193200)
+[06/06 12:45:25      9s]  ... processed partition successfully.
+[06/06 12:45:25      9s] Reading binary special route file bmi_final_clean_correct_pins.enc.dat/bmi_chip_top.fp.spr.gz (Created by Innovus v16.20-p002_1 on Mon Jun  1 04:19:53 2026, version: 1)
+[06/06 12:45:25      9s] There are 3057 nets with weight being set
+[06/06 12:45:25      9s] There are 3057 nets with bottomPreferredRoutingLayer being set
+[06/06 12:45:25      9s] There are 3057 nets with avoidDetour being set
+[06/06 12:45:25      9s] Extracting standard cell pins and blockage ...... 
+[06/06 12:45:25      9s] Pin and blockage extraction finished
+[06/06 12:45:25      9s] *** End loading floorplan (cpu = 0:00:00.1, mem = 1030.1M) ***
+[06/06 12:45:26      9s] #- End Load floorplan data ... (date=06/06 12:45:25, total cpu=0:00:00.1, real=0:00:01.0, peak res=341.9M, current mem=1030.1M)
+[06/06 12:45:26      9s] #- Begin Load SymbolTable ... (date=06/06 12:45:26, mem=1030.1M)
+[06/06 12:45:26      9s] #- End Load SymbolTable ... (date=06/06 12:45:26, total cpu=0:00:00.1, real=0:00:00.0, peak res=352.7M, current mem=1030.1M)
+[06/06 12:45:26      9s] #- Begin Load placement data ... (date=06/06 12:45:26, mem=1030.1M)
+[06/06 12:45:26      9s] *** Checked 4 GNC rules.
+[06/06 12:45:26      9s] *** applyConnectGlobalNets disabled.
+[06/06 12:45:26      9s] Reading placement file - bmi_final_clean_correct_pins.enc.dat/bmi_chip_top.place.gz.
+[06/06 12:45:26      9s] ** Reading stdCellPlacement_binary (Created by Innovus v16.20-p002_1 on Mon Jun  1 04:19:53 2026, version# 1) ...
+[06/06 12:45:26      9s] *** Checked 4 GNC rules.
+[06/06 12:45:26      9s] *** applyConnectGlobalNets disabled.
+[06/06 12:45:26     10s] *** Completed restorePlace (cpu=0:00:00.1 real=0:00:00.0 mem=1287.1M) ***
+[06/06 12:45:26     10s] Total net length = 1.202e+06 (6.115e+05 5.909e+05) (ext = 7.184e+03)
+[06/06 12:45:26     10s] #- End Load placement data ... (date=06/06 12:45:26, total cpu=0:00:00.2, real=0:00:00.0, peak res=375.5M, current mem=1287.1M)
+[06/06 12:45:26     10s] *** Checked 4 GNC rules.
+[06/06 12:45:26     10s] *** Applying global-net connections...
+[06/06 12:45:26     10s] *** Applied 4 GNC rules (cpu = 0:00:00.0)
+[06/06 12:45:26     10s] #- Begin Load routing data ... (date=06/06 12:45:26, mem=1287.1M)
+[06/06 12:45:26     10s] Reading routing file - bmi_final_clean_correct_pins.enc.dat/bmi_chip_top.route.gz.
+[06/06 12:45:26     10s] Reading Innovus routing data (Created by Innovus v16.20-p002_1 on Mon Jun  1 04:19:53 2026 Format: 16.2) ...
+[06/06 12:45:26     10s] Suppress "**WARN ..." messages.
+[06/06 12:45:26     10s] routingBox: (0 0) (1193200 1193200)
+[06/06 12:45:26     10s] coreBox:    (8000 8360) (1185200 1184840)
+[06/06 12:45:26     10s] Un-suppress "**WARN ..." messages.
+[06/06 12:45:26     10s] *** Total 46571 nets are successfully restored.
+[06/06 12:45:26     10s] *** Completed restoreRoute (cpu=0:00:00.4 real=0:00:00.0 mem=1287.1M) ***
+[06/06 12:45:26     10s] #- End Load routing data ... (date=06/06 12:45:26, total cpu=0:00:00.4, real=0:00:00.0, peak res=465.6M, current mem=1287.1M)
+[06/06 12:45:26     10s] Reading property file bmi_final_clean_correct_pins.enc.dat/bmi_chip_top.prop
+[06/06 12:45:26     10s] Extracting macro/IO cell pins and blockage ...... 
+[06/06 12:45:26     10s] Pin and blockage extraction finished
+[06/06 12:45:26     10s] *** Completed restoreProperty (cpu=0:00:00.1 real=0:00:00.0 mem=1287.1M) ***
+[06/06 12:45:27     10s] Set Default Input Pin Transition as 0.1 ps.
+[06/06 12:45:27     10s] **WARN: (GLOBAL-100):	Global 'timing_enable_default_delay_arc' has become obsolete. It will be removed in the next release.
+[06/06 12:45:27     10s] Initializing multi-corner resistance tables ...
+[06/06 12:45:27     10s] **WARN: (IMPCK-8086):	The command specifyClockTree is obsolete and will be removed in a future release. This command still works in this release, but to avoid this warning and to ensure compatibility with future releases, transition to a CCOpt-based flow.
+[06/06 12:45:27     10s] Checking spec file integrity...
+[06/06 12:45:27     10s] 
+[06/06 12:45:27     10s] Reading clock tree spec file 'bmi_final_clean_correct_pins.enc.dat/bmi_chip_top.ctstch' ...
+[06/06 12:45:27     10s] 
+[06/06 12:45:27     10s] RouteType               : FE_CTS_DEFAULT
+[06/06 12:45:27     10s] PreferredExtraSpace     : 1
+[06/06 12:45:27     10s] Shield                  : NONE
+[06/06 12:45:27     10s] PreferLayer             : M3 M4 
+[06/06 12:45:27     10s] RC Information for View slow_view :
+[06/06 12:45:27     10s] Est. Cap                : 0.125548(V=0.125548 H=0.125548) (ff/um) [6.2774e-05]
+[06/06 12:45:27     10s] Est. Res                : 0.755(V=0.755 H=0.755)(ohm/um) [0.0003775]
+[06/06 12:45:27     10s] Est. Via Res            : 0.0604(ohm) [0.1208]
+[06/06 12:45:27     10s] Est. Via Cap            : 0(ff)
+[06/06 12:45:27     10s] M1(H) w=0.06(um) s=0.06(um) p=0.2(um) es=0.34(um) cap=0.111(ff/um) res=1.23(ohm/um) viaRes=0(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] M2(V) w=0.08(um) s=0.07(um) p=0.2(um) es=0.32(um) cap=0.126(ff/um) res=0.755(ohm/um) viaRes=0.0604(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] M3(H) w=0.08(um) s=0.07(um) p=0.2(um) es=0.32(um) cap=0.126(ff/um) res=0.755(ohm/um) viaRes=0.0604(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] M4(V) w=0.08(um) s=0.07(um) p=0.2(um) es=0.32(um) cap=0.126(ff/um) res=0.755(ohm/um) viaRes=0.0604(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] M5(H) w=0.08(um) s=0.07(um) p=0.2(um) es=0.32(um) cap=0.126(ff/um) res=0.755(ohm/um) viaRes=0.0604(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] M6(V) w=0.08(um) s=0.07(um) p=0.2(um) es=0.32(um) cap=0.126(ff/um) res=0.755(ohm/um) viaRes=0.0604(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] M7(H) w=0.08(um) s=0.07(um) p=0.2(um) es=0.32(um) cap=0.126(ff/um) res=0.755(ohm/um) viaRes=0.0604(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] M8(V) w=0.08(um) s=0.07(um) p=0.2(um) es=0.32(um) cap=0.126(ff/um) res=0.268(ohm/um) viaRes=0.0214(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] M9(H) w=0.08(um) s=0.07(um) p=0.2(um) es=0.32(um) cap=0.313(ff/um) res=0.268(ohm/um) viaRes=0.0214(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] M10(V) w=0.22(um) s=0.2(um) p=0.5(um) es=0.78(um) cap=0.198(ff/um) res=0.0973(ohm/um) viaRes=0.0214(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] M11(H) w=0.22(um) s=0.2(um) p=0.5(um) es=0.78(um) cap=0.192(ff/um) res=0.0955(ohm/um) viaRes=0.021(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] 
+[06/06 12:45:27     10s] RouteType               : FE_CTS_DEFAULT_LEAF
+[06/06 12:45:27     10s] PreferredExtraSpace     : 1
+[06/06 12:45:27     10s] Shield                  : NONE
+[06/06 12:45:27     10s] PreferLayer             : M3 M4 
+[06/06 12:45:27     10s] RC Information for View slow_view :
+[06/06 12:45:27     10s] Est. Cap                : 0.125548(V=0.125548 H=0.125548) (ff/um) [6.2774e-05]
+[06/06 12:45:27     10s] Est. Res                : 0.755(V=0.755 H=0.755)(ohm/um) [0.0003775]
+[06/06 12:45:27     10s] Est. Via Res            : 0.0604(ohm) [0.1208]
+[06/06 12:45:27     10s] Est. Via Cap            : 0(ff)
+[06/06 12:45:27     10s] M1(H) w=0.06(um) s=0.06(um) p=0.2(um) es=0.34(um) cap=0.111(ff/um) res=1.23(ohm/um) viaRes=0(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] M2(V) w=0.08(um) s=0.07(um) p=0.2(um) es=0.32(um) cap=0.126(ff/um) res=0.755(ohm/um) viaRes=0.0604(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] M3(H) w=0.08(um) s=0.07(um) p=0.2(um) es=0.32(um) cap=0.126(ff/um) res=0.755(ohm/um) viaRes=0.0604(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] M4(V) w=0.08(um) s=0.07(um) p=0.2(um) es=0.32(um) cap=0.126(ff/um) res=0.755(ohm/um) viaRes=0.0604(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] M5(H) w=0.08(um) s=0.07(um) p=0.2(um) es=0.32(um) cap=0.126(ff/um) res=0.755(ohm/um) viaRes=0.0604(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] M6(V) w=0.08(um) s=0.07(um) p=0.2(um) es=0.32(um) cap=0.126(ff/um) res=0.755(ohm/um) viaRes=0.0604(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] M7(H) w=0.08(um) s=0.07(um) p=0.2(um) es=0.32(um) cap=0.126(ff/um) res=0.755(ohm/um) viaRes=0.0604(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] M8(V) w=0.08(um) s=0.07(um) p=0.2(um) es=0.32(um) cap=0.126(ff/um) res=0.268(ohm/um) viaRes=0.0214(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] M9(H) w=0.08(um) s=0.07(um) p=0.2(um) es=0.32(um) cap=0.313(ff/um) res=0.268(ohm/um) viaRes=0.0214(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] M10(V) w=0.22(um) s=0.2(um) p=0.5(um) es=0.78(um) cap=0.198(ff/um) res=0.0973(ohm/um) viaRes=0.0214(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] M11(H) w=0.22(um) s=0.2(um) p=0.5(um) es=0.78(um) cap=0.192(ff/um) res=0.0955(ohm/um) viaRes=0.021(ohm) viaCap=0(ff)
+[06/06 12:45:27     10s] 
+[06/06 12:45:27     10s] Switching off Advanced RC Correlation modes in AAE mode.
+[06/06 12:45:27     10s] Active Analysis Views for CTS are,
+[06/06 12:45:27     10s] #1 slow_view
+[06/06 12:45:27     10s] Default Analysis Views is slow_view
+[06/06 12:45:27     10s] 
+[06/06 12:45:27     10s] 
+[06/06 12:45:27     10s] ****** AutoClockRootPin ******
+[06/06 12:45:27     10s] AutoClockRootPin 1: clk
+[06/06 12:45:27     10s] # NoGating         NO
+[06/06 12:45:27     10s] # SetDPinAsSync    NO
+[06/06 12:45:27     10s] # SetIoPinAsSync   NO
+[06/06 12:45:27     10s] # SetAsyncSRPinAsSync   NO
+[06/06 12:45:27     10s] # SetTriStEnPinAsSync   NO
+[06/06 12:45:27     10s] # SetBBoxPinAsSync   NO
+[06/06 12:45:27     10s] # RouteClkNet      YES
+[06/06 12:45:27     10s] # PostOpt          YES
+[06/06 12:45:27     10s] # RouteType        FE_CTS_DEFAULT
+[06/06 12:45:27     10s] # LeafRouteType    FE_CTS_DEFAULT_LEAF
+[06/06 12:45:27     10s] 
+[06/06 12:45:27     10s] ***** !! NOTE !! *****
+[06/06 12:45:27     10s] 
+[06/06 12:45:27     10s] CTS treats D-pins and I/O pins as non-synchronous pins by default.
+[06/06 12:45:27     10s] If you want to change the behavior, you need to use the SetDPinAsSync
+[06/06 12:45:27     10s] or SetIoPinAsSync statement in the clock tree specification file,
+[06/06 12:45:27     10s] or use the setCTSMode -traceDPinAsLeaf {true|false} command,
+[06/06 12:45:27     10s] or use the setCTSMode -traceIoPinAsLeaf {true|false} command
+[06/06 12:45:27     10s] before specifyClockTree command.
+[06/06 12:45:27     10s] 
+[06/06 12:45:27     10s] *** End specifyClockTree (cpu=0:00:00.0, real=0:00:00.0, mem=1287.1M) ***
+[06/06 12:45:27     10s] #- Begin Load power constraints ... (date=06/06 12:45:27, mem=1287.1M)
+[06/06 12:45:27     10s] #- End Load power constraints ... (date=06/06 12:45:27, total cpu=0:00:00.0, real=0:00:00.0, peak res=480.2M, current mem=1287.1M)
+[06/06 12:45:27     10s] #- Begin load AAE data ... (date=06/06 12:45:27, mem=1287.1M)
+[06/06 12:45:27     10s] #- End load AAE data ... (date=06/06 12:45:27, total cpu=0:00:00.0, real=0:00:00.0, peak res=480.2M, current mem=1287.1M)
+[06/06 12:45:27     10s] Restoring CCOpt config...
+[06/06 12:45:27     10s] Summary for sequential cells identification: 
+[06/06 12:45:27     10s] Identified SBFF number: 104
+[06/06 12:45:27     10s] Identified MBFF number: 0
+[06/06 12:45:27     10s] Identified SB Latch number: 0
+[06/06 12:45:27     10s] Identified MB Latch number: 0
+[06/06 12:45:27     10s] Not identified SBFF number: 16
+[06/06 12:45:27     10s] Not identified MBFF number: 0
+[06/06 12:45:27     10s] Not identified SB Latch number: 0
+[06/06 12:45:27     10s] Not identified MB Latch number: 0
+[06/06 12:45:27     10s] Number of sequential cells which are not FFs: 32
+[06/06 12:45:27     10s] 
+[06/06 12:45:27     10s]   Extracting original clock gating for clk...
+[06/06 12:45:27     10s]     clock_tree clk contains 16750 sinks and 0 clock gates.
+[06/06 12:45:27     10s]     Extraction for clk complete.
+[06/06 12:45:27     10s]   Extracting original clock gating for clk done.
+[06/06 12:45:27     11s] Restoring CCOpt config done.
+[06/06 12:45:27     11s] Summary for sequential cells identification: 
+[06/06 12:45:27     11s] Identified SBFF number: 104
+[06/06 12:45:27     11s] Identified MBFF number: 0
+[06/06 12:45:27     11s] Identified SB Latch number: 0
+[06/06 12:45:27     11s] Identified MB Latch number: 0
+[06/06 12:45:27     11s] Not identified SBFF number: 16
+[06/06 12:45:27     11s] Not identified MBFF number: 0
+[06/06 12:45:27     11s] Not identified SB Latch number: 0
+[06/06 12:45:27     11s] Not identified MB Latch number: 0
+[06/06 12:45:27     11s] Number of sequential cells which are not FFs: 32
+[06/06 12:45:27     11s] 
+[06/06 12:45:27     11s] Total number of combinational cells: 327
+[06/06 12:45:27     11s] Total number of sequential cells: 152
+[06/06 12:45:27     11s] Total number of tristate cells: 10
+[06/06 12:45:27     11s] Total number of level shifter cells: 0
+[06/06 12:45:27     11s] Total number of power gating cells: 0
+[06/06 12:45:27     11s] Total number of isolation cells: 0
+[06/06 12:45:27     11s] Total number of power switch cells: 0
+[06/06 12:45:27     11s] Total number of pulse generator cells: 0
+[06/06 12:45:27     11s] Total number of always on buffers: 0
+[06/06 12:45:27     11s] Total number of retention cells: 0
+[06/06 12:45:27     11s] List of usable buffers: BUFX2 BUFX12 BUFX16 BUFX20 CLKBUFX2 BUFX3 BUFX4 BUFX6 BUFX8 CLKBUFX12 CLKBUFX16 CLKBUFX20 CLKBUFX3 CLKBUFX4 CLKBUFX6 CLKBUFX8
+[06/06 12:45:27     11s] Total number of usable buffers: 16
+[06/06 12:45:27     11s] List of unusable buffers:
+[06/06 12:45:27     11s] Total number of unusable buffers: 0
+[06/06 12:45:27     11s] List of usable inverters: CLKINVX1 CLKINVX2 CLKINVX12 CLKINVX16 CLKINVX20 CLKINVX4 CLKINVX3 CLKINVX6 CLKINVX8 INVX1 INVX2 INVX12 INVX16 INVX20 INVXL INVX3 INVX4 INVX6 INVX8
+[06/06 12:45:27     11s] Total number of usable inverters: 19
+[06/06 12:45:27     11s] List of unusable inverters:
+[06/06 12:45:27     11s] Total number of unusable inverters: 0
+[06/06 12:45:27     11s] List of identified usable delay cells: DLY1X1 DLY1X4 DLY2X1 DLY2X4 DLY3X1 DLY3X4 DLY4X1 DLY4X4
+[06/06 12:45:27     11s] Total number of identified usable delay cells: 8
+[06/06 12:45:27     11s] List of identified unusable delay cells:
+[06/06 12:45:27     11s] Total number of identified unusable delay cells: 0
+[06/06 12:45:27     11s] 
+[06/06 12:45:27     11s] *** Summary of all messages that are not suppressed in this session:
+[06/06 12:45:27     11s] Severity  ID               Count  Summary                                  
+[06/06 12:45:27     11s] WARNING   IMPLF-155            6  ViaRule only supports routing/cut layer,...
+[06/06 12:45:27     11s] WARNING   IMPLF-200            1  Pin '%s' in macro '%s' has no ANTENNAGAT...
+[06/06 12:45:27     11s] WARNING   IMPFP-3961           2  The techSite '%s' has no related standar...
+[06/06 12:45:27     11s] WARNING   IMPEXT-2766         11  The sheet resistance for layer %s is not...
+[06/06 12:45:27     11s] WARNING   IMPEXT-2773         11  The via resistance between layers %s and...
+[06/06 12:45:27     11s] WARNING   IMPCK-8086           1  The command %s is obsolete and will be r...
+[06/06 12:45:27     11s] *** Message Summary: 32 warning(s), 0 error(s)
+[06/06 12:45:27     11s] 
+[06/06 12:45:48     12s] <CMD> verifyConnectivity -type special -nets {VDD VSS}
+[06/06 12:45:48     12s] VERIFY_CONNECTIVITY use new engine.
+[06/06 12:45:48     12s] 
+[06/06 12:45:48     12s] ******** Start: VERIFY CONNECTIVITY ********
+[06/06 12:45:48     12s] Start Time: Sat Jun  6 12:45:48 2026
+[06/06 12:45:48     12s] 
+[06/06 12:45:48     12s] Design Name: bmi_chip_top
+[06/06 12:45:48     12s] Database Units: 2000
+[06/06 12:45:48     12s] Design Boundary: (0.0000, 0.0000) (596.6000, 596.6000)
+[06/06 12:45:48     12s] Error Limit = 1000; Warning Limit = 50
+[06/06 12:45:48     12s] Check specified nets
+[06/06 12:45:48     12s] *** Checking Net VDD
+[06/06 12:45:48     12s] *** Checking Net VSS
+[06/06 12:45:49     13s] 
+[06/06 12:45:49     13s] Begin Summary 
+[06/06 12:45:49     13s]   Found no problems or warnings.
+[06/06 12:45:49     13s] End Summary
+[06/06 12:45:49     13s] 
+[06/06 12:45:49     13s] End Time: Sat Jun  6 12:45:49 2026
+[06/06 12:45:49     13s] Time Elapsed: 0:00:01.0
+[06/06 12:45:49     13s] 
+[06/06 12:45:49     13s] ******** End: VERIFY CONNECTIVITY ********
+[06/06 12:45:49     13s]   Verification Complete : 0 Viols.  0 Wrngs.
+[06/06 12:45:49     13s]   (CPU Time: 0:00:01.1  MEM: -0.105M)
+[06/06 12:45:49     13s] 
+[06/06 12:45:57     13s] <CMD> verifyConnectivity -type all -error 1000 -warning 50
+[06/06 12:45:57     13s] VERIFY_CONNECTIVITY use new engine.
+[06/06 12:45:57     13s] 
+[06/06 12:45:57     13s] ******** Start: VERIFY CONNECTIVITY ********
+[06/06 12:45:57     13s] Start Time: Sat Jun  6 12:45:57 2026
+[06/06 12:45:57     13s] 
+[06/06 12:45:57     13s] Design Name: bmi_chip_top
+[06/06 12:45:57     13s] Database Units: 2000
+[06/06 12:45:57     13s] Design Boundary: (0.0000, 0.0000) (596.6000, 596.6000)
+[06/06 12:45:57     13s] Error Limit = 1000; Warning Limit = 50
+[06/06 12:45:57     13s] Check all nets
+[06/06 12:45:57     13s] **** 12:45:57 **** Processed 5000 nets.
+[06/06 12:45:57     13s] **** 12:45:57 **** Processed 10000 nets.
+[06/06 12:45:57     13s] **** 12:45:57 **** Processed 15000 nets.
+[06/06 12:45:57     14s] **** 12:45:57 **** Processed 20000 nets.
+[06/06 12:45:57     14s] **** 12:45:57 **** Processed 25000 nets.
+[06/06 12:45:57     14s] **** 12:45:57 **** Processed 30000 nets.
+[06/06 12:45:58     14s] **** 12:45:58 **** Processed 35000 nets.
+[06/06 12:45:58     14s] **** 12:45:58 **** Processed 40000 nets.
+[06/06 12:45:58     14s] **** 12:45:58 **** Processed 45000 nets.
+[06/06 12:45:59     16s] 
+[06/06 12:45:59     16s] Begin Summary 
+[06/06 12:45:59     16s]   Found no problems or warnings.
+[06/06 12:45:59     16s] End Summary
+[06/06 12:45:59     16s] 
+[06/06 12:45:59     16s] End Time: Sat Jun  6 12:45:59 2026
+[06/06 12:45:59     16s] Time Elapsed: 0:00:02.0
+[06/06 12:45:59     16s] 
+[06/06 12:45:59     16s] ******** End: VERIFY CONNECTIVITY ********
+[06/06 12:45:59     16s]   Verification Complete : 0 Viols.  0 Wrngs.
+[06/06 12:45:59     16s]   (CPU Time: 0:00:02.6  MEM: -0.105M)
+[06/06 12:45:59     16s] 
+[06/06 12:46:05     16s] <CMD> verify_drc -report digital_final_reports/final_drc.rpt -limit 1000
+[06/06 12:46:05     16s] #-report digital_final_reports/final_drc.rpt # string, default="", user setting
+[06/06 12:46:05     16s]  *** Starting Verify DRC (MEM: 1319.1) ***
+[06/06 12:46:05     16s] 
+[06/06 12:46:05     16s] #WARNING (NRDB-728) PIN CK in CELL_VIEW SRDFFRQX1 does not have antenna diff area.
+[06/06 12:46:05     16s]   VERIFY DRC ...... Starting Verification
+[06/06 12:46:05     16s]   VERIFY DRC ...... Initializing
+[06/06 12:46:05     16s]   VERIFY DRC ...... Deleting Existing Violations
+[06/06 12:46:05     16s]   VERIFY DRC ...... Creating Sub-Areas
+[06/06 12:46:05     16s]   VERIFY DRC ...... Using new threading
+[06/06 12:46:05     16s]   VERIFY DRC ...... Sub-Area : 1 of 49
+[06/06 12:46:05     16s]   VERIFY DRC ...... Sub-Area : 1 complete 0 Viols.
+[06/06 12:46:05     16s]   VERIFY DRC ...... Sub-Area : 2 of 49
+[06/06 12:46:05     16s]   VERIFY DRC ...... Sub-Area : 2 complete 0 Viols.
+[06/06 12:46:05     16s]   VERIFY DRC ...... Sub-Area : 3 of 49
+[06/06 12:46:05     16s]   VERIFY DRC ...... Sub-Area : 3 complete 0 Viols.
+[06/06 12:46:05     16s]   VERIFY DRC ...... Sub-Area : 4 of 49
+[06/06 12:46:05     17s]   VERIFY DRC ...... Sub-Area : 4 complete 0 Viols.
+[06/06 12:46:05     17s]   VERIFY DRC ...... Sub-Area : 5 of 49
+[06/06 12:46:06     17s]   VERIFY DRC ...... Sub-Area : 5 complete 0 Viols.
+[06/06 12:46:06     17s]   VERIFY DRC ...... Sub-Area : 6 of 49
+[06/06 12:46:06     17s]   VERIFY DRC ...... Sub-Area : 6 complete 0 Viols.
+[06/06 12:46:06     17s]   VERIFY DRC ...... Sub-Area : 7 of 49
+[06/06 12:46:06     17s]   VERIFY DRC ...... Sub-Area : 7 complete 0 Viols.
+[06/06 12:46:06     17s]   VERIFY DRC ...... Sub-Area : 8 of 49
+[06/06 12:46:06     17s]   VERIFY DRC ...... Sub-Area : 8 complete 0 Viols.
+[06/06 12:46:06     17s]   VERIFY DRC ...... Sub-Area : 9 of 49
+[06/06 12:46:06     18s]   VERIFY DRC ...... Sub-Area : 9 complete 0 Viols.
+[06/06 12:46:06     18s]   VERIFY DRC ...... Sub-Area : 10 of 49
+[06/06 12:46:07     18s]   VERIFY DRC ...... Sub-Area : 10 complete 0 Viols.
+[06/06 12:46:07     18s]   VERIFY DRC ...... Sub-Area : 11 of 49
+[06/06 12:46:07     18s]   VERIFY DRC ...... Sub-Area : 11 complete 0 Viols.
+[06/06 12:46:07     18s]   VERIFY DRC ...... Sub-Area : 12 of 49
+[06/06 12:46:07     18s]   VERIFY DRC ...... Sub-Area : 12 complete 0 Viols.
+[06/06 12:46:07     18s]   VERIFY DRC ...... Sub-Area : 13 of 49
+[06/06 12:46:07     19s]   VERIFY DRC ...... Sub-Area : 13 complete 0 Viols.
+[06/06 12:46:07     19s]   VERIFY DRC ...... Sub-Area : 14 of 49
+[06/06 12:46:08     19s]   VERIFY DRC ...... Sub-Area : 14 complete 0 Viols.
+[06/06 12:46:08     19s]   VERIFY DRC ...... Sub-Area : 15 of 49
+[06/06 12:46:08     19s]   VERIFY DRC ...... Sub-Area : 15 complete 0 Viols.
+[06/06 12:46:08     19s]   VERIFY DRC ...... Sub-Area : 16 of 49
+[06/06 12:46:08     20s]   VERIFY DRC ...... Sub-Area : 16 complete 0 Viols.
+[06/06 12:46:08     20s]   VERIFY DRC ...... Sub-Area : 17 of 49
+[06/06 12:46:09     20s]   VERIFY DRC ...... Sub-Area : 17 complete 0 Viols.
+[06/06 12:46:09     20s]   VERIFY DRC ...... Sub-Area : 18 of 49
+[06/06 12:46:09     20s]   VERIFY DRC ...... Sub-Area : 18 complete 0 Viols.
+[06/06 12:46:09     20s]   VERIFY DRC ...... Sub-Area : 19 of 49
+[06/06 12:46:10     21s]   VERIFY DRC ...... Sub-Area : 19 complete 0 Viols.
+[06/06 12:46:10     21s]   VERIFY DRC ...... Sub-Area : 20 of 49
+[06/06 12:46:10     21s]   VERIFY DRC ...... Sub-Area : 20 complete 0 Viols.
+[06/06 12:46:10     21s]   VERIFY DRC ...... Sub-Area : 21 of 49
+[06/06 12:46:10     21s]   VERIFY DRC ...... Sub-Area : 21 complete 0 Viols.
+[06/06 12:46:10     21s]   VERIFY DRC ...... Sub-Area : 22 of 49
+[06/06 12:46:11     22s]   VERIFY DRC ...... Sub-Area : 22 complete 0 Viols.
+[06/06 12:46:11     22s]   VERIFY DRC ...... Sub-Area : 23 of 49
+[06/06 12:46:11     22s]   VERIFY DRC ...... Sub-Area : 23 complete 0 Viols.
+[06/06 12:46:11     22s]   VERIFY DRC ...... Sub-Area : 24 of 49
+[06/06 12:46:11     23s]   VERIFY DRC ...... Sub-Area : 24 complete 0 Viols.
+[06/06 12:46:11     23s]   VERIFY DRC ...... Sub-Area : 25 of 49
+[06/06 12:46:12     23s]   VERIFY DRC ...... Sub-Area : 25 complete 0 Viols.
+[06/06 12:46:12     23s]   VERIFY DRC ...... Sub-Area : 26 of 49
+[06/06 12:46:12     24s]   VERIFY DRC ...... Sub-Area : 26 complete 0 Viols.
+[06/06 12:46:12     24s]   VERIFY DRC ...... Sub-Area : 27 of 49
+[06/06 12:46:13     24s]   VERIFY DRC ...... Sub-Area : 27 complete 0 Viols.
+[06/06 12:46:13     24s]   VERIFY DRC ...... Sub-Area : 28 of 49
+[06/06 12:46:13     24s]   VERIFY DRC ...... Sub-Area : 28 complete 0 Viols.
+[06/06 12:46:13     24s]   VERIFY DRC ...... Sub-Area : 29 of 49
+[06/06 12:46:13     25s]   VERIFY DRC ...... Sub-Area : 29 complete 0 Viols.
+[06/06 12:46:13     25s]   VERIFY DRC ...... Sub-Area : 30 of 49
+[06/06 12:46:14     25s]   VERIFY DRC ...... Sub-Area : 30 complete 0 Viols.
+[06/06 12:46:14     25s]   VERIFY DRC ...... Sub-Area : 31 of 49
+[06/06 12:46:14     25s]   VERIFY DRC ...... Sub-Area : 31 complete 0 Viols.
+[06/06 12:46:14     25s]   VERIFY DRC ...... Sub-Area : 32 of 49
+[06/06 12:46:15     26s]   VERIFY DRC ...... Sub-Area : 32 complete 0 Viols.
+[06/06 12:46:15     26s]   VERIFY DRC ...... Sub-Area : 33 of 49
+[06/06 12:46:15     26s]   VERIFY DRC ...... Sub-Area : 33 complete 0 Viols.
+[06/06 12:46:15     26s]   VERIFY DRC ...... Sub-Area : 34 of 49
+[06/06 12:46:16     27s]   VERIFY DRC ...... Sub-Area : 34 complete 0 Viols.
+[06/06 12:46:16     27s]   VERIFY DRC ...... Sub-Area : 35 of 49
+[06/06 12:46:16     27s]   VERIFY DRC ...... Sub-Area : 35 complete 0 Viols.
+[06/06 12:46:16     27s]   VERIFY DRC ...... Sub-Area : 36 of 49
+[06/06 12:46:16     27s]   VERIFY DRC ...... Sub-Area : 36 complete 0 Viols.
+[06/06 12:46:16     27s]   VERIFY DRC ...... Sub-Area : 37 of 49
+[06/06 12:46:17     28s]   VERIFY DRC ...... Sub-Area : 37 complete 0 Viols.
+[06/06 12:46:17     28s]   VERIFY DRC ...... Sub-Area : 38 of 49
+[06/06 12:46:17     28s]   VERIFY DRC ...... Sub-Area : 38 complete 0 Viols.
+[06/06 12:46:17     28s]   VERIFY DRC ...... Sub-Area : 39 of 49
+[06/06 12:46:17     29s]   VERIFY DRC ...... Sub-Area : 39 complete 0 Viols.
+[06/06 12:46:17     29s]   VERIFY DRC ...... Sub-Area : 40 of 49
+[06/06 12:46:18     29s]   VERIFY DRC ...... Sub-Area : 40 complete 0 Viols.
+[06/06 12:46:18     29s]   VERIFY DRC ...... Sub-Area : 41 of 49
+[06/06 12:46:18     29s]   VERIFY DRC ...... Sub-Area : 41 complete 0 Viols.
+[06/06 12:46:18     29s]   VERIFY DRC ...... Sub-Area : 42 of 49
+[06/06 12:46:18     30s]   VERIFY DRC ...... Sub-Area : 42 complete 0 Viols.
+[06/06 12:46:18     30s]   VERIFY DRC ...... Sub-Area : 43 of 49
+[06/06 12:46:19     30s]   VERIFY DRC ...... Sub-Area : 43 complete 0 Viols.
+[06/06 12:46:19     30s]   VERIFY DRC ...... Sub-Area : 44 of 49
+[06/06 12:46:19     30s]   VERIFY DRC ...... Sub-Area : 44 complete 0 Viols.
+[06/06 12:46:19     30s]   VERIFY DRC ...... Sub-Area : 45 of 49
+[06/06 12:46:19     31s]   VERIFY DRC ...... Sub-Area : 45 complete 0 Viols.
+[06/06 12:46:19     31s]   VERIFY DRC ...... Sub-Area : 46 of 49
+[06/06 12:46:20     31s]   VERIFY DRC ...... Sub-Area : 46 complete 0 Viols.
+[06/06 12:46:20     31s]   VERIFY DRC ...... Sub-Area : 47 of 49
+[06/06 12:46:20     31s]   VERIFY DRC ...... Sub-Area : 47 complete 0 Viols.
+[06/06 12:46:20     31s]   VERIFY DRC ...... Sub-Area : 48 of 49
+[06/06 12:46:20     31s]   VERIFY DRC ...... Sub-Area : 48 complete 0 Viols.
+[06/06 12:46:20     31s]   VERIFY DRC ...... Sub-Area : 49 of 49
+[06/06 12:46:20     32s]   VERIFY DRC ...... Sub-Area : 49 complete 0 Viols.
+[06/06 12:46:20     32s] 
+[06/06 12:46:20     32s]   Verification Complete : 0 Viols.
+[06/06 12:46:20     32s] 
+[06/06 12:46:20     32s]  *** End Verify DRC (CPU: 0:00:15.3  ELAPSED TIME: 15.00  MEM: 235.4M) ***
+[06/06 12:46:20     32s] 
+[06/06 12:46:31     32s] <CMD> redirect digital_final_reports/final_pg_connectivity.rpt {
+  verifyConnectivity -type special -nets {VDD VSS}
+}
+[06/06 12:46:39     34s] <CMD> redirect digital_final_reports/final_full_connectivity.rpt {
+  verifyConnectivity -type all -error 1000 -warning 50
+}
+[06/06 12:46:50     37s] <CMD> setDesignMode -process 45
+[06/06 12:46:50     37s] Applying the recommended capacitance filtering threshold values for 45nm process node: total_c_th=0, relative_c_th=1 and coupling_c_th=0.1.
+[06/06 12:46:50     37s] 	These values will be used by all post-route extraction engines, including tQuantus, IQRC and Quantus QRC extraction.
+[06/06 12:46:50     37s] 	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all engines.
+[06/06 12:46:50     37s] 	The accuracy mode for postRoute effortLevel low extraction will be set to 'high'.
+[06/06 12:46:50     37s] 	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction mode will be 'medium' if Quantus QRC technology file is specified else 'low'.
+[06/06 12:46:50     37s] Updating process node dependent CCOpt properties for the 45nm process node.
+[06/06 12:46:56     37s] <CMD> setAnalysisMode -analysisType onChipVariation -cppr both
+[06/06 12:47:02     37s] <CMD> timeDesign -postRoute -pathReports -drvReports -slackReports -numPaths 50 -prefix digital_final_reports/setup_postroute
+[06/06 12:47:02     37s]  Reset EOS DB
+[06/06 12:47:02     37s] Ignoring AAE DB Resetting ...
+[06/06 12:47:02     37s] **WARN: (IMPEXT-3518):	The lower process node is set (using command 'setDesignMode') but the technology file for tQuantus extraction not specified. Therefore, going for postRoute (effortLevel low) extraction instead of recommended extractor 'tQuantus' for lower nodes. Use command 'set_analysis_view/update_rc_corner' to specify the technology file for tQuantus extraction to take place.
+[06/06 12:47:02     37s] Extraction called for design 'bmi_chip_top' of instances=109116 and nets=46595 using extraction engine 'postRoute' at effort level 'low' .
+[06/06 12:47:02     37s] PostRoute (effortLevel low) RC Extraction called for design bmi_chip_top.
+[06/06 12:47:02     37s] RC Extraction called in multi-corner(1) mode.
+[06/06 12:47:02     37s] **WARN: (IMPEXT-6197):	The Cap table file is not specified. This will result in lower parasitic accuracy when using preRoute extraction or postRoute extraction with effort level 'low'. It is recommended to generate the Cap table file using the 'generateCapTbl' command and specify it before extraction using 'create_rc_corner/update_rc_corner -cap_table'.
+[06/06 12:47:02     37s] Type 'man IMPEXT-6197' for more detail.
+[06/06 12:47:02     37s] **WARN: (IMPEXT-3032):	Because the cap table file was not provided, it will be created internally with the following process info:
+[06/06 12:47:02     37s] * Layer Id             : 1 - M1
+[06/06 12:47:02     37s]       Thickness        : 0.15
+[06/06 12:47:02     37s]       Min Width        : 0.06
+[06/06 12:47:02     37s]       Layer Dielectric : 4.1
+[06/06 12:47:02     37s] * Layer Id             : 2 - M2
+[06/06 12:47:02     37s]       Thickness        : 0.18
+[06/06 12:47:02     37s]       Min Width        : 0.08
+[06/06 12:47:02     37s]       Layer Dielectric : 4.1
+[06/06 12:47:02     37s] * Layer Id             : 3 - M3
+[06/06 12:47:02     37s]       Thickness        : 0.18
+[06/06 12:47:02     37s]       Min Width        : 0.08
+[06/06 12:47:02     37s]       Layer Dielectric : 4.1
+[06/06 12:47:02     37s] * Layer Id             : 4 - M4
+[06/06 12:47:02     37s]       Thickness        : 0.18
+[06/06 12:47:02     37s]       Min Width        : 0.08
+[06/06 12:47:02     37s]       Layer Dielectric : 4.1
+[06/06 12:47:02     37s] * Layer Id             : 5 - M5
+[06/06 12:47:02     37s]       Thickness        : 0.18
+[06/06 12:47:02     37s]       Min Width        : 0.08
+[06/06 12:47:02     37s]       Layer Dielectric : 4.1
+[06/06 12:47:02     37s] * Layer Id             : 6 - M6
+[06/06 12:47:02     37s]       Thickness        : 0.18
+[06/06 12:47:02     37s]       Min Width        : 0.08
+[06/06 12:47:02     37s]       Layer Dielectric : 4.1
+[06/06 12:47:02     37s] * Layer Id             : 7 - M7
+[06/06 12:47:02     37s]       Thickness        : 0.18
+[06/06 12:47:02     37s]       Min Width        : 0.08
+[06/06 12:47:02     37s]       Layer Dielectric : 4.1
+[06/06 12:47:02     37s] * Layer Id             : 8 - M8
+[06/06 12:47:02     37s]       Thickness        : 0.18
+[06/06 12:47:02     37s]       Min Width        : 0.08
+[06/06 12:47:02     37s]       Layer Dielectric : 4.1
+[06/06 12:47:02     37s] * Layer Id             : 9 - M9
+[06/06 12:47:02     37s]       Thickness        : 1
+[06/06 12:47:02     37s]       Min Width        : 0.08
+[06/06 12:47:02     37s]       Layer Dielectric : 4.1
+[06/06 12:47:02     37s] * Layer Id             : 10 - M10
+[06/06 12:47:02     37s]       Thickness        : 1
+[06/06 12:47:02     37s]       Min Width        : 0.22
+[06/06 12:47:02     37s]       Layer Dielectric : 4.1
+[06/06 12:47:02     37s] * Layer Id             : 11 - M11
+[06/06 12:47:02     37s]       Thickness        : 1
+[06/06 12:47:02     37s]       Min Width        : 0.22
+[06/06 12:47:02     37s]       Layer Dielectric : 4.1
+[06/06 12:47:02     37s] extractDetailRC Option : -outfile /tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d  -basic
+[06/06 12:47:02     37s] RC Mode: PostRoute -effortLevel low [Basic CapTable, LEF Resistances]
+[06/06 12:47:02     37s]       RC Corner Indexes            0   
+[06/06 12:47:02     37s] Capacitance Scaling Factor   : 1.00000 
+[06/06 12:47:02     37s] Coupling Cap. Scaling Factor : 1.00000 
+[06/06 12:47:02     37s] Resistance Scaling Factor    : 1.00000 
+[06/06 12:47:02     37s] Clock Cap. Scaling Factor    : 1.00000 
+[06/06 12:47:02     37s] Clock Res. Scaling Factor    : 1.00000 
+[06/06 12:47:02     37s] Shrink Factor                : 1.00000
+[06/06 12:47:02     37s] Initializing multi-corner resistance tables ...
+[06/06 12:47:02     38s] Checking LVS Completed (CPU Time= 0:00:00.1  MEM= 1355.2M)
+[06/06 12:47:02     38s] Creating parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d' for storing RC.
+[06/06 12:47:02     38s] **WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M2_M1_HH' in Cap table or LEF or OA files. The default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, provide the resistance and read the files again.
+[06/06 12:47:03     38s] Extracted 10.0001% (CPU Time= 0:00:00.6  MEM= 1411.2M)
+[06/06 12:47:04     39s] Extracted 20.0002% (CPU Time= 0:00:01.6  MEM= 1411.2M)
+[06/06 12:47:04     40s] Extracted 30.0002% (CPU Time= 0:00:02.4  MEM= 1411.2M)
+[06/06 12:47:04     40s] **WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M3_M2_VH' in Cap table or LEF or OA files. The default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, provide the resistance and read the files again.
+[06/06 12:47:05     40s] Extracted 40.0002% (CPU Time= 0:00:03.1  MEM= 1411.2M)
+[06/06 12:47:06     41s] Extracted 50.0002% (CPU Time= 0:00:04.0  MEM= 1411.2M)
+[06/06 12:47:06     41s] **WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M4_M3_HV' in Cap table or LEF or OA files. The default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, provide the resistance and read the files again.
+[06/06 12:47:07     42s] Extracted 60.0002% (CPU Time= 0:00:04.7  MEM= 1411.2M)
+[06/06 12:47:07     42s] **WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M5_M4_VH' in Cap table or LEF or OA files. The default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, provide the resistance and read the files again.
+[06/06 12:47:07     42s] **WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M6_M5_HV' in Cap table or LEF or OA files. The default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, provide the resistance and read the files again.
+[06/06 12:47:07     43s] Extracted 70.0002% (CPU Time= 0:00:05.3  MEM= 1411.2M)
+[06/06 12:47:09     45s] Extracted 80.0002% (CPU Time= 0:00:07.3  MEM= 1411.2M)
+[06/06 12:47:10     45s] Extracted 90.0002% (CPU Time= 0:00:07.9  MEM= 1411.2M)
+[06/06 12:47:11     46s] Extracted 100% (CPU Time= 0:00:08.7  MEM= 1411.2M)
+[06/06 12:47:11     46s] Number of Extracted Resistors     : 1319268
+[06/06 12:47:11     46s] Number of Extracted Ground Cap.   : 1319450
+[06/06 12:47:11     46s] Number of Extracted Coupling Cap. : 2880788
+[06/06 12:47:11     46s] Opening parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d' for reading.
+[06/06 12:47:11     46s] Filtering XCap in 'relativeAndCoupling' mode using values coupling_c_threshold=0.1fF, relative_c_threshold=1, and total_c_threshold=0fF.
+[06/06 12:47:11     46s] Checking LVS Completed (CPU Time= 0:00:00.1  MEM= 1387.2M)
+[06/06 12:47:11     46s] Creating parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb_Filter.rcdb.d' for storing RC.
+[06/06 12:47:12     47s] Closing parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d'. 46564 times net's RC data read were performed.
+[06/06 12:47:12     47s] Lumped Parasitic Loading Started (total cpu=0:00:00.0, real=0:00:00.0, current mem=1387.207M)
+[06/06 12:47:12     47s] Opening parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d' for reading.
+[06/06 12:47:12     47s] Lumped Parasitic Loading Completed (total cpu=0:00:00.0, real=0:00:00.0, current mem=1387.207M)
+[06/06 12:47:12     47s] PostRoute (effortLevel low) RC Extraction DONE (CPU Time: 0:00:09.5  Real Time: 0:00:10.0  MEM: 1387.207M)
+[06/06 12:47:12     47s] AAE DB initialization (MEM=1387.21 CPU=0:00:00.0 REAL=0:00:00.0) 
+[06/06 12:47:12     47s] Starting SI iteration 1 using Infinite Timing Windows
+[06/06 12:47:12     47s] #################################################################################
+[06/06 12:47:12     47s] # Design Stage: PostRoute
+[06/06 12:47:12     47s] # Design Name: bmi_chip_top
+[06/06 12:47:12     47s] # Design Mode: 45nm
+[06/06 12:47:12     47s] # Analysis Mode: MMMC OCV 
+[06/06 12:47:12     47s] # Parasitics Mode: SPEF/RCDB
+[06/06 12:47:12     47s] # Signoff Settings: SI On 
+[06/06 12:47:12     47s] #################################################################################
+[06/06 12:47:13     48s] AAE_INFO: 1 threads acquired from CTE.
+[06/06 12:47:13     48s] Setting infinite Tws ...
+[06/06 12:47:13     48s] First Iteration Infinite Tw... 
+[06/06 12:47:13     48s] Calculate early delays in OCV mode...
+[06/06 12:47:13     48s] Calculate late delays in OCV mode...
+[06/06 12:47:13     48s] Topological Sorting (REAL = 0:00:00.0, MEM = 1387.2M, InitMEM = 1387.2M)
+[06/06 12:47:13     48s] Initializing multi-corner resistance tables ...
+[06/06 12:47:13     48s] Start AAE Lib Loading. (MEM=1404.16)
+[06/06 12:47:13     48s] End AAE Lib Loading. (MEM=1594.9 CPU=0:00:00.0 Real=0:00:00.0)
+[06/06 12:47:13     48s] End AAE Lib Interpolated Model. (MEM=1594.9 CPU Time=0:00:00.0, Real Time=0:00:00.0)
+[06/06 12:47:13     48s] Opening parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d' for reading.
+[06/06 12:47:13     48s] RC Database In Completed (CPU Time= 0:00:00.0  Real Time=0:00:00.0  MEM= 1661.7M)
+[06/06 12:47:13     48s] AAE_INFO: 1 threads acquired from CTE.
+[06/06 12:47:16     51s] **WARN: (IMPESI-3140):	Bumpy transitions may exist in the design which may lead to inaccurate delay computation. To report/analyze the nets having bumpy transition, please enable delay report and use command 'report_noise -bumpy_waveform' after timing analysis. Delay report is enabled by setting 'set_si_mode -enable_delay_report true' before timing analysis.
+[06/06 12:50:26    241s] Total number of fetched objects 46569
+[06/06 12:50:26    241s] AAE_INFO-618: Total number of nets in the design is 46595,  100.0 percent of the nets selected for SI analysis
+[06/06 12:50:27    241s] End Timing Check Calculation. (CPU Time=0:00:00.7, Real Time=0:00:01.0)
+[06/06 12:50:27    241s] End delay calculation. (MEM=1767.53 CPU=0:03:13 REAL=0:03:14)
+[06/06 12:50:27    241s] *** CDM Built up (cpu=0:03:14  real=0:03:15  mem= 1767.5M) ***
+[06/06 12:50:28    243s] Loading CTE timing window with TwFlowType 0...(CPU = 0:00:00.0, REAL = 0:00:00.0, MEM = 1767.5M)
+[06/06 12:50:28    243s] Add other clocks and setupCteToAAEClockMapping during iter 1
+[06/06 12:50:28    243s] Loading CTE timing window is completed (CPU = 0:00:00.1, REAL = 0:00:00.0, MEM = 1767.5M)
+[06/06 12:50:28    243s] Starting SI iteration 2
+[06/06 12:50:28    243s] AAE_INFO: 1 threads acquired from CTE.
+[06/06 12:50:28    243s] Calculate early delays in OCV mode...
+[06/06 12:50:28    243s] Calculate late delays in OCV mode...
+[06/06 12:50:29    243s] End AAE Lib Interpolated Model. (MEM=1775.57 CPU Time=0:00:00.0, Real Time=0:00:00.0)
+[06/06 12:50:31    246s] Glitch Analysis: View slow_view -- Total Number of Nets Skipped = 482. 
+[06/06 12:50:31    246s] Glitch Analysis: View slow_view -- Total Number of Nets Analyzed = 46569. 
+[06/06 12:50:31    246s] Total number of fetched objects 46569
+[06/06 12:50:31    246s] AAE_INFO-618: Total number of nets in the design is 46595,  5.8 percent of the nets selected for SI analysis
+[06/06 12:50:31    246s] End delay calculation. (MEM=1743.57 CPU=0:00:02.7 REAL=0:00:02.0)
+[06/06 12:50:31    246s] *** CDM Built up (cpu=0:00:02.8  real=0:00:03.0  mem= 1743.6M) ***
+[06/06 12:50:32    247s] Effort level <high> specified for reg2reg path_group
+[06/06 12:50:33    248s] End AAE Lib Interpolated Model. (MEM=1684.25 CPU Time=0:00:00.0, Real Time=0:00:00.0)
+[06/06 12:50:33    248s] ** NOTE: Created directory path './timingReports/digital_final_reports' for file './timingReports/digital_final_reports/setup_postroute.SI_Glitches.rpt.gz'.
+[06/06 12:50:33    248s] Begin: glitch net info
+[06/06 12:50:33    248s] glitch slack range: number of glitch nets
+[06/06 12:50:33    248s] glitch slack < -0.32 : 0
+[06/06 12:50:33    248s] -0.32 < glitch slack < -0.28 : 0
+[06/06 12:50:33    248s] -0.28 < glitch slack < -0.24 : 0
+[06/06 12:50:33    248s] -0.24 < glitch slack < -0.2 : 0
+[06/06 12:50:33    248s] -0.2 < glitch slack < -0.16 : 0
+[06/06 12:50:33    248s] -0.16 < glitch slack < -0.12 : 0
+[06/06 12:50:33    248s] -0.12 < glitch slack < -0.08 : 0
+[06/06 12:50:33    248s] -0.08 < glitch slack < -0.04 : 0
+[06/06 12:50:33    248s] -0.04 < glitch slack : 0
+[06/06 12:50:33    248s] End: glitch net info
+[06/06 12:50:37    252s] 
+------------------------------------------------------------
+          timeDesign Summary                             
+------------------------------------------------------------
+
+Setup views included:
+ slow_view 
+
++--------------------+---------+---------+---------+
+|     Setup mode     |   all   | reg2reg | default |
++--------------------+---------+---------+---------+
+|           WNS (ns):|  0.877  |  0.877  | 13.677  |
+|           TNS (ns):|  0.000  |  0.000  |  0.000  |
+|    Violating Paths:|    0    |    0    |    0    |
+|          All Paths:|  68339  |  35585  |  32754  |
++--------------------+---------+---------+---------+
+
++----------------+-------------------------------+------------------+
+|                |              Real             |       Total      |
+|    DRVs        +------------------+------------+------------------|
+|                |  Nr nets(terms)  | Worst Vio  |  Nr nets(terms)  |
++----------------+------------------+------------+------------------+
+|   max_cap      |      0 (0)       |   0.000    |      0 (0)       |
+|   max_tran     |   6605 (13311)   |   -1.288   |   6605 (13311)   |
+|   max_fanout   |   1248 (1248)    |    -46     |   1261 (1261)    |
+|   max_length   |      0 (0)       |     0      |      0 (0)       |
++----------------+------------------+------------+------------------+
+
+Density: 60.684%
+       (100.000% with Fillers)
+Total number of glitch violations: 0
+------------------------------------------------------------
+Reported timing to dir ./timingReports
+[06/06 12:50:37    252s] Total CPU time: 214.96 sec
+[06/06 12:50:37    252s] Total Real time: 215.0 sec
+[06/06 12:50:37    252s] Total Memory Usage: 1704.496094 Mbytes
+[06/06 12:50:37    252s] Reset AAE Options
+[06/06 12:54:29    261s] <CMD> setDesignMode -process 45
+[06/06 12:54:29    261s] Applying the recommended capacitance filtering threshold values for 45nm process node: total_c_th=0, relative_c_th=1 and coupling_c_th=0.1.
+[06/06 12:54:29    261s] 	These values will be used by all post-route extraction engines, including tQuantus, IQRC and Quantus QRC extraction.
+[06/06 12:54:29    261s] 	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all engines.
+[06/06 12:54:29    261s] 	The accuracy mode for postRoute effortLevel low extraction will be set to 'high'.
+[06/06 12:54:29    261s] 	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction mode will be 'medium' if Quantus QRC technology file is specified else 'low'.
+[06/06 12:54:29    261s] Updating process node dependent CCOpt properties for the 45nm process node.
+[06/06 12:54:29    261s] <CMD> setAnalysisMode -analysisType onChipVariation -cppr both
+[06/06 12:54:29    261s] <CMD> redirect digital_final_reports/final_pg_connectivity.rpt {
+  verifyConnectivity -type special -nets {VDD VSS}
+}
+[06/06 12:54:30    262s] <CMD> redirect digital_final_reports/final_full_connectivity.rpt {
+  verifyConnectivity -type all -error 1000 -warning 50
+}
+[06/06 12:54:33    265s] <CMD> verify_drc -report digital_final_reports/final_drc.rpt -limit 1000
+[06/06 12:54:33    265s] #-report digital_final_reports/final_drc.rpt # string, default="", user setting
+[06/06 12:54:33    265s]  *** Starting Verify DRC (MEM: 1750.5) ***
+[06/06 12:54:33    265s] 
+[06/06 12:54:33    265s]   VERIFY DRC ...... Starting Verification
+[06/06 12:54:33    265s]   VERIFY DRC ...... Initializing
+[06/06 12:54:33    265s]   VERIFY DRC ...... Deleting Existing Violations
+[06/06 12:54:33    265s]   VERIFY DRC ...... Creating Sub-Areas
+[06/06 12:54:33    265s]   VERIFY DRC ...... Using new threading
+[06/06 12:54:33    265s]   VERIFY DRC ...... Sub-Area : 1 of 49
+[06/06 12:54:33    265s]   VERIFY DRC ...... Sub-Area : 1 complete 0 Viols.
+[06/06 12:54:33    265s]   VERIFY DRC ...... Sub-Area : 2 of 49
+[06/06 12:54:33    265s]   VERIFY DRC ...... Sub-Area : 2 complete 0 Viols.
+[06/06 12:54:33    265s]   VERIFY DRC ...... Sub-Area : 3 of 49
+[06/06 12:54:33    265s]   VERIFY DRC ...... Sub-Area : 3 complete 0 Viols.
+[06/06 12:54:33    265s]   VERIFY DRC ...... Sub-Area : 4 of 49
+[06/06 12:54:33    265s]   VERIFY DRC ...... Sub-Area : 4 complete 0 Viols.
+[06/06 12:54:33    265s]   VERIFY DRC ...... Sub-Area : 5 of 49
+[06/06 12:54:33    265s]   VERIFY DRC ...... Sub-Area : 5 complete 0 Viols.
+[06/06 12:54:33    265s]   VERIFY DRC ...... Sub-Area : 6 of 49
+[06/06 12:54:33    266s]   VERIFY DRC ...... Sub-Area : 6 complete 0 Viols.
+[06/06 12:54:33    266s]   VERIFY DRC ...... Sub-Area : 7 of 49
+[06/06 12:54:34    266s]   VERIFY DRC ...... Sub-Area : 7 complete 0 Viols.
+[06/06 12:54:34    266s]   VERIFY DRC ...... Sub-Area : 8 of 49
+[06/06 12:54:34    266s]   VERIFY DRC ...... Sub-Area : 8 complete 0 Viols.
+[06/06 12:54:34    266s]   VERIFY DRC ...... Sub-Area : 9 of 49
+[06/06 12:54:34    266s]   VERIFY DRC ...... Sub-Area : 9 complete 0 Viols.
+[06/06 12:54:34    266s]   VERIFY DRC ...... Sub-Area : 10 of 49
+[06/06 12:54:34    266s]   VERIFY DRC ...... Sub-Area : 10 complete 0 Viols.
+[06/06 12:54:34    266s]   VERIFY DRC ...... Sub-Area : 11 of 49
+[06/06 12:54:34    267s]   VERIFY DRC ...... Sub-Area : 11 complete 0 Viols.
+[06/06 12:54:34    267s]   VERIFY DRC ...... Sub-Area : 12 of 49
+[06/06 12:54:34    267s]   VERIFY DRC ...... Sub-Area : 12 complete 0 Viols.
+[06/06 12:54:34    267s]   VERIFY DRC ...... Sub-Area : 13 of 49
+[06/06 12:54:35    267s]   VERIFY DRC ...... Sub-Area : 13 complete 0 Viols.
+[06/06 12:54:35    267s]   VERIFY DRC ...... Sub-Area : 14 of 49
+[06/06 12:54:35    267s]   VERIFY DRC ...... Sub-Area : 14 complete 0 Viols.
+[06/06 12:54:35    267s]   VERIFY DRC ...... Sub-Area : 15 of 49
+[06/06 12:54:35    268s]   VERIFY DRC ...... Sub-Area : 15 complete 0 Viols.
+[06/06 12:54:35    268s]   VERIFY DRC ...... Sub-Area : 16 of 49
+[06/06 12:54:36    268s]   VERIFY DRC ...... Sub-Area : 16 complete 0 Viols.
+[06/06 12:54:36    268s]   VERIFY DRC ...... Sub-Area : 17 of 49
+[06/06 12:54:36    269s]   VERIFY DRC ...... Sub-Area : 17 complete 0 Viols.
+[06/06 12:54:36    269s]   VERIFY DRC ...... Sub-Area : 18 of 49
+[06/06 12:54:37    269s]   VERIFY DRC ...... Sub-Area : 18 complete 0 Viols.
+[06/06 12:54:37    269s]   VERIFY DRC ...... Sub-Area : 19 of 49
+[06/06 12:54:37    269s]   VERIFY DRC ...... Sub-Area : 19 complete 0 Viols.
+[06/06 12:54:37    269s]   VERIFY DRC ...... Sub-Area : 20 of 49
+[06/06 12:54:37    270s]   VERIFY DRC ...... Sub-Area : 20 complete 0 Viols.
+[06/06 12:54:37    270s]   VERIFY DRC ...... Sub-Area : 21 of 49
+[06/06 12:54:38    270s]   VERIFY DRC ...... Sub-Area : 21 complete 0 Viols.
+[06/06 12:54:38    270s]   VERIFY DRC ...... Sub-Area : 22 of 49
+[06/06 12:54:38    270s]   VERIFY DRC ...... Sub-Area : 22 complete 0 Viols.
+[06/06 12:54:38    270s]   VERIFY DRC ...... Sub-Area : 23 of 49
+[06/06 12:54:39    271s]   VERIFY DRC ...... Sub-Area : 23 complete 0 Viols.
+[06/06 12:54:39    271s]   VERIFY DRC ...... Sub-Area : 24 of 49
+[06/06 12:54:39    271s]   VERIFY DRC ...... Sub-Area : 24 complete 0 Viols.
+[06/06 12:54:39    271s]   VERIFY DRC ...... Sub-Area : 25 of 49
+[06/06 12:54:39    272s]   VERIFY DRC ...... Sub-Area : 25 complete 0 Viols.
+[06/06 12:54:39    272s]   VERIFY DRC ...... Sub-Area : 26 of 49
+[06/06 12:54:40    272s]   VERIFY DRC ...... Sub-Area : 26 complete 0 Viols.
+[06/06 12:54:40    272s]   VERIFY DRC ...... Sub-Area : 27 of 49
+[06/06 12:54:40    273s]   VERIFY DRC ...... Sub-Area : 27 complete 0 Viols.
+[06/06 12:54:40    273s]   VERIFY DRC ...... Sub-Area : 28 of 49
+[06/06 12:54:41    273s]   VERIFY DRC ...... Sub-Area : 28 complete 0 Viols.
+[06/06 12:54:41    273s]   VERIFY DRC ...... Sub-Area : 29 of 49
+[06/06 12:54:41    273s]   VERIFY DRC ...... Sub-Area : 29 complete 0 Viols.
+[06/06 12:54:41    273s]   VERIFY DRC ...... Sub-Area : 30 of 49
+[06/06 12:54:41    274s]   VERIFY DRC ...... Sub-Area : 30 complete 0 Viols.
+[06/06 12:54:41    274s]   VERIFY DRC ...... Sub-Area : 31 of 49
+[06/06 12:54:42    274s]   VERIFY DRC ...... Sub-Area : 31 complete 0 Viols.
+[06/06 12:54:42    274s]   VERIFY DRC ...... Sub-Area : 32 of 49
+[06/06 12:54:42    275s]   VERIFY DRC ...... Sub-Area : 32 complete 0 Viols.
+[06/06 12:54:42    275s]   VERIFY DRC ...... Sub-Area : 33 of 49
+[06/06 12:54:43    275s]   VERIFY DRC ...... Sub-Area : 33 complete 0 Viols.
+[06/06 12:54:43    275s]   VERIFY DRC ...... Sub-Area : 34 of 49
+[06/06 12:54:43    275s]   VERIFY DRC ...... Sub-Area : 34 complete 0 Viols.
+[06/06 12:54:43    275s]   VERIFY DRC ...... Sub-Area : 35 of 49
+[06/06 12:54:43    276s]   VERIFY DRC ...... Sub-Area : 35 complete 0 Viols.
+[06/06 12:54:43    276s]   VERIFY DRC ...... Sub-Area : 36 of 49
+[06/06 12:54:44    276s]   VERIFY DRC ...... Sub-Area : 36 complete 0 Viols.
+[06/06 12:54:44    276s]   VERIFY DRC ...... Sub-Area : 37 of 49
+[06/06 12:54:44    276s]   VERIFY DRC ...... Sub-Area : 37 complete 0 Viols.
+[06/06 12:54:44    276s]   VERIFY DRC ...... Sub-Area : 38 of 49
+[06/06 12:54:45    277s]   VERIFY DRC ...... Sub-Area : 38 complete 0 Viols.
+[06/06 12:54:45    277s]   VERIFY DRC ...... Sub-Area : 39 of 49
+[06/06 12:54:45    277s]   VERIFY DRC ...... Sub-Area : 39 complete 0 Viols.
+[06/06 12:54:45    277s]   VERIFY DRC ...... Sub-Area : 40 of 49
+[06/06 12:54:45    278s]   VERIFY DRC ...... Sub-Area : 40 complete 0 Viols.
+[06/06 12:54:45    278s]   VERIFY DRC ...... Sub-Area : 41 of 49
+[06/06 12:54:46    278s]   VERIFY DRC ...... Sub-Area : 41 complete 0 Viols.
+[06/06 12:54:46    278s]   VERIFY DRC ...... Sub-Area : 42 of 49
+[06/06 12:54:46    278s]   VERIFY DRC ...... Sub-Area : 42 complete 0 Viols.
+[06/06 12:54:46    278s]   VERIFY DRC ...... Sub-Area : 43 of 49
+[06/06 12:54:46    279s]   VERIFY DRC ...... Sub-Area : 43 complete 0 Viols.
+[06/06 12:54:46    279s]   VERIFY DRC ...... Sub-Area : 44 of 49
+[06/06 12:54:47    279s]   VERIFY DRC ...... Sub-Area : 44 complete 0 Viols.
+[06/06 12:54:47    279s]   VERIFY DRC ...... Sub-Area : 45 of 49
+[06/06 12:54:47    279s]   VERIFY DRC ...... Sub-Area : 45 complete 0 Viols.
+[06/06 12:54:47    279s]   VERIFY DRC ...... Sub-Area : 46 of 49
+[06/06 12:54:47    279s]   VERIFY DRC ...... Sub-Area : 46 complete 0 Viols.
+[06/06 12:54:47    279s]   VERIFY DRC ...... Sub-Area : 47 of 49
+[06/06 12:54:48    280s]   VERIFY DRC ...... Sub-Area : 47 complete 0 Viols.
+[06/06 12:54:48    280s]   VERIFY DRC ...... Sub-Area : 48 of 49
+[06/06 12:54:48    280s]   VERIFY DRC ...... Sub-Area : 48 complete 0 Viols.
+[06/06 12:54:48    280s]   VERIFY DRC ...... Sub-Area : 49 of 49
+[06/06 12:54:48    280s]   VERIFY DRC ...... Sub-Area : 49 complete 0 Viols.
+[06/06 12:54:48    280s] 
+[06/06 12:54:48    280s]   Verification Complete : 0 Viols.
+[06/06 12:54:48    280s] 
+[06/06 12:54:48    280s]  *** End Verify DRC (CPU: 0:00:15.4  ELAPSED TIME: 15.00  MEM: 172.7M) ***
+[06/06 12:54:48    280s] 
+[06/06 12:54:48    280s] <CMD> timeDesign -postRoute -pathReports -drvReports -slackReports -numPaths 50 -prefix digital_final_reports/setup_postroute
+[06/06 12:54:48    280s]  Reset EOS DB
+[06/06 12:54:48    280s] Ignoring AAE DB Resetting ...
+[06/06 12:54:48    280s] Closing parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d'. 46564 times net's RC data read were performed.
+[06/06 12:54:48    280s] **WARN: (IMPEXT-3518):	The lower process node is set (using command 'setDesignMode') but the technology file for tQuantus extraction not specified. Therefore, going for postRoute (effortLevel low) extraction instead of recommended extractor 'tQuantus' for lower nodes. Use command 'set_analysis_view/update_rc_corner' to specify the technology file for tQuantus extraction to take place.
+[06/06 12:54:48    280s] Extraction called for design 'bmi_chip_top' of instances=109116 and nets=46595 using extraction engine 'postRoute' at effort level 'low' .
+[06/06 12:54:48    280s] PostRoute (effortLevel low) RC Extraction called for design bmi_chip_top.
+[06/06 12:54:48    280s] RC Extraction called in multi-corner(1) mode.
+[06/06 12:54:48    280s] **WARN: (IMPEXT-6197):	The Cap table file is not specified. This will result in lower parasitic accuracy when using preRoute extraction or postRoute extraction with effort level 'low'. It is recommended to generate the Cap table file using the 'generateCapTbl' command and specify it before extraction using 'create_rc_corner/update_rc_corner -cap_table'.
+[06/06 12:54:48    280s] Type 'man IMPEXT-6197' for more detail.
+[06/06 12:54:48    280s] **WARN: (IMPEXT-3032):	Because the cap table file was not provided, it will be created internally with the following process info:
+[06/06 12:54:48    280s] * Layer Id             : 1 - M1
+[06/06 12:54:48    280s]       Thickness        : 0.15
+[06/06 12:54:48    280s]       Min Width        : 0.06
+[06/06 12:54:48    280s]       Layer Dielectric : 4.1
+[06/06 12:54:48    280s] * Layer Id             : 2 - M2
+[06/06 12:54:48    280s]       Thickness        : 0.18
+[06/06 12:54:48    280s]       Min Width        : 0.08
+[06/06 12:54:48    280s]       Layer Dielectric : 4.1
+[06/06 12:54:48    280s] * Layer Id             : 3 - M3
+[06/06 12:54:48    280s]       Thickness        : 0.18
+[06/06 12:54:48    280s]       Min Width        : 0.08
+[06/06 12:54:48    280s]       Layer Dielectric : 4.1
+[06/06 12:54:48    280s] * Layer Id             : 4 - M4
+[06/06 12:54:48    280s]       Thickness        : 0.18
+[06/06 12:54:48    280s]       Min Width        : 0.08
+[06/06 12:54:48    280s]       Layer Dielectric : 4.1
+[06/06 12:54:48    280s] * Layer Id             : 5 - M5
+[06/06 12:54:48    280s]       Thickness        : 0.18
+[06/06 12:54:48    280s]       Min Width        : 0.08
+[06/06 12:54:48    280s]       Layer Dielectric : 4.1
+[06/06 12:54:48    280s] * Layer Id             : 6 - M6
+[06/06 12:54:48    280s]       Thickness        : 0.18
+[06/06 12:54:48    280s]       Min Width        : 0.08
+[06/06 12:54:48    280s]       Layer Dielectric : 4.1
+[06/06 12:54:48    280s] * Layer Id             : 7 - M7
+[06/06 12:54:48    280s]       Thickness        : 0.18
+[06/06 12:54:48    280s]       Min Width        : 0.08
+[06/06 12:54:48    280s]       Layer Dielectric : 4.1
+[06/06 12:54:48    280s] * Layer Id             : 8 - M8
+[06/06 12:54:48    280s]       Thickness        : 0.18
+[06/06 12:54:48    280s]       Min Width        : 0.08
+[06/06 12:54:48    280s]       Layer Dielectric : 4.1
+[06/06 12:54:48    280s] * Layer Id             : 9 - M9
+[06/06 12:54:48    280s]       Thickness        : 1
+[06/06 12:54:48    280s]       Min Width        : 0.08
+[06/06 12:54:48    280s]       Layer Dielectric : 4.1
+[06/06 12:54:48    280s] * Layer Id             : 10 - M10
+[06/06 12:54:48    280s]       Thickness        : 1
+[06/06 12:54:48    280s]       Min Width        : 0.22
+[06/06 12:54:48    280s]       Layer Dielectric : 4.1
+[06/06 12:54:48    280s] * Layer Id             : 11 - M11
+[06/06 12:54:48    280s]       Thickness        : 1
+[06/06 12:54:48    280s]       Min Width        : 0.22
+[06/06 12:54:48    280s]       Layer Dielectric : 4.1
+[06/06 12:54:48    280s] extractDetailRC Option : -outfile /tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d -maxResLength 200  -basic
+[06/06 12:54:48    280s] RC Mode: PostRoute -effortLevel low [Basic CapTable, LEF Resistances]
+[06/06 12:54:48    280s]       RC Corner Indexes            0   
+[06/06 12:54:48    280s] Capacitance Scaling Factor   : 1.00000 
+[06/06 12:54:48    280s] Coupling Cap. Scaling Factor : 1.00000 
+[06/06 12:54:48    280s] Resistance Scaling Factor    : 1.00000 
+[06/06 12:54:48    280s] Clock Cap. Scaling Factor    : 1.00000 
+[06/06 12:54:48    280s] Clock Res. Scaling Factor    : 1.00000 
+[06/06 12:54:48    280s] Shrink Factor                : 1.00000
+[06/06 12:54:48    281s] Initializing multi-corner resistance tables ...
+[06/06 12:54:48    281s] Checking LVS Completed (CPU Time= 0:00:00.1  MEM= 1923.2M)
+[06/06 12:54:48    281s] Creating parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d' for storing RC.
+[06/06 12:54:49    281s] Extracted 10.0001% (CPU Time= 0:00:00.6  MEM= 1979.2M)
+[06/06 12:54:50    282s] Extracted 20.0002% (CPU Time= 0:00:01.6  MEM= 1979.2M)
+[06/06 12:54:51    283s] Extracted 30.0002% (CPU Time= 0:00:02.3  MEM= 1979.2M)
+[06/06 12:54:51    284s] Extracted 40.0002% (CPU Time= 0:00:03.1  MEM= 1979.2M)
+[06/06 12:54:52    284s] Extracted 50.0002% (CPU Time= 0:00:04.0  MEM= 1979.2M)
+[06/06 12:54:53    285s] Extracted 60.0002% (CPU Time= 0:00:04.6  MEM= 1979.2M)
+[06/06 12:54:53    286s] Extracted 70.0002% (CPU Time= 0:00:05.2  MEM= 1979.2M)
+[06/06 12:54:55    288s] Extracted 80.0002% (CPU Time= 0:00:07.1  MEM= 1979.2M)
+[06/06 12:54:56    288s] Extracted 90.0002% (CPU Time= 0:00:07.7  MEM= 1979.2M)
+[06/06 12:54:57    289s] Extracted 100% (CPU Time= 0:00:08.5  MEM= 1979.2M)
+[06/06 12:54:57    289s] Number of Extracted Resistors     : 1319268
+[06/06 12:54:57    289s] Number of Extracted Ground Cap.   : 1319450
+[06/06 12:54:57    289s] Number of Extracted Coupling Cap. : 2880788
+[06/06 12:54:57    289s] Opening parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d' for reading.
+[06/06 12:54:57    289s] Filtering XCap in 'relativeAndCoupling' mode using values coupling_c_threshold=0.1fF, relative_c_threshold=1, and total_c_threshold=0fF.
+[06/06 12:54:57    289s] Checking LVS Completed (CPU Time= 0:00:00.1  MEM= 1955.2M)
+[06/06 12:54:57    289s] Creating parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb_Filter.rcdb.d' for storing RC.
+[06/06 12:54:57    290s] Closing parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d'. 46564 times net's RC data read were performed.
+[06/06 12:54:57    290s] Lumped Parasitic Loading Started (total cpu=0:00:00.0, real=0:00:00.0, current mem=1955.176M)
+[06/06 12:54:57    290s] Opening parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d' for reading.
+[06/06 12:54:57    290s] Lumped Parasitic Loading Completed (total cpu=0:00:00.0, real=0:00:00.0, current mem=1955.176M)
+[06/06 12:54:57    290s] PostRoute (effortLevel low) RC Extraction DONE (CPU Time: 0:00:09.3  Real Time: 0:00:09.0  MEM: 1955.176M)
+[06/06 12:54:58    290s] Starting SI iteration 1 using Infinite Timing Windows
+[06/06 12:54:58    291s] #################################################################################
+[06/06 12:54:58    291s] # Design Stage: PostRoute
+[06/06 12:54:58    291s] # Design Name: bmi_chip_top
+[06/06 12:54:58    291s] # Design Mode: 45nm
+[06/06 12:54:58    291s] # Analysis Mode: MMMC OCV 
+[06/06 12:54:58    291s] # Parasitics Mode: SPEF/RCDB
+[06/06 12:54:58    291s] # Signoff Settings: SI On 
+[06/06 12:54:58    291s] #################################################################################
+[06/06 12:54:59    291s] AAE_INFO: 1 threads acquired from CTE.
+[06/06 12:54:59    291s] Setting infinite Tws ...
+[06/06 12:54:59    291s] First Iteration Infinite Tw... 
+[06/06 12:54:59    291s] Calculate early delays in OCV mode...
+[06/06 12:54:59    291s] Calculate late delays in OCV mode...
+[06/06 12:54:59    291s] Topological Sorting (REAL = 0:00:00.0, MEM = 1930.2M, InitMEM = 1930.2M)
+[06/06 12:54:59    291s] Initializing multi-corner resistance tables ...
+[06/06 12:54:59    291s] End AAE Lib Interpolated Model. (MEM=1947.13 CPU Time=0:00:00.0, Real Time=0:00:00.0)
+[06/06 12:54:59    291s] Opening parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d' for reading.
+[06/06 12:54:59    291s] RC Database In Completed (CPU Time= 0:00:00.0  Real Time=0:00:00.0  MEM= 1947.1M)
+[06/06 12:54:59    291s] AAE_INFO: 1 threads acquired from CTE.
+[06/06 12:58:12    484s] Total number of fetched objects 46569
+[06/06 12:58:12    484s] AAE_INFO-618: Total number of nets in the design is 46595,  100.0 percent of the nets selected for SI analysis
+[06/06 12:58:13    485s] End Timing Check Calculation. (CPU Time=0:00:00.6, Real Time=0:00:01.0)
+[06/06 12:58:13    485s] End delay calculation. (MEM=1947.13 CPU=0:03:14 REAL=0:03:14)
+[06/06 12:58:13    485s] *** CDM Built up (cpu=0:03:14  real=0:03:15  mem= 1947.1M) ***
+[06/06 12:58:14    486s] Loading CTE timing window with TwFlowType 0...(CPU = 0:00:00.0, REAL = 0:00:00.0, MEM = 1947.1M)
+[06/06 12:58:14    486s] Add other clocks and setupCteToAAEClockMapping during iter 1
+[06/06 12:58:15    486s] Loading CTE timing window is completed (CPU = 0:00:00.1, REAL = 0:00:01.0, MEM = 1947.1M)
+[06/06 12:58:15    486s] Starting SI iteration 2
+[06/06 12:58:15    487s] AAE_INFO: 1 threads acquired from CTE.
+[06/06 12:58:15    487s] Calculate early delays in OCV mode...
+[06/06 12:58:15    487s] Calculate late delays in OCV mode...
+[06/06 12:58:15    487s] End AAE Lib Interpolated Model. (MEM=1955.18 CPU Time=0:00:00.0, Real Time=0:00:00.0)
+[06/06 12:58:18    490s] Glitch Analysis: View slow_view -- Total Number of Nets Skipped = 482. 
+[06/06 12:58:18    490s] Glitch Analysis: View slow_view -- Total Number of Nets Analyzed = 46569. 
+[06/06 12:58:18    490s] Total number of fetched objects 46569
+[06/06 12:58:18    490s] AAE_INFO-618: Total number of nets in the design is 46595,  5.8 percent of the nets selected for SI analysis
+[06/06 12:58:18    490s] End delay calculation. (MEM=1923.18 CPU=0:00:02.7 REAL=0:00:03.0)
+[06/06 12:58:18    490s] *** CDM Built up (cpu=0:00:02.7  real=0:00:03.0  mem= 1923.2M) ***
+[06/06 12:58:19    491s] Effort level <high> specified for reg2reg path_group
+[06/06 12:58:19    491s] End AAE Lib Interpolated Model. (MEM=1723.91 CPU Time=0:00:00.0, Real Time=0:00:00.0)
+[06/06 12:58:19    491s] Begin: glitch net info
+[06/06 12:58:19    491s] glitch slack range: number of glitch nets
+[06/06 12:58:19    491s] glitch slack < -0.32 : 0
+[06/06 12:58:19    491s] -0.32 < glitch slack < -0.28 : 0
+[06/06 12:58:19    491s] -0.28 < glitch slack < -0.24 : 0
+[06/06 12:58:19    491s] -0.24 < glitch slack < -0.2 : 0
+[06/06 12:58:19    491s] -0.2 < glitch slack < -0.16 : 0
+[06/06 12:58:19    491s] -0.16 < glitch slack < -0.12 : 0
+[06/06 12:58:19    491s] -0.12 < glitch slack < -0.08 : 0
+[06/06 12:58:19    491s] -0.08 < glitch slack < -0.04 : 0
+[06/06 12:58:19    491s] -0.04 < glitch slack : 0
+[06/06 12:58:19    491s] End: glitch net info
+[06/06 12:58:23    495s] 
+------------------------------------------------------------
+          timeDesign Summary                             
+------------------------------------------------------------
+
+Setup views included:
+ slow_view 
+
++--------------------+---------+---------+---------+
+|     Setup mode     |   all   | reg2reg | default |
++--------------------+---------+---------+---------+
+|           WNS (ns):|  0.877  |  0.877  | 13.677  |
+|           TNS (ns):|  0.000  |  0.000  |  0.000  |
+|    Violating Paths:|    0    |    0    |    0    |
+|          All Paths:|  68339  |  35585  |  32754  |
++--------------------+---------+---------+---------+
+
++----------------+-------------------------------+------------------+
+|                |              Real             |       Total      |
+|    DRVs        +------------------+------------+------------------|
+|                |  Nr nets(terms)  | Worst Vio  |  Nr nets(terms)  |
++----------------+------------------+------------+------------------+
+|   max_cap      |      0 (0)       |   0.000    |      0 (0)       |
+|   max_tran     |   6605 (13311)   |   -1.288   |   6605 (13311)   |
+|   max_fanout   |   1248 (1248)    |    -46     |   1261 (1261)    |
+|   max_length   |      0 (0)       |     0      |      0 (0)       |
++----------------+------------------+------------+------------------+
+
+Density: 60.684%
+       (100.000% with Fillers)
+Total number of glitch violations: 0
+------------------------------------------------------------
+Reported timing to dir ./timingReports
+[06/06 12:58:23    495s] Total CPU time: 214.98 sec
+[06/06 12:58:23    495s] Total Real time: 215.0 sec
+[06/06 12:58:23    495s] Total Memory Usage: 1727.878906 Mbytes
+[06/06 12:58:23    495s] Reset AAE Options
+[06/06 12:58:23    495s] <CMD> timeDesign -postRoute -hold -pathReports -slackReports -numPaths 50 -prefix digital_final_reports/hold_postroute
+[06/06 12:58:23    495s]  Reset EOS DB
+[06/06 12:58:23    495s] Ignoring AAE DB Resetting ...
+[06/06 12:58:24    495s] Closing parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d'. 46564 times net's RC data read were performed.
+[06/06 12:58:24    495s] **WARN: (IMPEXT-3518):	The lower process node is set (using command 'setDesignMode') but the technology file for tQuantus extraction not specified. Therefore, going for postRoute (effortLevel low) extraction instead of recommended extractor 'tQuantus' for lower nodes. Use command 'set_analysis_view/update_rc_corner' to specify the technology file for tQuantus extraction to take place.
+[06/06 12:58:24    495s] Extraction called for design 'bmi_chip_top' of instances=109116 and nets=46595 using extraction engine 'postRoute' at effort level 'low' .
+[06/06 12:58:24    495s] PostRoute (effortLevel low) RC Extraction called for design bmi_chip_top.
+[06/06 12:58:24    495s] RC Extraction called in multi-corner(1) mode.
+[06/06 12:58:24    495s] **WARN: (IMPEXT-6197):	The Cap table file is not specified. This will result in lower parasitic accuracy when using preRoute extraction or postRoute extraction with effort level 'low'. It is recommended to generate the Cap table file using the 'generateCapTbl' command and specify it before extraction using 'create_rc_corner/update_rc_corner -cap_table'.
+[06/06 12:58:24    495s] Type 'man IMPEXT-6197' for more detail.
+[06/06 12:58:24    495s] **WARN: (IMPEXT-3032):	Because the cap table file was not provided, it will be created internally with the following process info:
+[06/06 12:58:24    495s] * Layer Id             : 1 - M1
+[06/06 12:58:24    495s]       Thickness        : 0.15
+[06/06 12:58:24    495s]       Min Width        : 0.06
+[06/06 12:58:24    495s]       Layer Dielectric : 4.1
+[06/06 12:58:24    495s] * Layer Id             : 2 - M2
+[06/06 12:58:24    495s]       Thickness        : 0.18
+[06/06 12:58:24    495s]       Min Width        : 0.08
+[06/06 12:58:24    495s]       Layer Dielectric : 4.1
+[06/06 12:58:24    495s] * Layer Id             : 3 - M3
+[06/06 12:58:24    495s]       Thickness        : 0.18
+[06/06 12:58:24    495s]       Min Width        : 0.08
+[06/06 12:58:24    495s]       Layer Dielectric : 4.1
+[06/06 12:58:24    495s] * Layer Id             : 4 - M4
+[06/06 12:58:24    495s]       Thickness        : 0.18
+[06/06 12:58:24    495s]       Min Width        : 0.08
+[06/06 12:58:24    495s]       Layer Dielectric : 4.1
+[06/06 12:58:24    495s] * Layer Id             : 5 - M5
+[06/06 12:58:24    495s]       Thickness        : 0.18
+[06/06 12:58:24    495s]       Min Width        : 0.08
+[06/06 12:58:24    495s]       Layer Dielectric : 4.1
+[06/06 12:58:24    495s] * Layer Id             : 6 - M6
+[06/06 12:58:24    495s]       Thickness        : 0.18
+[06/06 12:58:24    495s]       Min Width        : 0.08
+[06/06 12:58:24    495s]       Layer Dielectric : 4.1
+[06/06 12:58:24    495s] * Layer Id             : 7 - M7
+[06/06 12:58:24    495s]       Thickness        : 0.18
+[06/06 12:58:24    495s]       Min Width        : 0.08
+[06/06 12:58:24    495s]       Layer Dielectric : 4.1
+[06/06 12:58:24    495s] * Layer Id             : 8 - M8
+[06/06 12:58:24    495s]       Thickness        : 0.18
+[06/06 12:58:24    495s]       Min Width        : 0.08
+[06/06 12:58:24    495s]       Layer Dielectric : 4.1
+[06/06 12:58:24    495s] * Layer Id             : 9 - M9
+[06/06 12:58:24    495s]       Thickness        : 1
+[06/06 12:58:24    495s]       Min Width        : 0.08
+[06/06 12:58:24    495s]       Layer Dielectric : 4.1
+[06/06 12:58:24    495s] * Layer Id             : 10 - M10
+[06/06 12:58:24    495s]       Thickness        : 1
+[06/06 12:58:24    495s]       Min Width        : 0.22
+[06/06 12:58:24    495s]       Layer Dielectric : 4.1
+[06/06 12:58:24    495s] * Layer Id             : 11 - M11
+[06/06 12:58:24    495s]       Thickness        : 1
+[06/06 12:58:24    495s]       Min Width        : 0.22
+[06/06 12:58:24    495s]       Layer Dielectric : 4.1
+[06/06 12:58:24    495s] extractDetailRC Option : -outfile /tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d -maxResLength 200  -basic
+[06/06 12:58:24    495s] RC Mode: PostRoute -effortLevel low [Basic CapTable, LEF Resistances]
+[06/06 12:58:24    495s]       RC Corner Indexes            0   
+[06/06 12:58:24    495s] Capacitance Scaling Factor   : 1.00000 
+[06/06 12:58:24    495s] Coupling Cap. Scaling Factor : 1.00000 
+[06/06 12:58:24    495s] Resistance Scaling Factor    : 1.00000 
+[06/06 12:58:24    495s] Clock Cap. Scaling Factor    : 1.00000 
+[06/06 12:58:24    495s] Clock Res. Scaling Factor    : 1.00000 
+[06/06 12:58:24    495s] Shrink Factor                : 1.00000
+[06/06 12:58:24    496s] Initializing multi-corner resistance tables ...
+[06/06 12:58:24    496s] Checking LVS Completed (CPU Time= 0:00:00.1  MEM= 1727.9M)
+[06/06 12:58:24    496s] Creating parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d' for storing RC.
+[06/06 12:58:24    496s] Extracted 10.0001% (CPU Time= 0:00:00.6  MEM= 1795.9M)
+[06/06 12:58:25    497s] Extracted 20.0002% (CPU Time= 0:00:01.6  MEM= 1795.9M)
+[06/06 12:58:26    498s] Extracted 30.0002% (CPU Time= 0:00:02.3  MEM= 1795.9M)
+[06/06 12:58:27    499s] Extracted 40.0002% (CPU Time= 0:00:03.0  MEM= 1799.9M)
+[06/06 12:58:27    499s] Extracted 50.0002% (CPU Time= 0:00:03.9  MEM= 1799.9M)
+[06/06 12:58:28    500s] Extracted 60.0002% (CPU Time= 0:00:04.5  MEM= 1799.9M)
+[06/06 12:58:29    501s] Extracted 70.0002% (CPU Time= 0:00:05.2  MEM= 1799.9M)
+[06/06 12:58:31    503s] Extracted 80.0002% (CPU Time= 0:00:07.0  MEM= 1800.9M)
+[06/06 12:58:31    503s] Extracted 90.0002% (CPU Time= 0:00:07.6  MEM= 1804.9M)
+[06/06 12:58:32    504s] Extracted 100% (CPU Time= 0:00:08.4  MEM= 1811.9M)
+[06/06 12:58:32    504s] Number of Extracted Resistors     : 1319268
+[06/06 12:58:32    504s] Number of Extracted Ground Cap.   : 1319450
+[06/06 12:58:32    504s] Number of Extracted Coupling Cap. : 2880788
+[06/06 12:58:32    504s] Opening parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d' for reading.
+[06/06 12:58:32    504s] Filtering XCap in 'relativeAndCoupling' mode using values coupling_c_threshold=0.1fF, relative_c_threshold=1, and total_c_threshold=0fF.
+[06/06 12:58:32    504s] Checking LVS Completed (CPU Time= 0:00:00.1  MEM= 1796.9M)
+[06/06 12:58:32    504s] Creating parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb_Filter.rcdb.d' for storing RC.
+[06/06 12:58:33    504s] Closing parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d'. 46564 times net's RC data read were performed.
+[06/06 12:58:33    504s] Lumped Parasitic Loading Started (total cpu=0:00:00.0, real=0:00:00.0, current mem=1804.887M)
+[06/06 12:58:33    504s] Opening parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d' for reading.
+[06/06 12:58:33    504s] Lumped Parasitic Loading Completed (total cpu=0:00:00.0, real=0:00:00.0, current mem=1804.887M)
+[06/06 12:58:33    504s] PostRoute (effortLevel low) RC Extraction DONE (CPU Time: 0:00:09.1  Real Time: 0:00:09.0  MEM: 1804.887M)
+[06/06 12:58:34    505s] Effort level <high> specified for reg2reg path_group
+[06/06 12:58:35    506s] Starting SI iteration 1 using Infinite Timing Windows
+[06/06 12:58:35    506s] #################################################################################
+[06/06 12:58:35    506s] # Design Stage: PostRoute
+[06/06 12:58:35    506s] # Design Name: bmi_chip_top
+[06/06 12:58:35    506s] # Design Mode: 45nm
+[06/06 12:58:35    506s] # Analysis Mode: MMMC OCV 
+[06/06 12:58:35    506s] # Parasitics Mode: SPEF/RCDB
+[06/06 12:58:35    506s] # Signoff Settings: SI On 
+[06/06 12:58:35    506s] #################################################################################
+[06/06 12:58:35    507s] AAE_INFO: 1 threads acquired from CTE.
+[06/06 12:58:35    507s] Setting infinite Tws ...
+[06/06 12:58:35    507s] First Iteration Infinite Tw... 
+[06/06 12:58:35    507s] Calculate late delays in OCV mode...
+[06/06 12:58:35    507s] Calculate early delays in OCV mode...
+[06/06 12:58:35    507s] Topological Sorting (REAL = 0:00:00.0, MEM = 1745.4M, InitMEM = 1738.3M)
+[06/06 12:58:35    507s] Initializing multi-corner resistance tables ...
+[06/06 12:58:35    507s] End AAE Lib Interpolated Model. (MEM=1762.36 CPU Time=0:00:00.0, Real Time=0:00:00.0)
+[06/06 12:58:35    507s] Opening parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d' for reading.
+[06/06 12:58:35    507s] RC Database In Completed (CPU Time= 0:00:00.0  Real Time=0:00:00.0  MEM= 1762.4M)
+[06/06 12:58:35    507s] AAE_INFO: 1 threads acquired from CTE.
+[06/06 13:01:48    700s] Total number of fetched objects 46569
+[06/06 13:01:48    700s] AAE_INFO-618: Total number of nets in the design is 46595,  100.0 percent of the nets selected for SI analysis
+[06/06 13:01:49    700s] End Timing Check Calculation. (CPU Time=0:00:00.5, Real Time=0:00:01.0)
+[06/06 13:01:49    700s] End delay calculation. (MEM=1829.13 CPU=0:03:13 REAL=0:03:14)
+[06/06 13:01:49    700s] *** CDM Built up (cpu=0:03:14  real=0:03:14  mem= 1829.1M) ***
+[06/06 13:01:50    702s] Loading CTE timing window with TwFlowType 0...(CPU = 0:00:00.0, REAL = 0:00:00.0, MEM = 1829.1M)
+[06/06 13:01:50    702s] Add other clocks and setupCteToAAEClockMapping during iter 1
+[06/06 13:01:50    702s] Loading CTE timing window is completed (CPU = 0:00:00.1, REAL = 0:00:00.0, MEM = 1829.1M)
+[06/06 13:01:50    702s] Starting SI iteration 2
+[06/06 13:01:51    702s] AAE_INFO: 1 threads acquired from CTE.
+[06/06 13:01:51    702s] Calculate late delays in OCV mode...
+[06/06 13:01:51    702s] Calculate early delays in OCV mode...
+[06/06 13:01:51    702s] End AAE Lib Interpolated Model. (MEM=1837.18 CPU Time=0:00:00.0, Real Time=0:00:00.0)
+[06/06 13:01:52    704s] Glitch Analysis: View slow_view -- Total Number of Nets Skipped = 0. 
+[06/06 13:01:52    704s] Glitch Analysis: View slow_view -- Total Number of Nets Analyzed = 245. 
+[06/06 13:01:52    704s] Total number of fetched objects 46569
+[06/06 13:01:52    704s] AAE_INFO-618: Total number of nets in the design is 46595,  0.9 percent of the nets selected for SI analysis
+[06/06 13:01:52    704s] End delay calculation. (MEM=1805.18 CPU=0:00:01.4 REAL=0:00:01.0)
+[06/06 13:01:52    704s] *** CDM Built up (cpu=0:00:01.5  real=0:00:01.0  mem= 1805.2M) ***
+[06/06 13:01:53    705s] *** Done Building Timing Graph (cpu=0:03:18 real=0:03:18 totSessionCpu=0:11:45 mem=1805.2M)
+[06/06 13:01:54    706s] 
+------------------------------------------------------------
+          timeDesign Summary                             
+------------------------------------------------------------
+
+Hold  views included:
+ slow_view 
+
++--------------------+---------+---------+---------+
+|     Hold mode      |   all   | reg2reg | default |
++--------------------+---------+---------+---------+
+|           WNS (ns):|  0.397  |  0.397  |  0.000  |
+|           TNS (ns):|  0.000  |  0.000  |  0.000  |
+|    Violating Paths:|    0    |    0    |    0    |
+|          All Paths:|  35585  |  35585  |    0    |
++--------------------+---------+---------+---------+
+
+Density: 60.684%
+       (100.000% with Fillers)
+------------------------------------------------------------
+Reported timing to dir ./timingReports
+[06/06 13:01:54    706s] Total CPU time: 210.5 sec
+[06/06 13:01:54    706s] Total Real time: 211.0 sec
+[06/06 13:01:54    706s] Total Memory Usage: 1707.636719 Mbytes
+[06/06 13:01:54    706s] Reset AAE Options
+[06/06 13:01:54    706s] <CMD> report_timing -late -max_paths 10 -path_type full_clock > $RPT/critical_setup_paths.rpt
+[06/06 13:01:54    706s] Starting SI iteration 1 using Infinite Timing Windows
+[06/06 13:01:54    706s] #################################################################################
+[06/06 13:01:54    706s] # Design Stage: PostRoute
+[06/06 13:01:54    706s] # Design Name: bmi_chip_top
+[06/06 13:01:54    706s] # Design Mode: 45nm
+[06/06 13:01:54    706s] # Analysis Mode: MMMC OCV 
+[06/06 13:01:54    706s] # Parasitics Mode: SPEF/RCDB
+[06/06 13:01:54    706s] # Signoff Settings: SI On 
+[06/06 13:01:54    706s] #################################################################################
+[06/06 13:01:55    707s] Setting infinite Tws ...
+[06/06 13:01:55    707s] First Iteration Infinite Tw... 
+[06/06 13:01:55    707s] Calculate early delays in OCV mode...
+[06/06 13:01:55    707s] Calculate late delays in OCV mode...
+[06/06 13:01:55    707s] Topological Sorting (REAL = 0:00:00.0, MEM = 1714.4M, InitMEM = 1707.4M)
+[06/06 13:01:55    707s] End AAE Lib Interpolated Model. (MEM=1731.4 CPU Time=0:00:00.0, Real Time=0:00:00.0)
+[06/06 13:05:08    899s] Total number of fetched objects 46569
+[06/06 13:05:08    899s] AAE_INFO-618: Total number of nets in the design is 46595,  100.0 percent of the nets selected for SI analysis
+[06/06 13:05:09    900s] End Timing Check Calculation. (CPU Time=0:00:00.7, Real Time=0:00:01.0)
+[06/06 13:05:09    900s] End delay calculation. (MEM=1830.18 CPU=0:03:13 REAL=0:03:13)
+[06/06 13:05:09    900s] *** CDM Built up (cpu=0:03:14  real=0:03:15  mem= 1830.2M) ***
+[06/06 13:05:10    901s] Loading CTE timing window with TwFlowType 0...(CPU = 0:00:00.0, REAL = 0:00:00.0, MEM = 1830.2M)
+[06/06 13:05:10    901s] Add other clocks and setupCteToAAEClockMapping during iter 1
+[06/06 13:05:10    901s] Loading CTE timing window is completed (CPU = 0:00:00.1, REAL = 0:00:00.0, MEM = 1830.2M)
+[06/06 13:05:10    901s] Starting SI iteration 2
+[06/06 13:05:11    902s] Calculate early delays in OCV mode...
+[06/06 13:05:11    902s] Calculate late delays in OCV mode...
+[06/06 13:05:11    902s] End AAE Lib Interpolated Model. (MEM=1838.22 CPU Time=0:00:00.0, Real Time=0:00:00.0)
+[06/06 13:05:13    905s] Glitch Analysis: View slow_view -- Total Number of Nets Skipped = 482. 
+[06/06 13:05:13    905s] Glitch Analysis: View slow_view -- Total Number of Nets Analyzed = 46569. 
+[06/06 13:05:13    905s] Total number of fetched objects 46569
+[06/06 13:05:13    905s] AAE_INFO-618: Total number of nets in the design is 46595,  5.8 percent of the nets selected for SI analysis
+[06/06 13:05:13    905s] End delay calculation. (MEM=1825.3 CPU=0:00:02.7 REAL=0:00:02.0)
+[06/06 13:05:13    905s] *** CDM Built up (cpu=0:00:02.8  real=0:00:02.0  mem= 1825.3M) ***
+[06/06 13:05:14    906s] <CMD> report_timing -early -max_paths 10 -path_type full_clock > $RPT/critical_hold_paths.rpt
+[06/06 13:05:14    906s] Starting SI iteration 1 using Infinite Timing Windows
+[06/06 13:05:15    906s] #################################################################################
+[06/06 13:05:15    906s] # Design Stage: PostRoute
+[06/06 13:05:15    906s] # Design Name: bmi_chip_top
+[06/06 13:05:15    906s] # Design Mode: 45nm
+[06/06 13:05:15    906s] # Analysis Mode: MMMC OCV 
+[06/06 13:05:15    906s] # Parasitics Mode: SPEF/RCDB
+[06/06 13:05:15    906s] # Signoff Settings: SI On 
+[06/06 13:05:15    906s] #################################################################################
+[06/06 13:05:15    907s] Setting infinite Tws ...
+[06/06 13:05:15    907s] First Iteration Infinite Tw... 
+[06/06 13:05:15    907s] Calculate late delays in OCV mode...
+[06/06 13:05:15    907s] Calculate early delays in OCV mode...
+[06/06 13:05:15    907s] Topological Sorting (REAL = 0:00:00.0, MEM = 1800.3M, InitMEM = 1800.3M)
+[06/06 13:05:15    907s] End AAE Lib Interpolated Model. (MEM=1817.25 CPU Time=0:00:00.0, Real Time=0:00:00.0)
+[06/06 13:08:28   1099s] Total number of fetched objects 46569
+[06/06 13:08:28   1099s] AAE_INFO-618: Total number of nets in the design is 46595,  100.0 percent of the nets selected for SI analysis
+[06/06 13:08:29   1100s] End Timing Check Calculation. (CPU Time=0:00:00.5, Real Time=0:00:01.0)
+[06/06 13:08:29   1100s] End delay calculation. (MEM=1849.25 CPU=0:03:13 REAL=0:03:13)
+[06/06 13:08:29   1100s] *** CDM Built up (cpu=0:03:14  real=0:03:14  mem= 1849.3M) ***
+[06/06 13:08:30   1101s] Loading CTE timing window with TwFlowType 0...(CPU = 0:00:00.0, REAL = 0:00:00.0, MEM = 1849.3M)
+[06/06 13:08:30   1101s] Add other clocks and setupCteToAAEClockMapping during iter 1
+[06/06 13:08:30   1101s] Loading CTE timing window is completed (CPU = 0:00:00.1, REAL = 0:00:00.0, MEM = 1849.3M)
+[06/06 13:08:30   1101s] Starting SI iteration 2
+[06/06 13:08:30   1101s] Calculate late delays in OCV mode...
+[06/06 13:08:30   1101s] Calculate early delays in OCV mode...
+[06/06 13:08:30   1101s] End AAE Lib Interpolated Model. (MEM=1847.76 CPU Time=0:00:00.0, Real Time=0:00:00.0)
+[06/06 13:08:32   1103s] Glitch Analysis: View slow_view -- Total Number of Nets Skipped = 0. 
+[06/06 13:08:32   1103s] Glitch Analysis: View slow_view -- Total Number of Nets Analyzed = 245. 
+[06/06 13:08:32   1103s] Total number of fetched objects 46569
+[06/06 13:08:32   1103s] AAE_INFO-618: Total number of nets in the design is 46595,  0.9 percent of the nets selected for SI analysis
+[06/06 13:08:32   1103s] End delay calculation. (MEM=1815.76 CPU=0:00:01.4 REAL=0:00:02.0)
+[06/06 13:08:32   1103s] *** CDM Built up (cpu=0:00:01.5  real=0:00:02.0  mem= 1815.8M) ***
+[06/06 13:08:33   1104s] <CMD> report_constraint -all_violators > digital_final_reports/timing_violators.rpt
+[06/06 13:08:33   1104s] Starting SI iteration 1 using Infinite Timing Windows
+[06/06 13:08:33   1104s] #################################################################################
+[06/06 13:08:33   1104s] # Design Stage: PostRoute
+[06/06 13:08:33   1104s] # Design Name: bmi_chip_top
+[06/06 13:08:33   1104s] # Design Mode: 45nm
+[06/06 13:08:33   1104s] # Analysis Mode: MMMC OCV 
+[06/06 13:08:33   1104s] # Parasitics Mode: SPEF/RCDB
+[06/06 13:08:33   1104s] # Signoff Settings: SI On 
+[06/06 13:08:33   1104s] #################################################################################
+[06/06 13:08:34   1105s] Setting infinite Tws ...
+[06/06 13:08:34   1105s] First Iteration Infinite Tw... 
+[06/06 13:08:34   1105s] Calculate early delays in OCV mode...
+[06/06 13:08:34   1105s] Calculate late delays in OCV mode...
+[06/06 13:08:34   1105s] Topological Sorting (REAL = 0:00:00.0, MEM = 1790.8M, InitMEM = 1790.8M)
+[06/06 13:08:34   1105s] End AAE Lib Interpolated Model. (MEM=1807.71 CPU Time=0:00:00.0, Real Time=0:00:00.0)
+[06/06 13:11:46   1297s] Total number of fetched objects 46569
+[06/06 13:11:46   1297s] AAE_INFO-618: Total number of nets in the design is 46595,  100.0 percent of the nets selected for SI analysis
+[06/06 13:11:47   1298s] End Timing Check Calculation. (CPU Time=0:00:00.6, Real Time=0:00:01.0)
+[06/06 13:11:47   1298s] End delay calculation. (MEM=1839.71 CPU=0:03:13 REAL=0:03:13)
+[06/06 13:11:47   1298s] *** CDM Built up (cpu=0:03:14  real=0:03:14  mem= 1839.7M) ***
+[06/06 13:11:48   1299s] Loading CTE timing window with TwFlowType 0...(CPU = 0:00:00.0, REAL = 0:00:00.0, MEM = 1839.7M)
+[06/06 13:11:48   1299s] Add other clocks and setupCteToAAEClockMapping during iter 1
+[06/06 13:11:48   1299s] Loading CTE timing window is completed (CPU = 0:00:00.1, REAL = 0:00:00.0, MEM = 1839.7M)
+[06/06 13:11:48   1299s] Starting SI iteration 2
+[06/06 13:11:49   1299s] Calculate early delays in OCV mode...
+[06/06 13:11:49   1299s] Calculate late delays in OCV mode...
+[06/06 13:11:49   1300s] End AAE Lib Interpolated Model. (MEM=1847.76 CPU Time=0:00:00.0, Real Time=0:00:00.0)
+[06/06 13:11:51   1302s] Glitch Analysis: View slow_view -- Total Number of Nets Skipped = 482. 
+[06/06 13:11:51   1302s] Glitch Analysis: View slow_view -- Total Number of Nets Analyzed = 46569. 
+[06/06 13:11:51   1302s] Total number of fetched objects 46569
+[06/06 13:11:51   1302s] AAE_INFO-618: Total number of nets in the design is 46595,  5.8 percent of the nets selected for SI analysis
+[06/06 13:11:51   1302s] End delay calculation. (MEM=1815.76 CPU=0:00:02.7 REAL=0:00:02.0)
+[06/06 13:11:51   1302s] *** CDM Built up (cpu=0:00:02.7  real=0:00:02.0  mem= 1815.8M) ***
+[06/06 13:11:53   1304s] <CMD> report_area > digital_final_reports/area.rpt
+[06/06 13:11:54   1304s] <CMD> reportGateCount > digital_final_reports/gate_count.rpt
+[06/06 13:11:54   1304s] Gate area 1.0260 um^2
+[06/06 13:11:54   1304s] [0] bmi_chip_top Gates=204788 Cells=46179 Area=210112.5 um^2
+[06/06 13:11:54   1304s] <CMD> summaryReport -outfile digital_final_reports/summary_report.rpt
+[06/06 13:11:54   1304s] Start to collect the design information.
+[06/06 13:11:54   1304s] Build netlist information for Cell bmi_chip_top.
+[06/06 13:11:54   1304s] Finished collecting the design information.
+[06/06 13:11:54   1304s] Generating standard cells used in the design report.
+[06/06 13:11:54   1304s] Analyze library ... 
+[06/06 13:11:54   1304s] Analyze netlist ... 
+[06/06 13:11:54   1304s] Generate no-driven nets information report.
+[06/06 13:11:54   1304s] Analyze timing ... 
+[06/06 13:11:54   1304s] Analyze floorplan/placement ... 
+[06/06 13:11:54   1305s] Analysis Routing ...
+[06/06 13:11:54   1305s] Report saved in file digital_final_reports/summary_report.rpt.
+[06/06 13:11:54   1305s] <CMD> reportRoute -summary > digital_final_reports/route_summary.rpt
+[06/06 13:11:54   1305s] 
+[06/06 13:11:54   1305s] reportRoute -summary
+[06/06 13:11:54   1305s] 
+[06/06 13:11:54   1305s] #Start reportRoute on Sat Jun  6 13:11:54 2026
+[06/06 13:11:54   1305s] #
+[06/06 13:11:55   1306s] ### export wire route signature (1) = 1851893287
+[06/06 13:11:56   1307s] #
+[06/06 13:11:56   1307s] #reportRoute statistics:
+[06/06 13:11:56   1307s] #Cpu time = 00:00:02
+[06/06 13:11:56   1307s] #Elapsed time = 00:00:02
+[06/06 13:11:56   1307s] #Increased memory = -77.89 (MB)
+[06/06 13:11:56   1307s] #Total memory = 1571.44 (MB)
+[06/06 13:11:56   1307s] #Peak memory = 1766.60 (MB)
+[06/06 13:11:56   1307s] #Number of warnings = 0
+[06/06 13:11:56   1307s] #Total number of warnings = 1
+[06/06 13:11:56   1307s] #Number of fails = 0
+[06/06 13:11:56   1307s] #Total number of fails = 0
+[06/06 13:11:56   1307s] #Complete reportRoute on Sat Jun  6 13:11:56 2026
+[06/06 13:11:56   1307s] #
+[06/06 13:11:56   1307s] <CMD> reportCongestion > digital_final_reports/congestion.rpt
+[06/06 13:11:56   1307s] <CMD> report_ccopt_clock_trees > digital_final_reports/clock_tree_summary.rpt
+[06/06 13:11:56   1307s] End AAE Lib Interpolated Model. (MEM=1798.43 CPU Time=0:00:00.0, Real Time=0:00:00.0)
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Clock DAG stats:
+[06/06 13:12:06   1317s] ================
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] --------------------------------------------------------------
+[06/06 13:12:06   1317s] Cell type                     Count    Area        Capacitance
+[06/06 13:12:06   1317s] --------------------------------------------------------------
+[06/06 13:12:06   1317s] Buffers                       3056     8433.036       1.868
+[06/06 13:12:06   1317s] Inverters                        0        0.000       0.000
+[06/06 13:12:06   1317s] Integrated Clock Gates           0        0.000       0.000
+[06/06 13:12:06   1317s] Non-Integrated Clock Gates       0        0.000       0.000
+[06/06 13:12:06   1317s] Clock Logic                      0        0.000       0.000
+[06/06 13:12:06   1317s] All                           3056     8433.036       1.868
+[06/06 13:12:06   1317s] --------------------------------------------------------------
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Clock DAG wire lengths:
+[06/06 13:12:06   1317s] =======================
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] --------------------
+[06/06 13:12:06   1317s] Type     Wire Length
+[06/06 13:12:06   1317s] --------------------
+[06/06 13:12:06   1317s] Top           0.000
+[06/06 13:12:06   1317s] Trunk     27122.070
+[06/06 13:12:06   1317s] Leaf      60730.030
+[06/06 13:12:06   1317s] Total     87852.100
+[06/06 13:12:06   1317s] --------------------
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Clock DAG capacitances:
+[06/06 13:12:06   1317s] =======================
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] ----------------------------------
+[06/06 13:12:06   1317s] Type     Gate     Wire      Total
+[06/06 13:12:06   1317s] ----------------------------------
+[06/06 13:12:06   1317s] Top      0.000     0.000     0.000
+[06/06 13:12:06   1317s] Trunk    1.868     3.434     5.302
+[06/06 13:12:06   1317s] Leaf     3.526     8.454    11.979
+[06/06 13:12:06   1317s] Total    5.394    11.888    17.282
+[06/06 13:12:06   1317s] ----------------------------------
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Clock DAG sink capacitances:
+[06/06 13:12:06   1317s] ============================
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] --------------------------------------------------------
+[06/06 13:12:06   1317s] Count    Total    Average    Std. Dev.    Min      Max
+[06/06 13:12:06   1317s] --------------------------------------------------------
+[06/06 13:12:06   1317s] 16750    3.526     0.000       0.000      0.000    0.000
+[06/06 13:12:06   1317s] --------------------------------------------------------
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Clock DAG net violations:
+[06/06 13:12:06   1317s] =========================
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] ---------------------------------------------------------------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s] Type          Units    Count    Average    Std. Dev.    Sum       Top 10 violations
+[06/06 13:12:06   1317s] ---------------------------------------------------------------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s] Transition    ns       1105      0.012       0.019      12.731    [0.097, 0.092, 0.092, 0.091, 0.091, 0.091, 0.091, 0.090, 0.090, 0.090, ...]
+[06/06 13:12:06   1317s] ---------------------------------------------------------------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Clock DAG primary half-corner transition distribution:
+[06/06 13:12:06   1317s] ======================================================
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] ---------------------------------------------------------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s] Net Type    Target    Count    Average    Std. Dev.    Min      Max      Distribution
+[06/06 13:12:06   1317s] ---------------------------------------------------------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s] Trunk       0.050     1021      0.047       0.018      0.020    0.147    {81 <= 0.030ns, 196 <= 0.040ns, 470 <= 0.050ns, 274 > 0.050ns}
+[06/06 13:12:06   1317s] Leaf        0.050     2036      0.051       0.013      0.029    0.142    {4 <= 0.030ns, 168 <= 0.040ns, 1033 <= 0.050ns, 831 > 0.050ns}
+[06/06 13:12:06   1317s] ---------------------------------------------------------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Clock DAG library cell distribution:
+[06/06 13:12:06   1317s] ====================================
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] -----------------------------------------
+[06/06 13:12:06   1317s] Name        Type      Inst     Inst Area 
+[06/06 13:12:06   1317s]                       Count    (um^2)
+[06/06 13:12:06   1317s] -----------------------------------------
+[06/06 13:12:06   1317s] CLKBUFX6    buffer    1767      5438.826
+[06/06 13:12:06   1317s] CLKBUFX4    buffer    1155      2765.070
+[06/06 13:12:06   1317s] CLKBUFX2    buffer     134       229.140
+[06/06 13:12:06   1317s] -----------------------------------------
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Please note that the following tables reflect only the defined clock trees, so the flop counts might not include all flops in your design.
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Clock Tree Summary:
+[06/06 13:12:06   1317s] ===================
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s] Clock Tree  # Posedge  # Negedge  # RAM  # Enable  # Non enable  # Other  # Clock  # Bufs  # Invs  # Other  # Implicit  Max       Max     Max     Max          Standard   Wire    Gate   Clock Tree Root
+[06/06 13:12:06   1317s] Name        Flops      Flops      Clock  Latch     Latch         Sinks    Gates                    Clock    ignore/     Non-leaf  Leaf    Length  Source-sink  cell area  cap     cap    
+[06/06 13:12:06   1317s]                                   Pins   Sinks     Sinks                                           Cells    stop pins   Fanout    Fanout  (um)    Resistance   (um^2)     (pF)    (pF)   
+[06/06 13:12:06   1317s]                                                                                                                                                   (Ohms)                                 
+[06/06 13:12:06   1317s] --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s] clk           16750        0        0       0           0           0        0      3056     0        0         0          10       12    701.44    5735.87    8433.036   11.888  5.394  clk
+[06/06 13:12:06   1317s] --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Summary across all clock trees :
+[06/06 13:12:06   1317s] ================================
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s] # Posedge  # Negedge  # RAM  # Enable  # Non enable  # Other  # Clock  # Bufs  # Invs  # Other  # Implicit  Max       Average   Max     Average  Max      Max          Standard   Wire    Gate
+[06/06 13:12:06   1317s] Flops      Flops      Clock  Latch     Latch         Sinks    Gates                    Clock    ignore/     Non-leaf  Non-leaf  Leaf    Leaf     Length   Source-sink  cell area  cap     cap
+[06/06 13:12:06   1317s]                       Pins   Sinks     Sinks                                           Cells    stop pins   Fanout    Fanout    Fanout  Fanout   (um)     Resistance   (um^2)     (pF)    (pF)
+[06/06 13:12:06   1317s]                                                                                                                                                           (Ohms)                          
+[06/06 13:12:06   1317s] -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s]   16750        0        0       0           0           0        0      3056     0        0         0          10     2.99314     12    8.22692  701.440    573.587    8433.036   11.888  5.394
+[06/06 13:12:06   1317s] -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Physical metrics across all clock trees
+[06/06 13:12:06   1317s] =======================================
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] -----------------------------------------------------------------------
+[06/06 13:12:06   1317s] Metric                               Minimum  Average  Maximum  Std.dev
+[06/06 13:12:06   1317s] -----------------------------------------------------------------------
+[06/06 13:12:06   1317s] Source-sink routed net length (um)    1.225   17.266   701.440  14.707
+[06/06 13:12:06   1317s] Source-sink manhattan distance (um)   1.845   15.638   603.470  13.241
+[06/06 13:12:06   1317s] Source-sink resistance (Ohm)         16.755   44.310   573.587  13.781
+[06/06 13:12:06   1317s] -----------------------------------------------------------------------
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Count of violations across all clock trees:
+[06/06 13:12:06   1317s] ===========================================
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] ---------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s] Clock Tree  # Max capacitance  # Max resistance  # Max length  # Max fanout  # Slew
+[06/06 13:12:06   1317s] Name        violations         violations        violations    violations    violations
+[06/06 13:12:06   1317s] ---------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s] clk                 0                 0               0             0           9130
+[06/06 13:12:06   1317s] ---------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s] Total               0                 0               0             0           9130
+[06/06 13:12:06   1317s] ---------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Note the above table per clock tree is based on CCOpt clock tree view. The violations are counted across half corners.
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Found a total of 0 clock tree pins with max capacitance violations.
+[06/06 13:12:06   1317s] Found a total of 0 clock tree nets with max resistance violations.
+[06/06 13:12:06   1317s] Found a total of 0 clock tree nets with max length violations.
+[06/06 13:12:06   1317s] Found a total of 0 clock tree nets with max fanout violations.
+[06/06 13:12:06   1317s] Found a total of 9130 clock tree pins with a slew violation.
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Slew violation summary across all clock trees - Top 10 violating pins:
+[06/06 13:12:06   1317s] ======================================================================
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Target and measured clock slews (in ns):
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] -----------------------------------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s] Half corner             Violation  Slew    Slew      Dont   Ideal  Target    Pin
+[06/06 13:12:06   1317s]                         amount     target  achieved  touch  net?   source    
+[06/06 13:12:06   1317s]                                                      net?                    
+[06/06 13:12:06   1317s] -----------------------------------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s] slow_corner:setup.late    0.097    0.050    0.147    N      N      explicit  u_sc/CTS_cdb_BUF_clk_G0_L7_268/A
+[06/06 13:12:06   1317s] slow_corner:setup.late    0.097    0.050    0.147    N      N      explicit  u_sc/CTS_ccl_BUF_clk_G0_L6_97/Y
+[06/06 13:12:06   1317s] slow_corner:setup.late    0.092    0.050    0.142    N      N      explicit  u_sc/CTS_ccl_BUF_clk_G0_L6_85/A
+[06/06 13:12:06   1317s] slow_corner:setup.late    0.092    0.050    0.142    N      N      explicit  u_sc/CTS_ccl_BUF_clk_G0_L6_84/A
+[06/06 13:12:06   1317s] slow_corner:setup.late    0.092    0.050    0.142    N      N      explicit  u_sc/CTS_ccl_BUF_clk_G0_L5_43/Y
+[06/06 13:12:06   1317s] slow_corner:setup.late    0.092    0.050    0.142    N      N      explicit  u_sc/sample_window_reg[7][37][7]/CK
+[06/06 13:12:06   1317s] slow_corner:setup.late    0.092    0.050    0.142    N      N      explicit  u_sc/sample_window_reg[7][161][7]/CK
+[06/06 13:12:06   1317s] slow_corner:setup.late    0.092    0.050    0.142    N      N      explicit  u_sc/sample_window_reg[7][166][0]/CK
+[06/06 13:12:06   1317s] slow_corner:setup.late    0.092    0.050    0.142    N      N      explicit  u_sc/sample_window_reg[7][166][1]/CK
+[06/06 13:12:06   1317s] slow_corner:setup.late    0.092    0.050    0.142    N      N      explicit  u_sc/CTS_ccl_BUF_clk_G0_L8_234/Y
+[06/06 13:12:06   1317s] -----------------------------------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Target sources:
+[06/06 13:12:06   1317s] auto extracted - target was extracted from SDC.
+[06/06 13:12:06   1317s] auto computed - target was computed when balancing trees.
+[06/06 13:12:06   1317s] explicit - target is explicitly set via target_max_trans property.
+[06/06 13:12:06   1317s] pin explicit - target is explicitly set for this pin via pin_target_max_trans property.
+[06/06 13:12:06   1317s] liberty explicit - target is explicitly set via max_transition from liberty library.
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Found 0 pins on nets marked dont_touch that have slew violations.
+[06/06 13:12:06   1317s] Found 0 pins on nets marked dont_touch that do not have slew violations.
+[06/06 13:12:06   1317s] Found 0 pins on nets marked ideal_network that have slew violations.
+[06/06 13:12:06   1317s] Found 0 pins on nets marked ideal_network that do not have slew violations.
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Report for clock tree: clk
+[06/06 13:12:06   1317s] ==========================
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Clock Tree Gating Structure (Logical):
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] # Full cycle clock gates   : 0
+[06/06 13:12:06   1317s] Minimum clock gating depth : 0
+[06/06 13:12:06   1317s] Maximum clock gating depth : 0
+[06/06 13:12:06   1317s] Clock gate area (um^2)     : 0.000
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Clock Tree Buffering Structure (Logical):
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] # Buffers             : 3056
+[06/06 13:12:06   1317s] # Inverters           :    0
+[06/06 13:12:06   1317s]   Total               : 3056
+[06/06 13:12:06   1317s] Minimum depth         :    8
+[06/06 13:12:06   1317s] Maximum depth         :    9
+[06/06 13:12:06   1317s] Buffering area (um^2) : 8433.036
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Clock Tree Level Structure (Logical):
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] ---------------------------------------------------------------------------
+[06/06 13:12:06   1317s] Level  # Full  # Posedge  # Negedge  # RAM  # Enable  # Non enable  # Other
+[06/06 13:12:06   1317s]        Cycle   Flops      Flops      Clock  Latch     Latch         Sinks
+[06/06 13:12:06   1317s]                                      Pins   Sinks     Sinks         
+[06/06 13:12:06   1317s] ---------------------------------------------------------------------------
+[06/06 13:12:06   1317s] root     0       16750        0        0       0           0           0
+[06/06 13:12:06   1317s] ---------------------------------------------------------------------------
+[06/06 13:12:06   1317s] Total    0       16750        0        0       0           0           0
+[06/06 13:12:06   1317s] ---------------------------------------------------------------------------
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] Target and measured clock slews (in ns):
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] ----------------------------------------------------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s] Timing Corner            Worst Rising  Worst Falling  Worst Rising  Worst Falling  Leaf Slew    Leaf Slew  Trunk Slew   Trunk Slew
+[06/06 13:12:06   1317s]                          Leaf Slew     Leaf Slew      Trunk Slew    Trunk Slew     Target Type  Target     Target Type  Target
+[06/06 13:12:06   1317s] ----------------------------------------------------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s] slow_corner:hold.early      0.121          0.142         0.122          0.148      ignored          -      ignored          -
+[06/06 13:12:06   1317s] slow_corner:hold.late       0.121          0.142         0.122          0.147      ignored          -      ignored          -
+[06/06 13:12:06   1317s] slow_corner:setup.early     0.121          0.142         0.122          0.148      ignored          -      ignored          -
+[06/06 13:12:06   1317s] slow_corner:setup.late      0.121          0.142         0.122          0.147      explicit     *0.050     explicit     *0.050
+[06/06 13:12:06   1317s] ----------------------------------------------------------------------------------------------------------------------------------
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] * - indicates that target was not met.
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] auto extracted - target was extracted from SDC.
+[06/06 13:12:06   1317s] auto computed - target was computed when balancing trees.
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] 
+[06/06 13:12:06   1317s] <CMD> report_clock_timing -type summary > $RPT/clock_timing_summary.rpt
+[06/06 13:12:07   1317s] <CMD> setExtractRCMode -engine postRoute
+[06/06 13:12:07   1317s] Closing parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d'. 46564 times net's RC data read were performed.
+[06/06 13:12:07   1317s] **WARN: (IMPEXT-3493):	The design extraction status has been reset by set_analysis_view/update_rc_corner or setExtractRCMode  command. The parasitic data can be regenerated either by extracting the design using the extractRC command or by loading the SPEF or RCDB file(s). To prevent resetting of the extraction status, avoid changing extraction modes.
+[06/06 13:12:07   1317s] Type 'man IMPEXT-3493' for more detail.
+[06/06 13:12:07   1317s] <CMD> extractRC
+[06/06 13:12:07   1317s] **WARN: (IMPEXT-3518):	The lower process node is set (using command 'setDesignMode') but the technology file for tQuantus extraction not specified. Therefore, going for postRoute (effortLevel low) extraction instead of recommended extractor 'tQuantus' for lower nodes. Use command 'set_analysis_view/update_rc_corner' to specify the technology file for tQuantus extraction to take place.
+[06/06 13:12:07   1317s] Extraction called for design 'bmi_chip_top' of instances=109116 and nets=46595 using extraction engine 'postRoute' at effort level 'low' .
+[06/06 13:12:07   1317s] PostRoute (effortLevel low) RC Extraction called for design bmi_chip_top.
+[06/06 13:12:07   1317s] RC Extraction called in multi-corner(1) mode.
+[06/06 13:12:07   1317s] **WARN: (IMPEXT-6197):	The Cap table file is not specified. This will result in lower parasitic accuracy when using preRoute extraction or postRoute extraction with effort level 'low'. It is recommended to generate the Cap table file using the 'generateCapTbl' command and specify it before extraction using 'create_rc_corner/update_rc_corner -cap_table'.
+[06/06 13:12:07   1317s] Type 'man IMPEXT-6197' for more detail.
+[06/06 13:12:07   1317s] **WARN: (IMPEXT-3032):	Because the cap table file was not provided, it will be created internally with the following process info:
+[06/06 13:12:07   1317s] * Layer Id             : 1 - M1
+[06/06 13:12:07   1317s]       Thickness        : 0.15
+[06/06 13:12:07   1317s]       Min Width        : 0.06
+[06/06 13:12:07   1317s]       Layer Dielectric : 4.1
+[06/06 13:12:07   1317s] * Layer Id             : 2 - M2
+[06/06 13:12:07   1317s]       Thickness        : 0.18
+[06/06 13:12:07   1317s]       Min Width        : 0.08
+[06/06 13:12:07   1317s]       Layer Dielectric : 4.1
+[06/06 13:12:07   1317s] * Layer Id             : 3 - M3
+[06/06 13:12:07   1317s]       Thickness        : 0.18
+[06/06 13:12:07   1317s]       Min Width        : 0.08
+[06/06 13:12:07   1317s]       Layer Dielectric : 4.1
+[06/06 13:12:07   1317s] * Layer Id             : 4 - M4
+[06/06 13:12:07   1317s]       Thickness        : 0.18
+[06/06 13:12:07   1317s]       Min Width        : 0.08
+[06/06 13:12:07   1317s]       Layer Dielectric : 4.1
+[06/06 13:12:07   1317s] * Layer Id             : 5 - M5
+[06/06 13:12:07   1317s]       Thickness        : 0.18
+[06/06 13:12:07   1317s]       Min Width        : 0.08
+[06/06 13:12:07   1317s]       Layer Dielectric : 4.1
+[06/06 13:12:07   1317s] * Layer Id             : 6 - M6
+[06/06 13:12:07   1317s]       Thickness        : 0.18
+[06/06 13:12:07   1317s]       Min Width        : 0.08
+[06/06 13:12:07   1317s]       Layer Dielectric : 4.1
+[06/06 13:12:07   1317s] * Layer Id             : 7 - M7
+[06/06 13:12:07   1317s]       Thickness        : 0.18
+[06/06 13:12:07   1317s]       Min Width        : 0.08
+[06/06 13:12:07   1317s]       Layer Dielectric : 4.1
+[06/06 13:12:07   1317s] * Layer Id             : 8 - M8
+[06/06 13:12:07   1317s]       Thickness        : 0.18
+[06/06 13:12:07   1317s]       Min Width        : 0.08
+[06/06 13:12:07   1317s]       Layer Dielectric : 4.1
+[06/06 13:12:07   1317s] * Layer Id             : 9 - M9
+[06/06 13:12:07   1317s]       Thickness        : 1
+[06/06 13:12:07   1317s]       Min Width        : 0.08
+[06/06 13:12:07   1317s]       Layer Dielectric : 4.1
+[06/06 13:12:07   1317s] * Layer Id             : 10 - M10
+[06/06 13:12:07   1317s]       Thickness        : 1
+[06/06 13:12:07   1317s]       Min Width        : 0.22
+[06/06 13:12:07   1317s]       Layer Dielectric : 4.1
+[06/06 13:12:07   1317s] * Layer Id             : 11 - M11
+[06/06 13:12:07   1317s]       Thickness        : 1
+[06/06 13:12:07   1317s]       Min Width        : 0.22
+[06/06 13:12:07   1317s]       Layer Dielectric : 4.1
+[06/06 13:12:07   1317s] extractDetailRC Option : -outfile /tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d -maxResLength 200  -basic
+[06/06 13:12:07   1317s] RC Mode: PostRoute -effortLevel low [Basic CapTable, LEF Resistances]
+[06/06 13:12:07   1317s]       RC Corner Indexes            0   
+[06/06 13:12:07   1317s] Capacitance Scaling Factor   : 1.00000 
+[06/06 13:12:07   1317s] Coupling Cap. Scaling Factor : 1.00000 
+[06/06 13:12:07   1317s] Resistance Scaling Factor    : 1.00000 
+[06/06 13:12:07   1317s] Clock Cap. Scaling Factor    : 1.00000 
+[06/06 13:12:07   1317s] Clock Res. Scaling Factor    : 1.00000 
+[06/06 13:12:07   1317s] Shrink Factor                : 1.00000
+[06/06 13:12:07   1318s] Initializing multi-corner resistance tables ...
+[06/06 13:12:07   1318s] Checking LVS Completed (CPU Time= 0:00:00.1  MEM= 1884.9M)
+[06/06 13:12:07   1318s] Creating parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d' for storing RC.
+[06/06 13:12:07   1318s] Extracted 10.0001% (CPU Time= 0:00:00.6  MEM= 1936.9M)
+[06/06 13:12:08   1319s] Extracted 20.0002% (CPU Time= 0:00:01.6  MEM= 1936.9M)
+[06/06 13:12:09   1320s] Extracted 30.0002% (CPU Time= 0:00:02.4  MEM= 1936.9M)
+[06/06 13:12:10   1321s] Extracted 40.0002% (CPU Time= 0:00:03.1  MEM= 1940.9M)
+[06/06 13:12:11   1322s] Extracted 50.0002% (CPU Time= 0:00:04.0  MEM= 1940.9M)
+[06/06 13:12:11   1322s] Extracted 60.0002% (CPU Time= 0:00:04.7  MEM= 1940.9M)
+[06/06 13:12:12   1323s] Extracted 70.0002% (CPU Time= 0:00:05.4  MEM= 1940.9M)
+[06/06 13:12:14   1325s] Extracted 80.0002% (CPU Time= 0:00:07.2  MEM= 1940.9M)
+[06/06 13:12:15   1325s] Extracted 90.0002% (CPU Time= 0:00:07.8  MEM= 1940.9M)
+[06/06 13:12:15   1326s] Extracted 100% (CPU Time= 0:00:08.7  MEM= 1941.9M)
+[06/06 13:12:16   1326s] Number of Extracted Resistors     : 1319268
+[06/06 13:12:16   1326s] Number of Extracted Ground Cap.   : 1319450
+[06/06 13:12:16   1326s] Number of Extracted Coupling Cap. : 2880780
+[06/06 13:12:16   1326s] Opening parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d' for reading.
+[06/06 13:12:16   1326s] Filtering XCap in 'relativeAndCoupling' mode using values coupling_c_threshold=0.1fF, relative_c_threshold=1, and total_c_threshold=0fF.
+[06/06 13:12:16   1326s] Checking LVS Completed (CPU Time= 0:00:00.1  MEM= 1926.9M)
+[06/06 13:12:16   1326s] Creating parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb_Filter.rcdb.d' for storing RC.
+[06/06 13:12:16   1327s] Closing parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d'. 46564 times net's RC data read were performed.
+[06/06 13:12:16   1327s] Lumped Parasitic Loading Started (total cpu=0:00:00.0, real=0:00:00.0, current mem=1934.926M)
+[06/06 13:12:16   1327s] Opening parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d' for reading.
+[06/06 13:12:16   1327s] Lumped Parasitic Loading Completed (total cpu=0:00:00.0, real=0:00:00.0, current mem=1934.926M)
+[06/06 13:12:16   1327s] PostRoute (effortLevel low) RC Extraction DONE (CPU Time: 0:00:09.4  Real Time: 0:00:09.0  MEM: 1934.926M)
+[06/06 13:12:16   1327s] <CMD> report_power > digital_final_reports/power_vectorless.rpt
+[06/06 13:12:16   1327s] 
+[06/06 13:12:16   1327s] Power Net Detected:
+[06/06 13:12:16   1327s]     Voltage	    Name
+[06/06 13:12:16   1327s]     0.00V	    VSS
+[06/06 13:12:16   1327s]     0.90V	    VDD
+[06/06 13:12:16   1327s] Starting SI iteration 1 using Infinite Timing Windows
+[06/06 13:12:16   1327s] #################################################################################
+[06/06 13:12:16   1327s] # Design Stage: PostRoute
+[06/06 13:12:16   1327s] # Design Name: bmi_chip_top
+[06/06 13:12:16   1327s] # Design Mode: 45nm
+[06/06 13:12:16   1327s] # Analysis Mode: MMMC OCV 
+[06/06 13:12:16   1327s] # Parasitics Mode: SPEF/RCDB
+[06/06 13:12:16   1327s] # Signoff Settings: SI On 
+[06/06 13:12:16   1327s] #################################################################################
+[06/06 13:12:17   1328s] Setting infinite Tws ...
+[06/06 13:12:17   1328s] First Iteration Infinite Tw... 
+[06/06 13:12:17   1328s] Calculate early delays in OCV mode...
+[06/06 13:12:17   1328s] Calculate late delays in OCV mode...
+[06/06 13:12:17   1328s] Topological Sorting (REAL = 0:00:00.0, MEM = 1909.9M, InitMEM = 1909.9M)
+[06/06 13:12:17   1328s] Initializing multi-corner resistance tables ...
+[06/06 13:12:17   1328s] End AAE Lib Interpolated Model. (MEM=1926.88 CPU Time=0:00:00.0, Real Time=0:00:00.0)
+[06/06 13:12:17   1328s] Opening parasitic data file '/tmp/innovus_temp_3257181_huntress.ece.northwestern.edu_vcs5888_XdUOy2/bmi_chip_top_3257181_tFUbBP.rcdb.d' for reading.
+[06/06 13:12:17   1328s] RC Database In Completed (CPU Time= 0:00:00.0  Real Time=0:00:00.0  MEM= 1926.9M)
+[06/06 13:15:30   1521s] Total number of fetched objects 46569
+[06/06 13:15:30   1521s] AAE_INFO-618: Total number of nets in the design is 46595,  100.0 percent of the nets selected for SI analysis
+[06/06 13:15:31   1521s] End Timing Check Calculation. (CPU Time=0:00:00.6, Real Time=0:00:01.0)
+[06/06 13:15:31   1521s] End delay calculation. (MEM=1984.11 CPU=0:03:13 REAL=0:03:13)
+[06/06 13:15:31   1521s] *** CDM Built up (cpu=0:03:14  real=0:03:15  mem= 1984.1M) ***
+[06/06 13:15:32   1523s] Loading CTE timing window with TwFlowType 0...(CPU = 0:00:00.0, REAL = 0:00:00.0, MEM = 1978.1M)
+[06/06 13:15:32   1523s] Add other clocks and setupCteToAAEClockMapping during iter 1
+[06/06 13:15:32   1523s] Loading CTE timing window is completed (CPU = 0:00:00.1, REAL = 0:00:00.0, MEM = 1978.1M)
+[06/06 13:15:32   1523s] Starting SI iteration 2
+[06/06 13:15:33   1523s] Calculate early delays in OCV mode...
+[06/06 13:15:33   1523s] Calculate late delays in OCV mode...
+[06/06 13:15:33   1523s] End AAE Lib Interpolated Model. (MEM=1986.16 CPU Time=0:00:00.0, Real Time=0:00:00.0)
+[06/06 13:15:35   1526s] Glitch Analysis: View slow_view -- Total Number of Nets Skipped = 482. 
+[06/06 13:15:35   1526s] Glitch Analysis: View slow_view -- Total Number of Nets Analyzed = 46569. 
+[06/06 13:15:35   1526s] Total number of fetched objects 46569
+[06/06 13:15:35   1526s] AAE_INFO-618: Total number of nets in the design is 46595,  5.8 percent of the nets selected for SI analysis
+[06/06 13:15:35   1526s] End delay calculation. (MEM=1946.16 CPU=0:00:02.7 REAL=0:00:02.0)
+[06/06 13:15:35   1526s] *** CDM Built up (cpu=0:00:02.7  real=0:00:02.0  mem= 1946.2M) ***
+[06/06 13:15:36   1527s] 
+[06/06 13:15:36   1527s] Begin Power Analysis
+[06/06 13:15:36   1527s] 
+[06/06 13:15:36   1527s]     0.00V	    VSS
+[06/06 13:15:36   1527s]     0.90V	    VDD
+[06/06 13:15:36   1527s] Begin Processing Timing Library for Power Calculation
+[06/06 13:15:36   1527s] 
+[06/06 13:15:36   1527s] Begin Processing Timing Library for Power Calculation
+[06/06 13:15:36   1527s] 
+[06/06 13:15:36   1527s] 
+[06/06 13:15:36   1527s] 
+[06/06 13:15:36   1527s] Begin Processing Power Net/Grid for Power Calculation
+[06/06 13:15:36   1527s] 
+[06/06 13:15:36   1527s] Ended Processing Power Net/Grid for Power Calculation: (cpu=0:00:00, real=0:00:00, mem(process/total)=1738.33MB/1738.33MB)
+[06/06 13:15:36   1527s] 
+[06/06 13:15:36   1527s] Begin Processing Timing Window Data for Power Calculation
+[06/06 13:15:36   1527s] 
+[06/06 13:15:36   1527s] clk(50MHz) scan_clk(25MHz) spi_sclk(10MHz) Ended Processing Timing Window Data for Power Calculation: (cpu=0:00:00, real=0:00:00, mem(process/total)=1739.17MB/1739.17MB)
+[06/06 13:15:37   1527s] 
+[06/06 13:15:37   1527s] Begin Processing User Attributes
+[06/06 13:15:37   1527s] 
+[06/06 13:15:37   1527s] Ended Processing User Attributes: (cpu=0:00:00, real=0:00:00, mem(process/total)=1739.17MB/1739.17MB)
+[06/06 13:15:37   1527s] 
+[06/06 13:15:37   1527s] Begin Processing Signal Activity
+[06/06 13:15:37   1527s] 
+[06/06 13:15:38   1528s] Ended Processing Signal Activity: (cpu=0:00:01, real=0:00:01, mem(process/total)=1740.21MB/1740.21MB)
+[06/06 13:15:38   1528s] 
+[06/06 13:15:38   1528s] Begin Power Computation
+[06/06 13:15:38   1528s] 
+[06/06 13:15:38   1528s]       ----------------------------------------------------------
+[06/06 13:15:38   1528s]       # of cell(s) missing both power/leakage table: 0
+[06/06 13:15:38   1528s]       # of cell(s) missing power table: 0
+[06/06 13:15:38   1528s]       # of cell(s) missing leakage table: 0
+[06/06 13:15:38   1528s]       # of MSMV cell(s) missing power_level: 0
+[06/06 13:15:38   1528s]       ----------------------------------------------------------
+[06/06 13:15:38   1528s] 
+[06/06 13:15:38   1528s] 
+[06/06 13:15:41   1531s] Ended Power Computation: (cpu=0:00:02, real=0:00:02, mem(process/total)=1740.91MB/1740.91MB)
+[06/06 13:15:41   1531s] 
+[06/06 13:15:41   1531s] Begin Processing User Attributes
+[06/06 13:15:41   1531s] 
+[06/06 13:15:41   1531s] Ended Processing User Attributes: (cpu=0:00:00, real=0:00:00, mem(process/total)=1740.91MB/1740.91MB)
+[06/06 13:15:41   1531s] 
+[06/06 13:15:41   1531s] Ended Power Analysis: (cpu=0:00:04, real=0:00:04, mem(process/total)=1740.91MB/1740.91MB)
+[06/06 13:15:41   1531s] 

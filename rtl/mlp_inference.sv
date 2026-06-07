@@ -1,86 +1,63 @@
-// mlp_inference.v
+// mlp_inference.sv
+// 8->8(ReLU)->4 fully-connected MLP classifier.
+// Single shared MAC, time-multiplexed across all neurons.
 //
-// 8->8(ReLU)->4 MLP classifier.
-// One shared MAC unit, time-multiplexed across all neurons.
+// Weights are loaded once at power-up via a serial scan chain
+// (864 bits = 108 bytes: hw[8][8], hb[8], ow[4][8], ob[4]).
+// Do not assert start until the scan chain has been fully loaded.
 //
-// Latency: ~110 clock cycles from start to done.
-// Memory:  108 bytes of weight registers (no SRAM).
+// HIDDEN_BIAS_SCALE / OUTPUT_BIAS_SCALE come from the Python training
+// pipeline (printed in weights.hex header). They correct the quantization
+// scale mismatch between int8 weights and float32 biases.
 //
-// Weight loading: shift all 108 bytes in via scan chain
-//   before inference begins. See scan chain section below.
-//
-// Bias scaling: hidden_bias_scale and output_bias_scale are
-//   constants derived from the Python training pipeline.
-//   Hard-code them as parameters - they are NOT weights,
-//   they are fixed architectural constants that account for
-//   the quantization scale mismatch between weights and biases.
+// Latency: 64 (H_MAC) + 8 (H_BIAS) + 8 (H_RELU)
+//        + 32 (O_MAC)  + 4 (O_BIAS) + 4 (O_STORE) + 1 (DONE)
+//        = 121 clock cycles from start to done.
 
 module mlp_inference #(
-    parameter N_IN     = 8,     // SBP input features
-    parameter N_HIDDEN = 8,     // hidden neurons
-    parameter N_OUT    = 4,     // output classes
-    parameter IN_WIDTH = 8,     // SBP feature width (unsigned)
-    parameter W_WIDTH  = 8,     // weight width (signed)
-    parameter ACC_WIDTH = 32,   // accumulator width (signed)
-    parameter SCORE_WIDTH = 32, // output score width (signed)
-
-    // -- From Python pipeline output ---------------------------
-    // These come from your weights.hex header:
-    //   // hidden_bias_scale = <N>
-    //   // output_bias_scale = <N>
-    // Fill them in after running bmi_final.py
+    parameter N_IN              = 8,
+    parameter N_HIDDEN          = 8,
+    parameter N_OUT             = 4,
+    parameter IN_WIDTH          = 8,
+    parameter W_WIDTH           = 8,
+    parameter ACC_WIDTH         = 32,
+    parameter SCORE_WIDTH       = 32,
     parameter HIDDEN_BIAS_SCALE = 228,
     parameter OUTPUT_BIAS_SCALE = 193
 )(
-    input  wire                              clk,
-    input  wire                              rst_n,
+    input  wire                          clk,
+    input  wire                          rst_n,
 
-    // Handshake
-    input  wire                              start,           // 1-cycle pulse from SBP block
-    output reg                               done,            // 1-cycle pulse when scores valid
+    input  wire                          start,
+    output logic                         done,
 
-    // Input features from SBP block
-    input  wire [IN_WIDTH-1:0]               sbp_features [0:N_IN-1],
+    input  wire [IN_WIDTH-1:0]           sbp_features [0:N_IN-1],
+    output logic signed [SCORE_WIDTH-1:0] class_scores [0:N_OUT-1],
 
-    // Output scores (one per class, signed 32-bit)
-    output reg  signed [SCORE_WIDTH-1:0]     class_scores [0:N_OUT-1],
-
-    // -- Scan chain for weight loading -------------------------
-    // Shift 108 bytes in LSB-first before asserting start.
-    // Sequence: hw[0][0..7], hw[1][0..7], ..., hw[7][0..7],
-    //           hb[0..7], ow[0][0..7], ..., ow[3][0..7], ob[0..3]
-    input  wire                              scan_en,         // enable scan shift
-    input  wire                              scan_clk,        // scan clock (separate from sys clk)
-    input  wire                              scan_in          // serial scan data in
+    // Scan chain: shift 108 bytes LSB-first on scan_clk before asserting start.
+    // Order: hw[0..7][0..7], hb[0..7], ow[0..3][0..7], ob[0..3]
+    input  wire                          scan_en,
+    input  wire                          scan_clk,
+    input  wire                          scan_in
 );
 
-    // ========================================================
-    // WEIGHT REGISTERS
-    // ========================================================
-    // All signed 8-bit. Loaded once via scan chain at power-up.
-    // After loading, read-only during inference.
-
-    reg signed [W_WIDTH-1:0] hw [0:N_HIDDEN-1][0:N_IN-1];    // hidden weights  [neuron][input]
-    reg signed [W_WIDTH-1:0] hb [0:N_HIDDEN-1];               // hidden biases   [neuron]
-    reg signed [W_WIDTH-1:0] ow [0:N_OUT-1][0:N_IN-1];        // output weights  [class][hidden]
-    reg signed [W_WIDTH-1:0] ob [0:N_OUT-1];                  // output biases   [class]
-
-    // -- Scan chain --------------------------------------------
-    // 108 bytes = 864 bits total. One big shift register.
-    // Layout matches weights.hex: hw[0..7][0..7], hb[0..7],
-    //                             ow[0..3][0..7], ob[0..3]
-    // Each byte shifts in LSB-first, one bit per scan_clk.
+    // =========================================================================
+    // Scan chain and weight registers
+    // =========================================================================
     localparam TOTAL_WEIGHT_BITS = (N_HIDDEN*N_IN + N_HIDDEN + N_OUT*N_IN + N_OUT) * W_WIDTH;
 
-    reg [TOTAL_WEIGHT_BITS-1:0] scan_reg;
+    logic [TOTAL_WEIGHT_BITS-1:0] scan_reg;
 
-    always @(posedge scan_clk) begin
+    always_ff @(posedge scan_clk)
         if (scan_en)
             scan_reg <= {scan_in, scan_reg[TOTAL_WEIGHT_BITS-1:1]};
-    end
 
-    // Unpack scan_reg into weight registers (combinational)
-    // This is a generate loop - zero hardware cost, just wiring.
+    // Combinationally unpack scan_reg into named weight arrays.
+    logic signed [W_WIDTH-1:0] hw [0:N_HIDDEN-1][0:N_IN-1];
+    logic signed [W_WIDTH-1:0] hb [0:N_HIDDEN-1];
+    logic signed [W_WIDTH-1:0] ow [0:N_OUT-1][0:N_IN-1];
+    logic signed [W_WIDTH-1:0] ob [0:N_OUT-1];
+
     genvar gi, gj;
     generate
         for (gi = 0; gi < N_HIDDEN; gi++) begin : unpack_hw
@@ -101,189 +78,167 @@ module mlp_inference #(
         end
     endgenerate
 
-    // ========================================================
-    // INTERNAL REGISTERS
-    // ========================================================
-
-    // Accumulator for current neuron's dot product
-    reg signed [ACC_WIDTH-1:0] acc;
-
-    // Hidden layer activations (after ReLU), stored as 32-bit
-    // so output layer has enough dynamic range to work with
-    reg signed [ACC_WIDTH-1:0] hidden_act [0:N_HIDDEN-1];
-
-    // Neuron and weight counters
-    reg [$clog2(N_HIDDEN)-1:0]  neuron_idx;   // which neuron we're computing
-    reg [$clog2(N_IN)-1:0]      weight_idx;   // which weight within that neuron
-
-    // ========================================================
+    // =========================================================================
     // FSM
-    // ========================================================
-    //
-    //  IDLE
-    //    │  start=1
-    //    ▼
-    //  H_MAC ----------------------------------------------┐
-    //    │  weight_idx == N_IN-1                           │
-    //    ▼                                                 │
-    //  H_BIAS  (add hb[neuron] × HIDDEN_BIAS_SCALE)       │
-    //    │                                                 │ neuron_idx < N_HIDDEN-1
-    //    ▼                                                 │ (next neuron)
-    //  H_RELU  (if acc<0: acc=0, store to hidden_act)     │
-    //    │  neuron_idx == N_HIDDEN-1  ---------------------┘
-    //    │  (all hidden neurons done)
-    //    ▼
-    //  O_MAC ----------------------------------------------┐
-    //    │  weight_idx == N_HIDDEN-1                       │
-    //    ▼                                                 │ neuron_idx < N_OUT-1
-    //  O_BIAS  (add ob[neuron] × OUTPUT_BIAS_SCALE)       │
-    //    │                                                 │
-    //  O_STORE (store score, advance neuron) -------------┘
-    //    │  neuron_idx == N_OUT-1
-    //    ▼
-    //  DONE (pulse done=1, back to IDLE)
+    // =========================================================================
+    typedef enum logic [2:0] {
+        S_IDLE,
+        S_H_MAC,
+        S_H_BIAS,
+        S_H_RELU,
+        S_O_MAC,
+        S_O_BIAS,
+        S_O_STORE,
+        S_DONE
+    } state_t;
 
-    localparam [2:0]
-        S_IDLE    = 3'd0,
-        S_H_MAC   = 3'd1,
-        S_H_BIAS  = 3'd2,
-        S_H_RELU  = 3'd3,
-        S_O_MAC   = 3'd4,
-        S_O_BIAS  = 3'd5,
-        S_O_STORE = 3'd6,
-        S_DONE    = 3'd7;
+    state_t state, next_state;
 
-    reg [2:0] state;
+    logic signed [ACC_WIDTH-1:0]   acc;
+    logic signed [ACC_WIDTH-1:0]   hidden_act   [0:N_HIDDEN-1];
+    logic [$clog2(N_HIDDEN)-1:0]   neuron_idx;
+    logic [$clog2(N_IN)-1:0]       weight_idx;
 
-    // -- MAC inputs (registered for timing) --------------------
-    // Sign-extend the unsigned SBP input to ACC_WIDTH before multiply
-    wire signed [ACC_WIDTH-1:0] sbp_signed [0:N_IN-1];
+    // Next-cycle values
+    logic signed [ACC_WIDTH-1:0]   next_acc;
+    logic signed [ACC_WIDTH-1:0]   next_hidden_act   [0:N_HIDDEN-1];
+    logic signed [SCORE_WIDTH-1:0] next_class_scores [0:N_OUT-1];
+    logic [$clog2(N_HIDDEN)-1:0]   next_neuron_idx;
+    logic [$clog2(N_IN)-1:0]       next_weight_idx;
+    logic                           next_done;
+
+    // Zero-extend unsigned SBP inputs to accumulator width for signed multiply
     genvar gk;
+    logic signed [ACC_WIDTH-1:0] sbp_signed [0:N_IN-1];
     generate
         for (gk = 0; gk < N_IN; gk++) begin : sign_extend_sbp
             assign sbp_signed[gk] = {{(ACC_WIDTH-IN_WIDTH){1'b0}}, sbp_features[gk]};
         end
     endgenerate
 
-    always @(posedge clk or negedge rst_n) begin
+    // -------------------------------------------------------------------------
+    // Combinational: next-state and datapath
+    // -------------------------------------------------------------------------
+    always_comb begin
+        // Defaults — hold everything
+        next_state      = state;
+        next_acc        = acc;
+        next_neuron_idx = neuron_idx;
+        next_weight_idx = weight_idx;
+        next_done       = 1'b0;
+        for (int i = 0; i < N_HIDDEN; i++) next_hidden_act[i]   = hidden_act[i];
+        for (int i = 0; i < N_OUT;    i++) next_class_scores[i] = class_scores[i];
+
+        unique case (state)
+            S_IDLE: begin
+                if (start) begin
+                    next_acc        = '0;
+                    next_neuron_idx = '0;
+                    next_weight_idx = '0;
+                    next_state      = S_H_MAC;
+                end
+            end
+
+            // Hidden layer dot product — one weight per cycle
+            S_H_MAC: begin
+                next_acc = acc + sbp_signed[weight_idx] *
+                           {{(ACC_WIDTH-W_WIDTH){hw[neuron_idx][weight_idx][W_WIDTH-1]}},
+                             hw[neuron_idx][weight_idx]};
+                if (weight_idx == N_IN - 1) begin
+                    next_weight_idx = '0;
+                    next_state      = S_H_BIAS;
+                end else begin
+                    next_weight_idx = weight_idx + 1;
+                end
+            end
+
+            // Add scaled hidden bias
+            S_H_BIAS: begin
+                next_acc  = acc + ({{(ACC_WIDTH-W_WIDTH){hb[neuron_idx][W_WIDTH-1]}},
+                                     hb[neuron_idx]} *
+                                   $signed({{(ACC_WIDTH-16){1'b0}},
+                                            HIDDEN_BIAS_SCALE[15:0]}));
+                next_state = S_H_RELU;
+            end
+
+            // ReLU + store hidden activation; advance to next neuron
+            S_H_RELU: begin
+                next_hidden_act[neuron_idx] = acc[ACC_WIDTH-1] ? '0 : acc;
+                next_acc = '0;
+
+                if (neuron_idx == N_HIDDEN - 1) begin
+                    next_neuron_idx = '0;
+                    next_state      = S_O_MAC;
+                end else begin
+                    next_neuron_idx = neuron_idx + 1;
+                    next_state      = S_H_MAC;
+                end
+            end
+
+            // Output layer dot product — one hidden activation per cycle
+            S_O_MAC: begin
+                next_acc = acc + hidden_act[weight_idx] *
+                           {{(ACC_WIDTH-W_WIDTH){ow[neuron_idx][weight_idx][W_WIDTH-1]}},
+                             ow[neuron_idx][weight_idx]};
+                if (weight_idx == N_HIDDEN - 1) begin
+                    next_weight_idx = '0;
+                    next_state      = S_O_BIAS;
+                end else begin
+                    next_weight_idx = weight_idx + 1;
+                end
+            end
+
+            // Add scaled output bias
+            S_O_BIAS: begin
+                next_acc  = acc + ({{(ACC_WIDTH-W_WIDTH){ob[neuron_idx][W_WIDTH-1]}},
+                                     ob[neuron_idx]} *
+                                   $signed({{(ACC_WIDTH-16){1'b0}},
+                                            OUTPUT_BIAS_SCALE[15:0]}));
+                next_state = S_O_STORE;
+            end
+
+            // Latch output score; advance to next class or finish
+            S_O_STORE: begin
+                next_class_scores[neuron_idx] = acc;
+                next_acc = '0;
+
+                if (neuron_idx == N_OUT - 1) begin
+                    next_state = S_DONE;
+                end else begin
+                    next_neuron_idx = neuron_idx + 1;
+                    next_state      = S_O_MAC;
+                end
+            end
+
+            S_DONE: begin
+                next_done  = 1'b1;
+                next_state = S_IDLE;
+            end
+
+            default: next_state = S_IDLE;
+        endcase
+    end
+
+    // -------------------------------------------------------------------------
+    // Sequential: registers
+    // -------------------------------------------------------------------------
+    always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            state      <= S_IDLE;
-            done       <= 1'b0;
-            acc        <= '0;
-            neuron_idx <= '0;
-            weight_idx <= '0;
-            for (int i = 0; i < N_HIDDEN; i++) hidden_act[i]    <= '0;
-            for (int i = 0; i < N_OUT;    i++) class_scores[i]  <= '0;
-
+            state       <= S_IDLE;
+            done        <= 1'b0;
+            acc         <= '0;
+            neuron_idx  <= '0;
+            weight_idx  <= '0;
+            for (int i = 0; i < N_HIDDEN; i++) hidden_act[i]   <= '0;
+            for (int i = 0; i < N_OUT;    i++) class_scores[i] <= '0;
         end else begin
-            done <= 1'b0;    // default deassert
-
-            case (state)
-
-                // -- Wait for start signal --------------------
-                S_IDLE: begin
-                    if (start) begin
-                        acc        <= '0;
-                        neuron_idx <= '0;
-                        weight_idx <= '0;
-                        state      <= S_H_MAC;
-                    end
-                end
-
-                // -- Hidden layer: accumulate dot product -----
-                // Each cycle: acc += sbp[weight_idx] * hw[neuron_idx][weight_idx]
-                // Processes one weight per clock. Takes N_IN=8 cycles per neuron.
-                S_H_MAC: begin
-                    acc <= acc + sbp_signed[weight_idx] *
-                                 {{(ACC_WIDTH-W_WIDTH){hw[neuron_idx][weight_idx][W_WIDTH-1]}},
-                                   hw[neuron_idx][weight_idx]};
-
-                    if (weight_idx == N_IN - 1) begin
-                        weight_idx <= '0;
-                        state      <= S_H_BIAS;
-                    end else begin
-                        weight_idx <= weight_idx + 1;
-                    end
-                end
-
-                // -- Add hidden bias (scaled) ------------------
-                // acc += hb[neuron] * HIDDEN_BIAS_SCALE
-                // HIDDEN_BIAS_SCALE is a constant - synthesizer
-                // turns this into a series of shifts and adds.
-                S_H_BIAS: begin
-                    acc   <= acc + ({{(ACC_WIDTH-W_WIDTH){hb[neuron_idx][W_WIDTH-1]}},
-                                      hb[neuron_idx]} *
-                                    $signed({{(ACC_WIDTH-16){1'b0}},
-                                             HIDDEN_BIAS_SCALE[15:0]}));
-                    state <= S_H_RELU;
-                end
-
-                // -- ReLU + store hidden activation ------------
-                // if acc < 0: store 0 (ReLU clips negatives)
-                // if acc >= 0: store acc
-                // Then move to next neuron or proceed to output layer
-                S_H_RELU: begin
-                    hidden_act[neuron_idx] <= acc[ACC_WIDTH-1] ? '0 : acc;
-
-                    acc <= '0;    // reset accumulator for next neuron
-
-                    if (neuron_idx == N_HIDDEN - 1) begin
-                        // All hidden neurons computed -> start output layer
-                        neuron_idx <= '0;
-                        state      <= S_O_MAC;
-                    end else begin
-                        neuron_idx <= neuron_idx + 1;
-                        state      <= S_H_MAC;
-                    end
-                end
-
-                // -- Output layer: accumulate dot product ------
-                // Each cycle: acc += hidden_act[weight_idx] * ow[neuron_idx][weight_idx]
-                // No ReLU on output layer - scores can be negative.
-                S_O_MAC: begin
-                    acc <= acc + hidden_act[weight_idx] *
-                                 {{(ACC_WIDTH-W_WIDTH){ow[neuron_idx][weight_idx][W_WIDTH-1]}},
-                                   ow[neuron_idx][weight_idx]};
-
-                    if (weight_idx == N_HIDDEN - 1) begin
-                        weight_idx <= '0;
-                        state      <= S_O_BIAS;
-                    end else begin
-                        weight_idx <= weight_idx + 1;
-                    end
-                end
-
-                // -- Add output bias (scaled) ------------------
-                S_O_BIAS: begin
-                    acc   <= acc + ({{(ACC_WIDTH-W_WIDTH){ob[neuron_idx][W_WIDTH-1]}},
-                                      ob[neuron_idx]} *
-                                    $signed({{(ACC_WIDTH-16){1'b0}},
-                                             OUTPUT_BIAS_SCALE[15:0]}));
-                    state <= S_O_STORE;
-                end
-
-                // -- Store output score -------------------------
-                S_O_STORE: begin
-                    class_scores[neuron_idx] <= acc;
-                    acc <= '0;
-
-                    if (neuron_idx == N_OUT - 1) begin
-                        state <= S_DONE;
-                    end else begin
-                        neuron_idx <= neuron_idx + 1;
-                        state      <= S_O_MAC;
-                    end
-                end
-
-                // -- Pulse done, return to IDLE -----------------
-                S_DONE: begin
-                    done  <= 1'b1;
-                    state <= S_IDLE;
-                end
-
-                default: state <= S_IDLE;
-
-            endcase
+            state       <= next_state;
+            done        <= next_done;
+            acc         <= next_acc;
+            neuron_idx  <= next_neuron_idx;
+            weight_idx  <= next_weight_idx;
+            for (int i = 0; i < N_HIDDEN; i++) hidden_act[i]   <= next_hidden_act[i];
+            for (int i = 0; i < N_OUT;    i++) class_scores[i] <= next_class_scores[i];
         end
     end
 
