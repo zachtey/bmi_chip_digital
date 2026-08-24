@@ -3,6 +3,7 @@
 Real-time brain-machine interface classifier. Eight electrode channels are read through a time-multiplexed ADC, spiking band power (SBP) features are extracted per channel, and a small MLP classifies the neural activity into one of four hand-gesture classes. Results are reported to a host over SPI.
 
 Designed by Zachary Tey, Christopher Leung, Rohit Seshadri, Ben Rivera Flores
+Full project report attached in repository under "392-final-report.pdf"
 ## Output Classes
 
 | Index | Label | Description |
