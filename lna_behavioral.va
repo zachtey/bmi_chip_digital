@@ -1,0 +1,90 @@
+// =============================================================================
+// lna_behavioral.va
+//
+// Behavioral Verilog-A model of a Harrison-Charles style neural LNA.
+//
+// Models:
+//   - Midband voltage gain A_M (default 100 V/V = 40 dB)
+//   - High-frequency single-pole rolloff at f_H (default 10 kHz)
+//   - Low-frequency single-pole rolloff at f_L (default 0.025 Hz)
+//     (mimics the C2 / MOS-bipolar pseudoresistor AC coupling)
+//   - Output biased at mid-supply: (vdd + vss) / 2
+//   - Differential input: vin - vref
+//   - Inverting topology (matches the OTA-with-capacitive-feedback structure)
+//
+// Pins match the symbol in the testbench: vdd, vss, ibias, vin, vref, vout.
+// ibias is sensed but not used to modulate behavior (kept for symbol parity).
+//
+// Usage in testbench: replace transistor-level LNA cellview with this view,
+// or instantiate directly. Run transient with vin = vref + small AC signal.
+// =============================================================================
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+module lna_behavioral (vdd, vss, ibias, vin, vref, vout);
+
+    // ----- Ports -----
+    inout  vdd, vss, ibias, vin, vref, vout;
+    electrical vdd, vss, ibias, vin, vref, vout;
+
+    // ----- Parameters -----
+    parameter real gain  = 100.0   from (0:inf);   // midband gain (V/V)
+    parameter real f_h   = 10e3    from (0:inf);   // high-freq -3dB (Hz)
+    parameter real f_l   = 0.025   from (0:inf);   // low-freq  -3dB (Hz)
+    parameter real vout_swing_margin = 0.05;       // keep output this far from rails (V)
+
+    // ----- Internal -----
+    real vin_diff;        // differential input
+    real vcm_out;         // output bias (mid-supply)
+    real vout_ac;         // bandpass-filtered amplified signal
+    real vout_target;     // final output before clamping
+    real vout_clamped;    // after rail clamping
+    real wh, wl;          // pole angular frequencies
+
+    analog begin
+        // High and low pole angular frequencies
+        wh = `M_TWO_PI * f_h;
+        wl = `M_TWO_PI * f_l;
+
+        // Differential input
+        vin_diff = V(vin) - V(vref);
+
+        // Output common-mode = mid-supply
+        vcm_out = 0.5 * (V(vdd) + V(vss));
+
+        // Bandpass transfer:
+        //   H(s) = -gain * [s / (s + wl)] * [wh / (s + wh)]
+        // Implemented with two cascaded Laplace filters.
+        //   First stage: highpass  s/(s+wl) on input
+        //   Second stage: lowpass  wh/(s+wh) with -gain
+        //
+        // laplace_nd(expr, num_coeffs, den_coeffs)
+        //   coefficients ordered [a0, a1, a2, ...] for a0 + a1*s + a2*s^2 + ...
+
+        // Highpass: numerator = 0 + 1*s, denominator = wl + 1*s
+        // Lowpass + inverting gain:
+        //   numerator = -gain*wh, denominator = wh + 1*s
+        vout_ac = laplace_nd(
+                    laplace_nd(vin_diff, {0.0, 1.0}, {wl, 1.0}),
+                    {-gain * wh}, {wh, 1.0}
+                  );
+
+        // Add output common-mode
+        vout_target = vcm_out + vout_ac;
+
+        // Soft rail clamp (prevents unphysical swing in transient)
+        vout_clamped = vout_target;
+        if (vout_target > V(vdd) - vout_swing_margin)
+            vout_clamped = V(vdd) - vout_swing_margin;
+        if (vout_target < V(vss) + vout_swing_margin)
+            vout_clamped = V(vss) + vout_swing_margin;
+
+        V(vout) <+ vout_clamped;
+
+        // Sense ibias node so it has a defined voltage (high-Z reference).
+        // Pull it weakly toward vss; current is negligible.
+        I(ibias, vss) <+ V(ibias, vss) * 1e-9;
+    end
+
+endmodule

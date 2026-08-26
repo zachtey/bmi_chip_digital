@@ -84,10 +84,10 @@ module tb_bmi_chip_top;
             // so the first real sample lands at index 0 in sample_window.
             begin : restart_check
                 integer all_zero;
-                all_zero = 1;
-                for (ch = 0; ch < N_CH; ch++)
+                all_zero = 1; //assume all counters are zero initially
+                for (ch = 0; ch < N_CH; ch++) //if any channel is non-zero, all_zero is false
                     if (dut.u_sc.sample_cnt[ch] !== 0) all_zero = 0;
-                if (all_zero && (dut.u_sc.collecting === 1'b1))
+                if (all_zero && (dut.u_sc.state === dut.u_sc.COLLECT)) //if we want to re-do collection then reset all internal counters 
                     for (ch = 0; ch < N_CH; ch++) drv_cnt[ch] = 0;
             end
 
@@ -102,46 +102,48 @@ module tb_bmi_chip_top;
         end
     end
 
-    // -- Scan chain: load weights before releasing reset -------
+    // Scan chain: load weights before releasing reset 
     task load_weights;
         integer i, b;
         reg [TOTAL_SCAN_BITS-1:0] scan_data;
         begin
             for (i = 0; i < TOTAL_SCAN_BITS/8; i++)
-                scan_data[i*8 +: 8] = weights[i];
-            scan_en = 1;
-            for (b = 0; b < TOTAL_SCAN_BITS; b++) begin
+                scan_data[i*8 +: 8] = weights[i]; //packing scan_data[i:i+8] into weight[i]
+            scan_en = 1; //scan_en = 1 → each rising scan_clk edge shifts in a bit
+            for (b = 0; b < TOTAL_SCAN_BITS; b++) begin //scan weight, already stored in scan_data, bit by bit from LSB onwards 
                 scan_in = scan_data[b];
                 #(SCAN_PERIOD/2) scan_clk = 1;
                 #(SCAN_PERIOD/2) scan_clk = 0;
             end
-            scan_en = 0;
+            scan_en = 0; //turn off scan enables
             scan_in = 0;
         end
     endtask
 
-    // -- SPI master -------------------------------------------
+    // SPI master, acts like a recieving MCU or device that reads the SPI interface with the DUT chip
     // Blocks until the DUT's output_formatter raises packet_valid,
     // then clocks the 80-bit packet out over SPI Mode 0.
+    // drives spi_cs_n, spi_sclk
+    // samples spi_miso
     task spi_receive;
         integer b;
         begin
             wait (dut.packet_valid);
             @(posedge clk);
 
-            spi_cs_n = 0;
+            spi_cs_n = 0; // pull down chip select line
             #(SPI_PERIOD);
-            rx_packet = 0;
+            rx_packet = 0; //clear RX packet
             for (b = 0; b < PKT_BITS; b++) begin
                 spi_sclk = 0;
                 #(SPI_PERIOD/2);
                 spi_sclk = 1;
-                rx_packet = {rx_packet[PKT_BITS-2:0], spi_miso};
+                rx_packet = {rx_packet[PKT_BITS-2:0], spi_miso}; //shifts into LSB 
                 #(SPI_PERIOD/2);
             end
             spi_sclk = 0;
             #(SPI_PERIOD);
-            spi_cs_n = 1;
+            spi_cs_n = 1; // disavke chip select
             #(SPI_PERIOD);
             // packet_ready has now fired; sample_collection.resume restarted
             // collection. The background ADC driver will detect the restart
@@ -149,9 +151,9 @@ module tb_bmi_chip_top;
         end
     endtask
 
-    // -- Result checker ----------------------------------------
+    // Result checker 
     task check_result;
-        input integer vec;
+        input integer vec; //input to the task
         reg [7:0] sync_byte, rx_class, exp;
         begin
             sync_byte = rx_packet[PKT_BITS-1 -: 8];
@@ -181,7 +183,7 @@ module tb_bmi_chip_top;
         end
     endtask
 
-    // -- Main sequence -----------------------------------------
+    // Main sequence
     integer vec;
 
     initial begin
