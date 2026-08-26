@@ -57,6 +57,10 @@ module tb_bmi_chip_top;
     reg [7:0] exp_class [0:N_VECTORS-1];          // expected class per vector
     reg [7:0] weights   [0:TOTAL_SCAN_BITS/8-1];  // MLP weights
 
+    // Expected intermediate results for the vector currently being checked.
+    reg [7:0]         exp_sbp    [0:N_CH-1];
+    reg signed [63:0] exp_scores [0:3];
+
     reg [PKT_BITS-1:0] rx_packet;
 
     integer pass_count = 0;
@@ -150,16 +154,18 @@ module tb_bmi_chip_top;
         end
     endtask
 
-    // // Result checker 
+    // Result checker 
     // Check one packet received for ADC vector vec.
     task check_result;
         input integer vec;
 
+        integer   i;
         reg [7:0] sync_byte;
         reg [7:0] class_byte;
         reg [1:0] rx_class;
         reg [1:0] expected_class;
         reg       vector_pass;
+        reg [PKT_BITS-1:0] expected_packet;
 
         begin
             vector_pass = 1'b1;
@@ -169,6 +175,14 @@ module tb_bmi_chip_top;
             class_byte    = rx_packet[71:64];
             rx_class      = class_byte[1:0];
             expected_class = exp_class[vec][1:0];
+            expected_packet = {
+                8'hAA,
+                6'b0, expected_class,
+                exp_scores[0][31:16],
+                exp_scores[1][31:16],
+                exp_scores[2][31:16],
+                exp_scores[3][31:16]
+            };
 
             // Byte 0 must contain the framing value.
             if (sync_byte !== 8'hAA) begin
@@ -201,6 +215,60 @@ module tb_bmi_chip_top;
                 vector_pass = 1'b0;
             end
 
+            // Check all feature-extractor outputs against the Python golden model.
+            for (i = 0; i < N_CH; i = i + 1) begin
+                if (dut.u_sbp.sbp_features[i] !== exp_sbp[i]) begin
+                    $display(
+                        "FAIL vec%02d: SBP[%0d] got=%0d expected=%0d",
+                        vec, i, dut.u_sbp.sbp_features[i], exp_sbp[i]
+                    );
+                    vector_pass = 1'b0;
+                end
+            end
+
+            // The golden files store signed 64-bit values, while this RTL stores
+            // 32-bit scores. First prove that each reference value fits in 32 bits,
+            // then compare the complete RTL score bit-for-bit.
+            for (i = 0; i < 4; i = i + 1) begin
+                if (exp_scores[i][63:32] !== {32{exp_scores[i][31]}}) begin
+                    $display(
+                        "FAIL vec%02d: golden score[%0d]=%0d exceeds signed 32-bit range",
+                        vec, i, $signed(exp_scores[i])
+                    );
+                    vector_pass = 1'b0;
+                end
+
+                if (dut.class_scores[i] !== exp_scores[i][31:0]) begin
+                    $display(
+                        "FAIL vec%02d: score[%0d] got=%0d expected=%0d",
+                        vec, i, $signed(dut.class_scores[i]), $signed(exp_scores[i])
+                    );
+                    vector_pass = 1'b0;
+                end
+            end
+
+            // The formatter transmits bits [31:16] of each full score.
+            if (rx_packet[63:48] !== exp_scores[0][31:16]) begin
+                $display("FAIL vec%02d: SPI score[0] got=0x%04X expected=0x%04X",
+                         vec, rx_packet[63:48], exp_scores[0][31:16]);
+                vector_pass = 1'b0;
+            end
+            if (rx_packet[47:32] !== exp_scores[1][31:16]) begin
+                $display("FAIL vec%02d: SPI score[1] got=0x%04X expected=0x%04X",
+                         vec, rx_packet[47:32], exp_scores[1][31:16]);
+                vector_pass = 1'b0;
+            end
+            if (rx_packet[31:16] !== exp_scores[2][31:16]) begin
+                $display("FAIL vec%02d: SPI score[2] got=0x%04X expected=0x%04X",
+                         vec, rx_packet[31:16], exp_scores[2][31:16]);
+                vector_pass = 1'b0;
+            end
+            if (rx_packet[15:0] !== exp_scores[3][31:16]) begin
+                $display("FAIL vec%02d: SPI score[3] got=0x%04X expected=0x%04X",
+                         vec, rx_packet[15:0], exp_scores[3][31:16]);
+                vector_pass = 1'b0;
+            end
+
             if (vector_pass) begin
                 $display(
                     "PASS vec%02d: sync=0x%02X class=%0d",
@@ -211,15 +279,15 @@ module tb_bmi_chip_top;
                 pass_count = pass_count + 1;
             end else begin
                 $display(
-                    "  scores(32b): PG-LF=%0d PG-HF=%0d SG-LF=%0d SG-HF=%0d",
-                    $signed(dut.class_scores[0]),
-                    $signed(dut.class_scores[1]),
-                    $signed(dut.class_scores[2]),
-                    $signed(dut.class_scores[3])
+                    "  SPI packet actual  : 0x%020X",
+                    rx_packet
                 );
-
                 $display(
-                    "  sbp: %0d %0d %0d %0d %0d %0d %0d %0d",
+                    "  SPI packet expected: 0x%020X",
+                    expected_packet
+                );
+                $display(
+                    "  SBP actual  : %0d %0d %0d %0d %0d %0d %0d %0d",
                     dut.u_sbp.sbp_features[0],
                     dut.u_sbp.sbp_features[1],
                     dut.u_sbp.sbp_features[2],
@@ -228,6 +296,25 @@ module tb_bmi_chip_top;
                     dut.u_sbp.sbp_features[5],
                     dut.u_sbp.sbp_features[6],
                     dut.u_sbp.sbp_features[7]
+                );
+                $display(
+                    "  SBP expected: %0d %0d %0d %0d %0d %0d %0d %0d",
+                    exp_sbp[0], exp_sbp[1], exp_sbp[2], exp_sbp[3],
+                    exp_sbp[4], exp_sbp[5], exp_sbp[6], exp_sbp[7]
+                );
+                $display(
+                    "  Scores actual  : PG-LF=%0d PG-HF=%0d SG-LF=%0d SG-HF=%0d",
+                    $signed(dut.class_scores[0]),
+                    $signed(dut.class_scores[1]),
+                    $signed(dut.class_scores[2]),
+                    $signed(dut.class_scores[3])
+                );
+                $display(
+                    "  Scores expected: PG-LF=%0d PG-HF=%0d SG-LF=%0d SG-HF=%0d",
+                    $signed(exp_scores[0]),
+                    $signed(exp_scores[1]),
+                    $signed(exp_scores[2]),
+                    $signed(exp_scores[3])
                 );
 
                 fail_count = fail_count + 1;
@@ -261,15 +348,24 @@ module tb_bmi_chip_top;
         // from the very first posedge after reset.
         $readmemh("vectors/vec00_adc.hex", adc_mem);
 
-        // Release reset. adc_channel immediately begins cycling 0->7->0.
-        // The background driver wakes up at the next negedge and starts
-        // presenting vec00 samples.
+        // Prime channel 0 before releasing reset so its first sample is stable
+        // before the collector's first active rising edge. The background ADC
+        // driver takes over at the following falling edge.
+        adc_sample = adc_mem[0];
+        drv_cnt[0] = 1;
+        @(negedge clk);
+
+        // Release reset between capture edges. adc_channel starts at channel 0.
         rst_n = 1;
 
         for (vec = 0; vec < N_VECTORS; vec++) begin
             // Wait for the RTL to collect all N_CH*N_SAMPLES samples.
             // The background driver drove them continuously, one per negedge.
             @(posedge dut.window_ready);
+
+            // Load the Python golden-model outputs for the current vector.
+            $readmemh($sformatf("vectors/vec%02d_sbp.hex", vec), exp_sbp);
+            $readmemh($sformatf("vectors/vec%02d_scores.hex", vec), exp_scores);
 
             // Preload the NEXT vector immediately, while the SBP->MLP->SPI
             // pipeline is still running (collecting is paused, so the RTL
