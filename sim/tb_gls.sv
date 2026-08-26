@@ -1,20 +1,4 @@
-// ============================================================
 // tb_gls.sv  -  Gate-level simulation, 40 test vectors
-//
-// Drop-in replacement for tb_bmi_chip_top.sv against the
-// synthesized bmi_chip_top_syn.v netlist.
-//
-// Two changes vs the RTL testbench:
-//
-//  1. Restart detection uses dut.packet_ready (a preserved top-level
-//     wire) instead of dut.u_sc.sample_cnt / dut.u_sc.collecting,
-//     which become escaped identifiers after synthesis.
-//
-//  2. The FAIL debug display of sbp_features / class_scores is
-//     removed — those are escaped per-bit wires in the GLS netlist
-//     and the array-index syntax does not resolve.  The pass/fail
-//     verdict itself is unaffected (it reads only rx_packet from SPI).
-// ============================================================
 `timescale 1ns/1ps
 
 module tb_gls;

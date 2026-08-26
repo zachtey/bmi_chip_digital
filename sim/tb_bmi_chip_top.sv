@@ -1,4 +1,3 @@
-// ============================================================
 // tb_bmi_chip_top.sv  -  RTL simulation, 40 test vectors
 //
 // ADC model: a background process continuously presents
@@ -7,7 +6,7 @@
 // When packet_ready fires (collection restart), it auto-resets
 // drv_cnt to 0 to stay in sync with sample_collection's
 // sample_cnt reset, eliminating stale captures between vectors.
-// ============================================================
+
 `timescale 1ns/1ps
 
 module tb_bmi_chip_top;
@@ -151,33 +150,86 @@ module tb_bmi_chip_top;
         end
     endtask
 
-    // Result checker 
+    // // Result checker 
+    // Check one packet received for ADC vector vec.
     task check_result;
-        input integer vec; //input to the task
-        reg [7:0] sync_byte, rx_class, exp;
+        input integer vec;
+
+        reg [7:0] sync_byte;
+        reg [7:0] class_byte;
+        reg [1:0] rx_class;
+        reg [1:0] expected_class;
+        reg       vector_pass;
+
         begin
-            sync_byte = rx_packet[PKT_BITS-1 -: 8];
-            if (sync_byte !== 8'hAA)
-                $display("  WARNING vec%02d: bad sync byte 0x%02X", vec, sync_byte);
+            vector_pass = 1'b1;
 
-            rx_class = rx_packet[PKT_BITS-9 -: 8] & 8'h03;
-            exp      = exp_class[vec] & 8'h03;
+            // Decode packet fields.
+            sync_byte     = rx_packet[79:72];
+            class_byte    = rx_packet[71:64];
+            rx_class      = class_byte[1:0];
+            expected_class = exp_class[vec][1:0];
 
-            if (rx_class === exp) begin
-                $display("PASS vec%02d  got=%0d", vec, rx_class);
+            // Byte 0 must contain the framing value.
+            if (sync_byte !== 8'hAA) begin
+                $display(
+                    "FAIL vec%02d: sync got=0x%02X expected=0xAA",
+                    vec,
+                    sync_byte
+                );
+                vector_pass = 1'b0;
+            end
+
+            // The upper six class-byte bits are reserved and must be zero.
+            if (class_byte[7:2] !== 6'b0) begin
+                $display(
+                    "FAIL vec%02d: reserved class bits are 0x%02X",
+                    vec,
+                    class_byte[7:2]
+                );
+                vector_pass = 1'b0;
+            end
+
+            // The low two bits contain the predicted class.
+            if (rx_class !== expected_class) begin
+                $display(
+                    "FAIL vec%02d: class got=%0d expected=%0d",
+                    vec,
+                    rx_class,
+                    expected_class
+                );
+                vector_pass = 1'b0;
+            end
+
+            if (vector_pass) begin
+                $display(
+                    "PASS vec%02d: sync=0x%02X class=%0d",
+                    vec,
+                    sync_byte,
+                    rx_class
+                );
                 pass_count = pass_count + 1;
             end else begin
-                $display("FAIL vec%02d  got=%0d  expected=%0d", vec, rx_class, exp);
-                $display("  scores(32b): PG-LF=%0d  PG-HF=%0d  SG-LF=%0d  SG-HF=%0d",
-                         $signed(dut.class_scores[0]),
-                         $signed(dut.class_scores[1]),
-                         $signed(dut.class_scores[2]),
-                         $signed(dut.class_scores[3]));
-                $display("  sbp_features(hex): %02X %02X %02X %02X %02X %02X %02X %02X",
-                         dut.u_sbp.sbp_features[0], dut.u_sbp.sbp_features[1],
-                         dut.u_sbp.sbp_features[2], dut.u_sbp.sbp_features[3],
-                         dut.u_sbp.sbp_features[4], dut.u_sbp.sbp_features[5],
-                         dut.u_sbp.sbp_features[6], dut.u_sbp.sbp_features[7]);
+                $display(
+                    "  scores(32b): PG-LF=%0d PG-HF=%0d SG-LF=%0d SG-HF=%0d",
+                    $signed(dut.class_scores[0]),
+                    $signed(dut.class_scores[1]),
+                    $signed(dut.class_scores[2]),
+                    $signed(dut.class_scores[3])
+                );
+
+                $display(
+                    "  sbp: %0d %0d %0d %0d %0d %0d %0d %0d",
+                    dut.u_sbp.sbp_features[0],
+                    dut.u_sbp.sbp_features[1],
+                    dut.u_sbp.sbp_features[2],
+                    dut.u_sbp.sbp_features[3],
+                    dut.u_sbp.sbp_features[4],
+                    dut.u_sbp.sbp_features[5],
+                    dut.u_sbp.sbp_features[6],
+                    dut.u_sbp.sbp_features[7]
+                );
+
                 fail_count = fail_count + 1;
             end
         end
@@ -236,12 +288,15 @@ module tb_bmi_chip_top;
         $display("----------------------------------------------");
         $display("RTL SIM  %0d / %0d  PASS", pass_count, N_VECTORS);
         $display("----------------------------------------------");
-        if (fail_count == 0)
-            $display("ALL PASS");
-        else
-            $display("%0d FAILURES", fail_count);
 
-        $finish;
+        if (fail_count == 0) begin
+            $display("ALL PASS");
+            $finish;
+        end else begin
+            $fatal(1, "%0d VECTORS FAILED", fail_count);
+        end
+
+        
     end
 
 endmodule
