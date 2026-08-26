@@ -5,6 +5,9 @@ Real-time brain-machine interface classifier. Eight electrode channels are read 
 Designed by Zachary Tey, Christopher Leung, Rohit Seshadri, Ben Rivera Flores
 
 Full project report attached in repository under "392-final-report.pdf"
+
+The living frontend verification methodology and requirement matrix are documented in [docs/verification_plan.md](docs/verification_plan.md).
+
 ## Output Classes
 
 | Index | Label | Description |
