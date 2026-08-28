@@ -13,6 +13,10 @@ module tb_argmax;
     logic [1:0] predicted_class;
     logic decision_valid;
 
+    // Testbench result counters
+    integer pass_count;
+    integer fail_count;
+
     //dut instantiation
     argmax #(
     .N_CLASSES  (4),
@@ -147,7 +151,7 @@ module tb_argmax;
         input logic signed [SCORE_WIDTH-1:0] score3;
         input logic [1:0] expected_class;
 
-        logic case_pass;
+        logic case_pass; //accumulative case pass; takes one fail to set low per task
 
         begin
             case_pass = 1'b1;
@@ -180,16 +184,6 @@ module tb_argmax;
                     expected_class
                 );
                 case_pass = 1'b0;
-            end else begin
-                $display(
-                    "PASS test %0d: scores=[%0d,%0d,%0d,%0d] class=%0d",
-                    test_id,
-                    $signed(score0),
-                    $signed(score1),
-                    $signed(score2),
-                    $signed(score3),
-                    predicted_class
-                );
             end
 
             // Remove valid and make sure decision_valid is a pulse.
