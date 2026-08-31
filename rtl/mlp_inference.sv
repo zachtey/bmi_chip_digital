@@ -41,9 +41,7 @@ module mlp_inference #(
     input  wire                          scan_in
 );
 
-    // =========================================================================
     // Scan chain and weight registers
-    // =========================================================================
     localparam TOTAL_WEIGHT_BITS = (N_HIDDEN*N_IN + N_HIDDEN + N_OUT*N_IN + N_OUT) * W_WIDTH;
 
     logic [TOTAL_WEIGHT_BITS-1:0] scan_reg;
@@ -78,9 +76,7 @@ module mlp_inference #(
         end
     endgenerate
 
-    // =========================================================================
     // FSM
-    // =========================================================================
     typedef enum logic [2:0] {
         S_IDLE,
         S_H_MAC,
@@ -116,9 +112,7 @@ module mlp_inference #(
         end
     endgenerate
 
-    // -------------------------------------------------------------------------
-    // Combinational: next-state and datapath
-    // -------------------------------------------------------------------------
+    // Combinational
     always_comb begin
         // Defaults — hold everything
         next_state      = state;
@@ -219,9 +213,7 @@ module mlp_inference #(
         endcase
     end
 
-    // -------------------------------------------------------------------------
-    // Sequential: registers
-    // -------------------------------------------------------------------------
+    // Sequential
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             state       <= S_IDLE;

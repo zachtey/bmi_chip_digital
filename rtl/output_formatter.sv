@@ -25,9 +25,10 @@ module output_formatter #(
     input  wire                          decision_valid,
 
     output logic [PKT_BYTES*8-1:0]       packet_data,
-    output logic                         packet_valid,
-    input  wire                          packet_ready
+    output logic                         packet_valid, //to spi slave; packet_data has complete packet that has not been consumed
+    input  wire                          packet_ready //from spi slave; the spi slave finished consuming that packet
 );
+    //packet_ready, predicted_class, class_scores, decision_valid applied as inputs from driver in tb
 
     localparam [7:0] SYNC = 8'hAA;
 
@@ -35,9 +36,7 @@ module output_formatter #(
     logic [PKT_BYTES*8-1:0] next_packet_data;
     logic                    next_packet_valid;
 
-    // -------------------------------------------------------------------------
     // Combinational: compute next packet_data and packet_valid
-    // -------------------------------------------------------------------------
     always_comb begin
         next_packet_data  = packet_data;
         next_packet_valid = packet_valid;
@@ -55,13 +54,11 @@ module output_formatter #(
         end
 
         // packet_ready takes priority — clears even if decision_valid fires same cycle
-        if (packet_ready)
+        if (packet_ready) //spi slave finished consuming the packet
             next_packet_valid = 1'b0;
     end
 
-    // -------------------------------------------------------------------------
-    // Sequential: registers
-    // -------------------------------------------------------------------------
+    // Sequential
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             packet_data  <= '0;
