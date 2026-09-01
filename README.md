@@ -253,5 +253,4 @@ ml/        Supplied model, quantization, and vector-generation scripts
 docs/      Verification plan and project documentation
 syn/       Genus synthesis script, SDC, netlist, and reports
 pnr/       Innovus scripts plus historical backend artifacts
-results/   Historical result summaries from the original architecture
 ```
