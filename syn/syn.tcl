@@ -36,6 +36,7 @@ syn_opt
 
 # -- Reports --------------------------------------------------
 report_timing > timing.rpt
+report timing -lint > timing_lint.rpt
 report_area   > area.rpt
 
 # -- Write gate-level netlist (for Innovus PNR) ---------------
@@ -69,5 +70,6 @@ puts "\nOutputs:"
 puts "  bmi_chip_top_syn.v  — gate-level netlist for Innovus"
 puts "  bmi_chip_top_sym.v  — Virtuoso symbol stub (with VDD/VSS)"
 puts "  check_design.rpt     — Genus structural design checks"
+puts "  timing_lint.rpt       — Genus timing-constraint coverage checks"
 
 quit

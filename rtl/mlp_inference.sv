@@ -308,8 +308,6 @@ module mlp_inference #(
                 next_done  = 1'b1;
                 next_state = S_IDLE;
             end
-
-            default: next_state = S_IDLE;
         endcase
     end
 

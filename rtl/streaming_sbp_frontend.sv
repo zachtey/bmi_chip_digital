@@ -100,11 +100,6 @@ module streaming_sbp_frontend #(
                         end
                     end
                 end
-
-                default: begin
-                    state       <= COLLECT;
-                    adc_channel <= '0;
-                end
             endcase
         end
     end
