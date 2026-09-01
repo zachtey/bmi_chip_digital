@@ -41,13 +41,23 @@ set_input_delay -clock scan_clk -min 0.5 [get_ports {scan_en scan_in}]
 # spi_sclk and spi_cs_n are sampled by the first stage of explicit two-flop
 # synchronizers in u_spi. There is no meaningful setup/hold relationship to
 # clk at those first-stage D pins, so static timing must not analyze it.
+# Give the ports explicit external-delay metadata so timing lint knows their
+# boundary environment. The false paths below override ordinary setup/hold
+# analysis at the asynchronous first-stage synchronizer inputs.
+set_input_delay -clock clk -max 5.0 [get_ports {spi_sclk spi_cs_n}]
+set_input_delay -clock clk -min 0.5 [get_ports {spi_sclk spi_cs_n}]
+
 set_false_path -from [get_ports spi_sclk] \
                -to [get_pins u_spi/sclk_sync1_reg/D]
 set_false_path -from [get_ports spi_cs_n] \
                -to [get_pins u_spi/cs_n_sync1_reg/D]
 
 # Reset is asynchronously asserted. Its safe deassertion is an RDC design
-# requirement rather than a normal data-path setup check.
+# requirement rather than a normal data-path setup check. Its delay entries
+# describe the port environment only; the false path prevents synchronous
+# setup/hold analysis from assigning meaning to its phase relative to clk.
+set_input_delay -clock clk -max 5.0 [get_ports rst_n]
+set_input_delay -clock clk -min 0.5 [get_ports rst_n]
 set_false_path -from [get_ports rst_n]
 
 # -- Output delays --------------------------------------------
