@@ -67,9 +67,10 @@ module tb_bmi_chip_top;
     integer fail_count = 0;
 
     // -- Background ADC driver state --------------------------
-    // Per-channel sample index, mirrors sample_collection.sample_cnt.
+    // Per-channel sample index, mirrors the streaming frontend counters.
     // Declared at module scope so both initial blocks can access it.
     integer drv_cnt [0:N_CH-1];
+    integer frontend_was_paused;
 
     // -- Background ADC driver --------------------------------
     // Runs continuously after reset. Presents adc_mem[ch*N_SAMPLES+drv_cnt[ch]]
@@ -78,20 +79,21 @@ module tb_bmi_chip_top;
     initial begin
         integer ch;
         for (ch = 0; ch < N_CH; ch++) drv_cnt[ch] = 0;
+        frontend_was_paused = 0;
         wait (rst_n === 1'b1);
         forever begin
             @(negedge clk);
 
-            // Detect collection restart: packet_ready fired at the previous
-            // posedge and reset all sample_cnt to 0. Re-sync drv_cnt to 0
-            // so the first real sample lands at index 0 in sample_window.
+            // Detect the frontend's actual PAUSE -> COLLECT transition rather
+            // than relying on the one-cycle packet_ready pulse. This keeps the
+            // behavioral ADC aligned even if handshake timing later changes.
             begin : restart_check
-                integer all_zero;
-                all_zero = 1; //assume all counters are zero initially
-                for (ch = 0; ch < N_CH; ch++) //if any channel is non-zero, all_zero is false
-                    if (dut.u_sc.sample_cnt[ch] !== 0) all_zero = 0;
-                if (all_zero && (dut.u_sc.state === dut.u_sc.COLLECT)) //if we want to re-do collection then reset all internal counters 
+                if (frontend_was_paused &&
+                    (dut.u_frontend.state === dut.u_frontend.COLLECT))
                     for (ch = 0; ch < N_CH; ch++) drv_cnt[ch] = 0;
+
+                frontend_was_paused =
+                    (dut.u_frontend.state === dut.u_frontend.PAUSE);
             end
 
             // Present the correct sample for whatever channel the MUX selects.
@@ -217,10 +219,10 @@ module tb_bmi_chip_top;
 
             // Check all feature-extractor outputs against the Python golden model.
             for (i = 0; i < N_CH; i = i + 1) begin
-                if (dut.u_sbp.sbp_features[i] !== exp_sbp[i]) begin
+                if (dut.sbp_features[i] !== exp_sbp[i]) begin
                     $display(
                         "FAIL vec%02d: SBP[%0d] got=%0d expected=%0d",
-                        vec, i, dut.u_sbp.sbp_features[i], exp_sbp[i]
+                        vec, i, dut.sbp_features[i], exp_sbp[i]
                     );
                     vector_pass = 1'b0;
                 end
@@ -288,14 +290,14 @@ module tb_bmi_chip_top;
                 );
                 $display(
                     "  SBP actual  : %0d %0d %0d %0d %0d %0d %0d %0d",
-                    dut.u_sbp.sbp_features[0],
-                    dut.u_sbp.sbp_features[1],
-                    dut.u_sbp.sbp_features[2],
-                    dut.u_sbp.sbp_features[3],
-                    dut.u_sbp.sbp_features[4],
-                    dut.u_sbp.sbp_features[5],
-                    dut.u_sbp.sbp_features[6],
-                    dut.u_sbp.sbp_features[7]
+                    dut.sbp_features[0],
+                    dut.sbp_features[1],
+                    dut.sbp_features[2],
+                    dut.sbp_features[3],
+                    dut.sbp_features[4],
+                    dut.sbp_features[5],
+                    dut.sbp_features[6],
+                    dut.sbp_features[7]
                 );
                 $display(
                     "  SBP expected: %0d %0d %0d %0d %0d %0d %0d %0d",

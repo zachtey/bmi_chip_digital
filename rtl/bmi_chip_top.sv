@@ -2,8 +2,8 @@
 // Top-level structural wrapper for the BMI digital signal-processing chain.
 //
 // Pipeline:
-//   ADC -> sample_collection -> sbp_feature_extraction
-//       -> mlp_inference -> argmax -> output_formatter -> spi_slave
+//   ADC -> streaming_sbp_frontend -> mlp_inference
+//       -> argmax -> output_formatter -> spi_slave
 
 module bmi_chip_top #(
     parameter N_CH              = 8,
@@ -41,8 +41,6 @@ module bmi_chip_top #(
     // -- Internal signals -----------------------------------------
 
     wire                          window_ready;
-    wire [ADC_WIDTH-1:0]          sample_window [0:N_CH-1][0:N_SAMPLES-1];
-
     wire                          sbp_done;
     wire [SBP_WIDTH-1:0]          sbp_features [0:N_CH-1];
 
@@ -56,16 +54,28 @@ module bmi_chip_top #(
     wire                          packet_valid;
     wire                          packet_ready;
 
-    // -- Block instances ------------------------------------------
+    // Block instances
 
-    sample_collection #(
-        .N_CH(N_CH), .N_SAMPLES(N_SAMPLES), .ADC_WIDTH(ADC_WIDTH)
-    ) u_sc (
+    streaming_sbp_frontend #(
+        .N_CH(N_CH), .N_SAMPLES(N_SAMPLES),
+        .ADC_WIDTH(ADC_WIDTH), .SBP_WIDTH(SBP_WIDTH)
+    ) u_frontend (
         .clk(clk), .rst_n(rst_n),
         .adc_sample(adc_sample),
         .adc_channel(adc_channel),
         .resume(packet_ready),
-        .window_ready(window_ready),
+        .features_done(sbp_done),
+        .sbp_features(sbp_features)
+    );
+
+    // Preserve this legacy implementation as an easy rollback reference.
+    /*
+    sample_collection #(
+        .N_CH(N_CH), .N_SAMPLES(N_SAMPLES), .ADC_WIDTH(ADC_WIDTH)
+    ) u_sc (
+        .clk(clk), .rst_n(rst_n),
+        .adc_sample(adc_sample), .adc_channel(adc_channel),
+        .resume(packet_ready), .window_ready(window_ready),
         .sample_window(sample_window)
     );
 
@@ -78,6 +88,10 @@ module bmi_chip_top #(
         .sample_window(sample_window),
         .sbp_features(sbp_features)
     );
+    */
+
+    // Retained as a named top-level event for existing waveform/debug flows.
+    assign window_ready = sbp_done;
 
     mlp_inference #(
         .N_IN(N_IN), .N_HIDDEN(N_HIDDEN), .N_OUT(N_OUT),

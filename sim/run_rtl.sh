@@ -12,6 +12,7 @@ cd `dirname $0`
 
 xrun -64bit -access r -nokey -timescale 1ns/1ps \
     ../rtl/bmi_chip_top.sv          \
+    ../rtl/streaming_sbp_frontend.sv \
     ../rtl/sample_collection.sv     \
     ../rtl/sbp_feature_extractor.sv \
     ../rtl/mlp_inference.sv         \

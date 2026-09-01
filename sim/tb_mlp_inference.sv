@@ -24,14 +24,15 @@ module tb_mlp_inference;
     localparam integer OUTPUT_BIAS_SCALE  = 5;
 
     localparam integer TOTAL_WEIGHT_BYTES =
-        N_HIDDEN*N_IN + N_HIDDEN + N_OUT*N_IN + N_OUT;
+        N_HIDDEN*N_IN + N_HIDDEN + N_OUT*N_HIDDEN + N_OUT;
     localparam integer TOTAL_WEIGHT_BITS  = TOTAL_WEIGHT_BYTES * W_WIDTH;
 
     // From the edge that accepts start to the edge that asserts done:
     //   8 hidden neurons * (8 MAC + bias + ReLU) = 80 cycles
     //   4 output neurons * (8 MAC + bias + store) = 40 cycles
     //   S_DONE                                      =  1 cycle
-    localparam integer EXPECTED_LATENCY = 121;
+    localparam integer EXPECTED_LATENCY =
+        N_HIDDEN*(N_IN + 2) + N_OUT*(N_HIDDEN + 2) + 1;
     localparam integer MAX_WAIT_CYCLES  = EXPECTED_LATENCY + 10;
 
     // DUT interface
@@ -172,6 +173,41 @@ module tb_mlp_inference;
             model_ob[1] =  8'sd0;   //   0
             model_ob[2] =  8'sd4;   //  20
             model_ob[3] =  8'sd127; // 635
+        end
+    endtask
+
+    // Model 4: drive the largest positive hidden activation, then use the
+    // positive and negative weight rails to exercise both output extremes.
+    task automatic setup_positive_boundary_model;
+        integer hidden_idx;
+        integer input_idx;
+        begin
+            clear_model();
+            for (hidden_idx = 0; hidden_idx < N_HIDDEN; hidden_idx = hidden_idx + 1) begin
+                model_hb[hidden_idx] = 8'sd127;
+                for (input_idx = 0; input_idx < N_IN; input_idx = input_idx + 1)
+                    model_hw[hidden_idx][input_idx] = 8'sd127;
+
+                model_ow[0][hidden_idx] =  8'sd127;
+                model_ow[1][hidden_idx] = -8'sd128;
+            end
+            model_ob[0] =  8'sd127;
+            model_ob[1] = -8'sd128;
+        end
+    endtask
+
+    // Model 5: drive the most-negative hidden pre-activation. Correct signed
+    // accumulation keeps it negative, after which ReLU must clamp it to zero.
+    task automatic setup_negative_hidden_boundary_model;
+        integer hidden_idx;
+        integer input_idx;
+        begin
+            clear_model();
+            for (hidden_idx = 0; hidden_idx < N_HIDDEN; hidden_idx = hidden_idx + 1) begin
+                model_hb[hidden_idx] = -8'sd128;
+                for (input_idx = 0; input_idx < N_IN; input_idx = input_idx + 1)
+                    model_hw[hidden_idx][input_idx] = -8'sd128;
+            end
         end
     endtask
 
@@ -484,7 +520,20 @@ module tb_mlp_inference;
         load_model();
         check_case(4, 0, 0, 0, 0, 0, 0, 0, 0, 1'b0);
 
-        check_async_reset(5);
+        // Arithmetic boundary tests use ADC features at their unsigned maximum.
+        // With the test scales, every positive hidden activation is 259461;
+        // output classes 0 and 1 then exercise the positive/negative MAC rails.
+        setup_positive_boundary_model();
+        load_model();
+        check_case(5, 255, 255, 255, 255, 255, 255, 255, 255, 1'b0);
+
+        // The corresponding negative hidden pre-activation is -261504 and must
+        // remain negative until ReLU clamps all hidden activations to zero.
+        setup_negative_hidden_boundary_model();
+        load_model();
+        check_case(6, 255, 255, 255, 255, 255, 255, 255, 255, 1'b0);
+
+        check_async_reset(7);
 
         $display("----------------------------------------------");
         $display("MLP INFERENCE TEST: %0d passed, %0d failed",

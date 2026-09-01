@@ -4,8 +4,7 @@
 # ============================================================
 
 # -- Read RTL (submodules before top) -------------------------
-read_hdl -sv ../rtl/sample_collection.sv
-read_hdl -sv ../rtl/sbp_feature_extractor.sv
+read_hdl -sv ../rtl/streaming_sbp_frontend.sv
 read_hdl -sv ../rtl/mlp_inference.sv
 read_hdl -sv ../rtl/argmax.sv
 read_hdl -sv ../rtl/output_formatter.sv

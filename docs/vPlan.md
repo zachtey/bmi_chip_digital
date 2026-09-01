@@ -78,54 +78,70 @@ Status values:
 - **Partial:** some behavior is exercised, but coverage or checking is incomplete.
 - **Planned:** no adequate automated check exists yet.
 
-### 4.1 Sample collection
+### 4.1 Streaming sample collection
 
 | ID | Requirement | Stimulus | Checker / coverage goal | Status |
 |---|---|---|---|---|
-| SC-001 | Cycle through channels 0–7 in order | Normal vector collection | Check `adc_channel` sequence for a complete window | Planned |
-| SC-002 | Capture 250 samples for every channel | 40 generated ADC vectors | End-to-end SBP/score equivalence indirectly checks collection | Partial |
-| SC-003 | Pulse `window_ready` once after the final capture | Normal window | Assertion: exactly one cycle high | Planned |
-| SC-004 | Stop writing the sample window while paused | Delay SPI transaction | Assert window and counters remain stable | Planned |
-| SC-005 | Resume at channel/sample zero after `packet_ready` | Back-to-back vectors | Check first sample and counter restart | Partial |
-| SC-006 | Reset clears state, counters, and window | Reset at startup and mid-collection | Directed reset test | Planned |
-| SC-007 | Counter widths support legal terminal count | Parameter review | Elaboration assertion or parameter test | Planned |
+| SC-001 | Cycle through channels 0–7 in order | Four complete directed windows | Check every `adc_channel` selection | Implemented (`tb_streaming_sbp_frontend.sv`) |
+| SC-002 | Accept 250 samples for every channel | Directed windows and 40 generated ADC vectors | Reference sums plus end-to-end equivalence | Implemented (`tb_streaming_sbp_frontend.sv`, `tb_bmi_chip_top.sv`) |
+| SC-003 | Pulse `features_done` on the final capture | Complete directed window | Check final-edge assertion and one-cycle pulse | Implemented (`tb_streaming_sbp_frontend.sv`) |
+| SC-004 | Pause accumulation and hold features until resume | Delay resume for multiple clocks | Check channel, pulse, and feature stability | Implemented (`tb_streaming_sbp_frontend.sv`) |
+| SC-005 | Resume at channel/sample zero after `packet_ready` | Back-to-back directed and generated windows | Check complete consecutive windows | Implemented (`tb_streaming_sbp_frontend.sv`, `tb_bmi_chip_top.sv`) |
+| SC-006 | Reset clears state, counters, accumulators, and features | Reset at startup and mid-collection | Directed asynchronous reset test | Implemented (`tb_streaming_sbp_frontend.sv`) |
+| SC-007 | Counter and accumulator widths support legal terminal values | Parameter review and rail patterns | Elaboration checks and maximum-sum comparison | Implemented (`streaming_sbp_frontend.sv`, `tb_streaming_sbp_frontend.sv`) |
 
 ### 4.2 SBP feature extraction
 
 | ID | Requirement | Stimulus | Checker / coverage goal | Status |
 |---|---|---|---|---|
-| SBP-001 | Calculate `sum(abs(sample-128)) >> 8` per channel | 40 generated vectors | Compare all 8 results per vector | Implemented |
-| SBP-002 | All samples equal 128 produce zero | Directed constant window | Check all outputs equal zero | Planned |
-| SBP-003 | ADC code 0 exercises maximum deviation 128 | Directed all-zero window | Check expected result 125 | Planned |
-| SBP-004 | ADC code 255 exercises positive rail deviation 127 | Directed all-255 window | Check expected result 124 | Planned |
-| SBP-005 | Accumulator includes the final sample | Impulse in sample index 249 | Compare against reference | Planned |
-| SBP-006 | `done` is a one-cycle pulse at expected latency | Start pulse | Assertion and cycle counter | Planned |
-| SBP-007 | Ignore or define `start` while busy | Reassert `start` during RUN | Check documented behavior | Planned |
+| SBP-001 | Calculate `sum(abs(sample-128)) >> 8` while samples arrive | Directed patterns and 40 generated vectors | Compare all 8 results against independent references | Implemented (`tb_streaming_sbp_frontend.sv`, `tb_bmi_chip_top.sv`) |
+| SBP-002 | All samples equal 128 produce zero | Directed constant window | Check all outputs equal zero | Implemented (`tb_streaming_sbp_frontend.sv`) |
+| SBP-003 | ADC code 0 exercises maximum deviation 128 | Directed channel at all-zero rail | Check expected result 125 | Implemented (`tb_streaming_sbp_frontend.sv`) |
+| SBP-004 | ADC code 255 exercises positive rail deviation 127 | Directed channel at all-255 rail | Check expected result 124 | Implemented (`tb_streaming_sbp_frontend.sv`) |
+| SBP-005 | Accumulator includes the final sample | Deviations at indices 0 and 249 | Check exact shifted result of one | Implemented (`tb_streaming_sbp_frontend.sv`) |
+| SBP-006 | `features_done` is a one-cycle pulse at expected capture count | Complete directed windows | Check pulse on capture 2000 and low afterward | Implemented (`tb_streaming_sbp_frontend.sv`) |
+| SBP-007 | Samples presented while paused do not alter completed features | Change ADC input while delaying resume | Check feature and control stability | Implemented (`tb_streaming_sbp_frontend.sv`) |
 
 ### 4.3 Weight loading and MLP inference
 
 | ID | Requirement | Stimulus | Checker / coverage goal | Status |
 |---|---|---|---|---|
-| MLP-001 | Load all 864 parameter bits in the documented order | `weights.hex` scan load | End-to-end score equivalence | Partial |
-| MLP-002 | Hidden MAC uses all 8 features and signed weights | 40 generated vectors | Compare four final scores | Implemented |
-| MLP-003 | Add scaled hidden bias | Generated vectors | Score equivalence | Implemented |
-| MLP-004 | Clamp negative hidden pre-activations to zero | Directed weights/features | Observe/check hidden activations | Planned |
-| MLP-005 | Output MAC uses all 8 hidden activations | Generated vectors | Compare all four full scores | Implemented |
-| MLP-006 | Add scaled output bias without output ReLU | Generated and negative-score cases | Compare signed scores | Implemented |
-| MLP-007 | Produce four valid scores and one-cycle `done` | Start transaction | Latency and pulse assertion | Planned |
-| MLP-008 | Arithmetic does not overflow configured widths | Boundary analysis and directed test | Assertions plus documented bounds | Planned |
-| MLP-009 | Ignore or define `start` while busy | Reassert start during inference | Check documented behavior | Planned |
+| MLP-001 | Load all 864 parameter bits in the documented order | Synthetic unit models and production `weights.hex` | Check scan image, unpacked arrays, and end-to-end scores | Implemented (`tb_mlp_inference.sv`, `tb_bmi_chip_top.sv`) |
+| MLP-002 | Hidden MAC uses all 8 features and signed weights | Directed signed weights, unsigned boundary inputs, and 40 generated vectors | Compare hidden activations and four final scores | Implemented (`tb_mlp_inference.sv`, `tb_bmi_chip_top.sv`) |
+| MLP-003 | Add scaled hidden bias | Directed positive and negative hidden biases | Procedural reference-model comparison | Implemented (`tb_mlp_inference.sv`) |
+| MLP-004 | Clamp negative hidden pre-activations to zero | Directed positive and negative pre-activations | Check every internal hidden activation | Implemented (`tb_mlp_inference.sv`) |
+| MLP-005 | Output MAC uses all 8 hidden activations | Directed output connectivity and 40 generated vectors | Compare all four full scores | Implemented (`tb_mlp_inference.sv`, `tb_bmi_chip_top.sv`) |
+| MLP-006 | Add scaled output bias without output ReLU | Negative, zero, and positive bias-only scores | Compare signed scores | Implemented (`tb_mlp_inference.sv`) |
+| MLP-007 | Produce four valid scores and one-cycle `done` | Repeated inference transactions | Check derived latency, all scores, pulse width, and score stability | Implemented (`tb_mlp_inference.sv`) |
+| MLP-008 | Arithmetic does not overflow configured widths | Positive/negative rail models with maximum unsigned inputs | Elaboration range checks plus reference-model comparison | Implemented (`mlp_inference.sv`, `tb_mlp_inference.sv`) |
+| MLP-009 | Ignore `start` while busy | Reassert start during hidden MAC | Check original transaction result and latency are unchanged | Implemented (`tb_mlp_inference.sv`) |
 | MLP-010 | Inference cannot start with partial weights | Incomplete scan load | Add protocol/status and negative test | Planned |
+
+For the production 8/8/4 configuration, unsigned features span 0–255 and
+signed weights/biases span −128–127. Including the configured bias scales:
+
+```text
+hidden maximum = 8(255)(127) + 127(228) =  288,036
+hidden minimum = 8(255)(-128) - 128(228) = -290,304
+
+output maximum = 8(288,036)(127) + 127(193) =  292,669,087
+output minimum = 8(288,036)(-128) - 128(193) = -294,973,568
+```
+
+The hidden range requires 20 signed bits and the output range requires 30
+signed bits. Therefore, the configured 32-bit accumulator and score outputs
+cannot overflow for any legal 8-bit feature, weight, or bias value. Elaboration
+checks in `mlp_inference.sv` reject parameter combinations that do not fit.
 
 ### 4.4 Argmax
 
 | ID | Requirement | Stimulus | Checker / coverage goal | Status |
 |---|---|---|---|---|
-| ARG-001 | Select each of classes 0–3 when uniquely largest | Four directed cases | Check class and valid pulse | Planned |
-| ARG-002 | Compare scores as signed values | All-negative and signed-boundary cases | Check expected winner | Planned |
-| ARG-003 | Resolve ties toward the lowest index | Pair and four-way ties | Check documented tie policy | Planned |
-| ARG-004 | Pulse `decision_valid` for one cycle | Valid input pulse | Assertion | Planned |
-| ARG-005 | Hold previous class when scores are invalid | Change scores with valid low | Check output stability | Planned |
+| ARG-001 | Select each of classes 0–3 when uniquely largest | Four directed cases | Check class and valid pulse | Implemented (`tb_argmax.sv`) |
+| ARG-002 | Compare scores as signed values | All-negative and signed-boundary cases | Check expected winner | Implemented (`tb_argmax.sv`) |
+| ARG-003 | Resolve ties toward the lowest index | Pair and four-way ties | Check documented tie policy | Implemented (`tb_argmax.sv`) |
+| ARG-004 | Pulse `decision_valid` for one cycle | Valid input pulse | Check pulse returns low | Implemented (`tb_argmax.sv`) |
+| ARG-005 | Hold previous class when scores are invalid | Change scores with valid low | Check output stability | Implemented (`tb_argmax.sv`) |
 | ARG-006 | End-to-end predicted class matches golden model | 40 generated vectors | SPI class comparison | Implemented |
 
 ### 4.5 Packet formatter
@@ -136,8 +152,8 @@ Status values:
 | FMT-002 | Class byte upper six bits are zero | 40 generated vectors | Check reserved bits | Implemented |
 | FMT-003 | Class byte lower two bits contain prediction | 40 generated vectors | Compare expected class | Implemented |
 | FMT-004 | Pack score `[31:16]` fields in class order | 40 generated vectors | Compare all four packet fields | Implemented |
-| FMT-005 | Hold packet stable while valid and not ready | Delay SPI read | Stability assertion | Planned |
-| FMT-006 | Clear valid on ready | Complete transfer | Handshake assertion | Planned |
+| FMT-005 | Hold packet stable while valid and not ready | Delay ready while changing formatter inputs | Check packet and valid over multiple cycles | Implemented (`tb_output_formatter.sv`) |
+| FMT-006 | Clear valid on ready | Pulse ready, including simultaneous new decision | Check clear and documented ready priority | Implemented (`tb_output_formatter.sv`) |
 
 ### 4.6 SPI transmitter
 

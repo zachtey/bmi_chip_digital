@@ -24,11 +24,8 @@ Electrodes (8 ch)
      │
    [ADC] ──── adc_channel MUX select
      │
-sample_collection          fills 8 × 250 sample window
-     │  window_ready
-     ▼
-sbp_feature_extraction     SBP[ch] = Σ|x−128| >> 8   (2000 cycles)
-     │  sbp_done
+streaming_sbp_frontend     accumulates Σ|x−128| as samples arrive
+     │  features_done     (no sample-window storage or reread)
      ▼
 mlp_inference              8→8(ReLU)→4 MLP, single MAC (~121 cycles)
      │  mlp_done
@@ -42,7 +39,7 @@ output_formatter           packs 10-byte SPI packet    (1 cycle)
 spi_slave                  SPI Mode 0 shift-out        (80 SCLK cycles)
      │  packet_ready ──────────────────────────────────────────────┐
      ▼                                                             │
-  SPI master                                          sample_collection.resume
+  SPI master                                       streaming frontend resume
                                                        (pipeline restarts)
 ```
 
@@ -53,9 +50,10 @@ The pipeline is self-throttling: collection does not restart until the SPI trans
 | File | Module | Purpose |
 |------|--------|---------|
 | `bmi_chip_top.sv` | `bmi_chip_top` | Top-level structural wrapper |
-| `sample_collection.sv` | `sample_collection` | ADC MUX control, window filling |
-| `sram_sample_win.sv` | `sram_sample_win` | Behavioral SRAM model for synthesis (not instantiated in top — alternative to the reg array in sample_collection) |
-| `sbp_feature_extractor.sv` | `sbp_feature_extraction` | SBP feature extraction |
+| `streaming_sbp_frontend.sv` | `streaming_sbp_frontend` | ADC MUX control and on-arrival SBP accumulation |
+| `sample_collection.sv` | `sample_collection` | Legacy sample-window implementation retained for rollback/reference |
+| `sbp_feature_extractor.sv` | `sbp_feature_extraction` | Legacy window-reread SBP implementation retained for rollback/reference |
+| `sram_sample_win.sv` | `sram_sample_win` | Legacy behavioral sample SRAM model; not instantiated |
 | `mlp_inference.sv` | `mlp_inference` | MLP inference engine + scan chain |
 | `argmax.sv` | `argmax` | Class decision |
 | `output_formatter.sv` | `output_formatter` | SPI packet assembly |
@@ -95,7 +93,7 @@ Procedure:
 3. Deassert `scan_en`.
 4. Begin normal operation — assert `rst_n` then let the pipeline run.
 
-Do not assert `start` (via `window_ready`) while the scan chain is still loading.
+Keep the digital datapath in reset until the scan chain has been fully loaded.
 
 ## SPI Packet Format
 
@@ -114,14 +112,16 @@ Scores are signed 32-bit integers; only the upper 16 bits are transmitted. The p
 
 ## Pipeline Latency
 
-Measured in system clock cycles from `window_ready` to `packet_ready`:
+The frontend accepts one ADC sample per system clock. With 8 channels and 250
+samples per channel, one feature window completes after 2,000 capture clocks.
+Feature extraction has no additional reread phase.
 
 | Stage | Cycles |
 |-------|--------|
-| SBP extraction | 2 000 |
+| ADC capture + streaming SBP | 2 000 |
 | MLP inference | 121 |
 | Argmax + formatter | 2 |
-| **Total (excl. SPI)** | **~2 123** |
+| **Capture through packet-valid** | **~2 123** |
 
 At 10 MHz system clock this is ~212 µs, well within the 50 ms collection window.
 
