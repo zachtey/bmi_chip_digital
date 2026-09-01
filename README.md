@@ -1,157 +1,257 @@
 # Learned-Feature Brain-Machine Interface (BMI) ASIC: A Mixed-Signal Chip for Real-Time Neural Intent Classification
 
-Real-time brain-machine interface classifier. Eight electrode channels are read through a time-multiplexed ADC, spiking band power (SBP) features are extracted per channel, and a small MLP classifies the neural activity into one of four hand-gesture classes. Results are reported to a host over SPI.
+An RTL-to-GDS implementation for a real-time brain-machine interface
+(BMI) classifier. The digital block converts eight multiplexed ADC channels
+into compact neural features, runs a quantized `8 → 8 → 4` multilayer
+perceptron, and returns the predicted grasp class and diagnostic scores over
+SPI.
 
-Designed by Zachary Tey, Christopher Leung, Rohit Seshadri, Ben Rivera Flores
+Project team: Zachary Tey, Christopher Leung, Rohit Seshadri, Ben
+Rivera Flores. The original report is available as
+[392-final-report.pdf](392-final-report.pdf).
 
-Full project report attached in repository under "392-final-report.pdf"
+Verification efforts (vPlan) are detailed in the [verification plan](docs/vPlan.md).
 
-The living frontend verification methodology and requirement matrix are documented in [docs/vPlan.md](docs/vPlan.md).
+## Why this exists
 
-## Output Classes
+Over 5 million Americans live with paralysis from stroke, ALS, or spinal cord injury. 
+However, restoring communication and motor control requires direct, real-time access to neural signals,
+but such signals are far too weak for standard ADCs. Therefore a custom low-noise analog front-end
+is essential to digitize them without burying the signal in noise. A 45 nm CMOS integration enables 
+a low-power LNA + ADC chain dense enough for high-channel-count chronic recording. 
+This repository is the digital backend that interfaces and classifies neural intent coming from the
+custom analog front-end. 
 
-| Index | Label | Description |
-|-------|-------|-------------|
-| 0 | PG-LF | Power Grasp, Low Force |
-| 1 | PG-HF | Power Grasp, High Force |
-| 2 | SG-LF | Spherical Grasp, Low Force |
-| 3 | SG-HF | Spherical Grasp, High Force |
+Implantable and wearable neural interfaces cannot always stream every raw
+sample to a host. Moving simple feature extraction and classification close to
+the sensors can reduce output bandwidth and host-side computation while giving
+the system deterministic inference latency.
+
+This design explores that idea with a digital accelerator:
+
+- Eight time-multiplexed 8-bit ADC channels
+- Streaming feature extraction without storing the complete sample window
+- Signed, quantized MLP inference using one reused MAC datapath
+- Four grasp/force output classes
+- A simple SPI Mode 0 host interface
+- Serial loading of model parameters at power-up
+
+The RTL regression demonstrates equivalence to the supplied integer reference
+model. It does **not** independently establish clinical validity or biological
+classification accuracy.
 
 ## Architecture
 
-```
-Electrodes (8 ch)
-     │
-   [ADC] ──── adc_channel MUX select
-     │
-streaming_sbp_frontend     accumulates Σ|x−128| as samples arrive
-     │  features_done     (no sample-window storage or reread)
-     ▼
-mlp_inference              8→8(ReLU)→4 MLP, single MAC (~121 cycles)
-     │  mlp_done
-     ▼
-argmax                     tournament comparator        (1 cycle)
-     │  decision_valid
-     ▼
-output_formatter           packs 10-byte SPI packet    (1 cycle)
-     │  packet_valid
-     ▼
-spi_slave                  SPI Mode 0 shift-out        (80 SCLK cycles)
-     │  packet_ready ──────────────────────────────────────────────┐
-     ▼                                                             │
-  SPI master                                       streaming frontend resume
-                                                       (pipeline restarts)
+```mermaid
+flowchart LR
+    A[8 neural channels] --> B[External ADC + MUX]
+    B -->|8-bit sample| C[Streaming SBP frontend]
+    C -->|8 features| D[Quantized 8→8→4 MLP]
+    D -->|4 signed scores| E[Argmax]
+    E --> F[Packet formatter]
+    F -->|80-bit packet| G[SPI Mode 0 slave]
+    G -->|packet_ready| C
+    H[Serial weight loader] --> D
 ```
 
-The pipeline is self-throttling: collection does not restart until the SPI transmission completes.
+The frontend rotates through the eight ADC channels and accumulates
 
-## Block Summary
-
-| File | Module | Purpose |
-|------|--------|---------|
-| `bmi_chip_top.sv` | `bmi_chip_top` | Top-level structural wrapper |
-| `streaming_sbp_frontend.sv` | `streaming_sbp_frontend` | ADC MUX control and on-arrival SBP accumulation |
-| `sample_collection.sv` | `sample_collection` | Legacy sample-window implementation retained for rollback/reference |
-| `sbp_feature_extractor.sv` | `sbp_feature_extraction` | Legacy window-reread SBP implementation retained for rollback/reference |
-| `sram_sample_win.sv` | `sram_sample_win` | Legacy behavioral sample SRAM model; not instantiated |
-| `mlp_inference.sv` | `mlp_inference` | MLP inference engine + scan chain |
-| `argmax.sv` | `argmax` | Class decision |
-| `output_formatter.sv` | `output_formatter` | SPI packet assembly |
-| `spi_slave.sv` | `spi_slave` | SPI Mode 0 transmitter |
-
-## Key Parameters
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `N_CH` | 8 | Electrode channels |
-| `N_SAMPLES` | 250 | Samples per channel per inference window |
-| `ADC_WIDTH` | 8 | ADC resolution (bits) |
-| `N_HIDDEN` | 8 | Hidden neurons in MLP |
-| `N_OUT` | 4 | Output classes |
-| `HIDDEN_BIAS_SCALE` | 85 | Quantization correction for hidden layer biases |
-| `OUTPUT_BIAS_SCALE` | 109 | Quantization correction for output layer biases |
-| `PKT_BYTES` | 10 | SPI packet size |
-
-`HIDDEN_BIAS_SCALE` and `OUTPUT_BIAS_SCALE` are printed in the `weights.hex` header by the Python training pipeline. Update them whenever weights are retrained.
-
-## Weight Loading (Scan Chain)
-
-MLP weights are loaded once at power-up via a serial scan chain before any inference.
-
-Total: **108 bytes = 864 bits** in the following order, LSB-first per byte:
-
-```
-hw[0][0..7]  hw[1][0..7]  ...  hw[7][0..7]   — 64 bytes, hidden weights
-hb[0..7]                                       —  8 bytes, hidden biases
-ow[0][0..7]  ow[1][0..7]  ...  ow[3][0..7]   — 32 bytes, output weights
-ob[0..3]                                       —  4 bytes, output biases
+```text
+feature[ch] = sum(abs(adc_sample - 128)) >> 8
 ```
 
-Procedure:
-1. Keep functional `rst_n` asserted low.
-2. Drive `scan_en=0` and pulse `scan_clk` once to clear the scan-length tracker.
-3. Assert `scan_en`.
-4. Clock in all 864 bits on `scan_clk` (separate from system clock).
-5. Deassert `scan_en` without another scan-clock edge.
-6. Release functional reset. A two-flop synchronizer carries the stable
-   `weights_loaded` indication into the system-clock domain.
+for 250 samples per channel. Accumulation happens as samples arrive, so the
+current architecture does not store and reread a 2,000-sample window. When all
+features are ready, the frontend pauses while the MLP, decision logic, packet
+formatter, and SPI transmitter finish. `packet_ready` releases the frontend for
+the next window.
 
-The MLP ignores `start` until all 864 bits have been counted. Model replacement
-during active inference is not supported; reload only while functional reset is
-asserted.
+### Output classes
 
-## SPI Packet Format
+| Index | Label | Meaning |
+|---:|---|---|
+| 0 | PG-LF | Power grasp, low force |
+| 1 | PG-HF | Power grasp, high force |
+| 2 | SG-LF | Spherical grasp, low force |
+| 3 | SG-HF | Spherical grasp, high force |
 
-10-byte packet, MSB-first (byte 0 transmitted first). SPI Mode 0 (CPOL=0, CPHA=0).
-The SPI pins are oversampled into the system-clock domain; the supported clock
-relationship is `f_clk >= 8 × f_spi`.
+## RTL blocks
 
+| Module | Responsibility |
+|---|---|
+| [`bmi_chip_top`](rtl/bmi_chip_top.sv) | Connects the complete pipeline |
+| [`streaming_sbp_frontend`](rtl/streaming_sbp_frontend.sv) | ADC channel rotation, streaming accumulation, pause/resume control |
+| [`mlp_inference`](rtl/mlp_inference.sv) | Serial parameter storage and time-multiplexed hidden/output MAC operations |
+| [`argmax`](rtl/argmax.sv) | Signed four-way maximum with deterministic lowest-index tie breaking |
+| [`output_formatter`](rtl/output_formatter.sv) | Holds and formats one result packet until consumed |
+| [`spi_slave`](rtl/spi_slave.sv) | Oversampled SPI Mode 0 transmitter |
+
+
+## Fixed-point inference
+
+The ADC and extracted features are unsigned 8-bit values. Model weights and
+biases are signed 8-bit two's-complement integers. Products and running sums
+use signed 32-bit accumulators.
+
+The MLP executes:
+
+```text
+hidden[j] = ReLU(sum(feature[i] * hidden_weight[j][i])
+                 + hidden_bias[j] * HIDDEN_BIAS_SCALE)
+
+score[k]  = sum(hidden[j] * output_weight[k][j])
+            + output_bias[k] * OUTPUT_BIAS_SCALE
 ```
-Byte 0      0xAA                    sync / framing byte
-Byte 1      {6'b0, class[1:0]}      predicted class index (0–3)
-Bytes 2–3   score[0][31:16]         PG-LF raw score (upper 16 bits)
-Bytes 4–5   score[1][31:16]         PG-HF raw score
-Bytes 6–7   score[2][31:16]         SG-LF raw score
-Bytes 8–9   score[3][31:16]         SG-HF raw score
+
+Bias scale factors align quantized biases with the product accumulation domain;
+they are generated with the model parameters. The production weight image uses
+`HIDDEN_BIAS_SCALE=85` and `OUTPUT_BIAS_SCALE=109`.
+
+Elaboration-time range checks reject parameter combinations whose worst-case
+arithmetic cannot fit the configured accumulator or score widths.
+
+## Model loading
+
+The model contains 108 bytes (864 bits):
+
+| Parameter group | Shape | Bytes |
+|---|---:|---:|
+| Hidden weights | 8 × 8 | 64 |
+| Hidden biases | 8 | 8 |
+| Output weights | 4 × 8 | 32 |
+| Output biases | 4 | 4 |
+| **Total** |  | **108** |
+
+Parameters are shifted LSB-first on `scan_in` using `scan_clk`. The load
+protocol is:
+
+1. Hold functional `rst_n` low.
+2. Pulse `scan_clk` once with `scan_en=0` to clear the length tracker.
+3. Assert `scan_en` and shift exactly 864 bits.
+4. Deassert `scan_en` without another scan-clock edge.
+5. Release functional reset.
+
+Inference remains disabled until the complete image has been counted and the
+stable `weights_loaded` level has crossed into the functional clock domain.
+Runtime model replacement is not supported.
+
+## SPI interface
+
+The output is a 10-byte, MSB-first SPI Mode 0 packet:
+
+| Byte(s) | Contents |
+|---:|---|
+| 0 | `0xAA` synchronization byte |
+| 1 | `{6'b0, predicted_class[1:0]}` |
+| 2–3 | `score[0][31:16]` |
+| 4–5 | `score[1][31:16]` |
+| 6–7 | `score[2][31:16]` |
+| 8–9 | `score[3][31:16]` |
+
+`spi_sclk` and `spi_cs_n` are oversampled in the system-clock domain instead of
+forming another internal sequential clock domain. The verified operating rule
+is therefore:
+
+```text
+f_clk >= 8 × f_spi
 ```
 
-Scores are signed 32-bit integers; only the upper 16 bits are transmitted. The predicted class is the index of the largest score. The 0xAA sync byte can be used by the host for frame alignment recovery.
+## Verification
 
-## Pipeline Latency
+Verification is organized at block and integration levels. Every reusable RTL
+block has a self-checking SystemVerilog testbench, and the top-level scoreboard
+checks intermediate features, complete MLP scores, the selected class, packet
+format, event ordering, latency, backpressure, and unknown values.
 
-The frontend accepts one ADC sample per system clock. With 8 channels and 250
-samples per channel, one feature window completes after 2,000 capture clocks.
-Feature extraction has no additional reread phase.
+Current regression baseline:
+
+| Environment | Current result |
+|---|---:|
+| Streaming frontend | 5/5 directed tests pass |
+| MLP inference | 8/8 directed tests pass |
+| Argmax | 17/17 directed tests pass |
+| Output formatter | 13/13 directed tests pass |
+| SPI transmitter | 11/11 directed tests pass |
+| RTL integration | 40/40 generated vectors pass |
+| Pipeline protocol monitor | 0 errors across 40 transactions |
+| Verilator `-Wall` lint | 0 warnings |
+
+The living requirements, tests, status, and remaining gaps are maintained in
+the [verification plan](docs/vPlan.md). A passing 40-vector regression proves
+hardware/reference equivalence for those vectors; directed tests provide the
+protocol and arithmetic corner cases that vector replay alone cannot cover.
+
+### Run the tests
+
+The simulation scripts use Cadence Xcelium on the university environment:
+
+```bash
+cd sim
+./run_streaming_frontend.sh
+./run_mlp.sh
+./run_argmax.sh
+./run_output_formatter.sh
+./run_spi.sh
+./run_rtl.sh
+```
+
+Open-source RTL lint can be run separately:
+
+```bash
+cd sim
+./run_lint.sh
+```
+
+## Synthesis status
+
+The current top level synthesizes with Cadence Genus 18.14 using the GPDK045
+standard-cell library and a 20 ns (50 MHz) target.
+
+| Metric | Current pre-layout result |
+|---|---:|
+| Standard cells | 5,046 |
+| Cell area | 21,608.928 µm² |
+| Estimated net area | 6,992.071 µm² |
+| Estimated total area | 28,600.999 µm² |
+| Worst reported setup slack | +6.311 ns |
+| Critical path | MLP score register through argmax comparison logic |
+
+Run synthesis with:
+
+```bash
+cd syn
+./run_syn.sh
+```
+
+The SDC models the functional and scan clock domains, synchronous ADC input,
+asynchronous oversampled SPI inputs, external delays, load, and slew. Timing
+lint is used to audit constraint coverage.
+
+
+## Latency
+
+The frontend consumes one sample per functional clock:
 
 | Stage | Cycles |
-|-------|--------|
-| ADC capture + streaming SBP | 2 000 |
+|---|---:|
+| Eight channels × 250 samples | 2,000 |
 | MLP inference | 121 |
-| Argmax + formatter | 2 |
-| **Capture through packet-valid** | **~2 123** |
+| Argmax and formatting | 2 |
+| **Capture to packet-valid** | **approximately 2,123** |
 
-At 10 MHz system clock this is ~212 µs, well within the 50 ms collection window.
+At a 10 MHz functional clock, packet-valid is produced in approximately 212 µs.
+SPI transfer then takes 80 external SCLK cycles.
 
-SPI transmission adds 80 SCLK cycles; duration depends on the master's clock rate.
+## Repository map
 
-## Directory Structure
-
-```
-digital/
-├── rtl/               RTL source (SystemVerilog)
-├── hdl/
-│   ├── sv/            Alternate RTL source tree (SystemVerilog)
-│   └── sim/           Block-level simulation scripts and test vectors
-├── sim/               Top-level simulation (Xcelium); RTL and GLS runs
-│   └── vectors/       Input stimulus and expected-output vectors
-├── ml/                Python training pipeline, quantized weights, and
-│   └── bmi_pipeline/    generated test vectors for RTL verification
-├── syn/               Synthesis (Cadence Genus): scripts, netlists, SDC, reports
-│   └── fv/            Formal verification scripts
-├── pnr/               Place-and-route (Cadence Innovus) checkpoint saves
-│   ├── clock_report/
-│   ├── digital_final_reports/
-│   └── timingReports/
-├── results/           Post-implementation summary reports (timing, area, specs)
-└── README.md
+```text
+rtl/       Synthesizable SystemVerilog and retained legacy frontend
+sim/       Self-checking block/integration testbenches and run scripts
+sim/vectors/
+           ADC stimulus and golden feature/score/class data
+ml/        Supplied model, quantization, and vector-generation scripts
+docs/      Verification plan and project documentation
+syn/       Genus synthesis script, SDC, netlist, and reports
+pnr/       Innovus scripts plus historical backend artifacts
+results/   Historical result summaries from the original architecture
 ```
