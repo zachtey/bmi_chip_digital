@@ -20,11 +20,11 @@ create_clock -period 20 -name clk [get_ports clk]
 # Scan chain clock for weight loading at power-up (async)
 create_clock -period 40 -name scan_clk [get_ports scan_clk]
 
-# The scan and functional domains are unrelated. The scan-domain
-# weights_loaded_scan level enters clk through a two-flop synchronizer.
-set_clock_groups -asynchronous \
-    -group [get_clocks clk] \
-    -group [get_clocks scan_clk]
+# The scan registers feed the functional domain, but weights are loaded only
+# before functional operation and then held stable. Cut the real scan-to-clk
+# direction explicitly. A symmetric asynchronous clock-group exception would
+# also create a clk-to-scan exception even though no such paths exist.
+set_false_path -from [get_clocks scan_clk] -to [get_clocks clk]
 
 # -- Synchronous input delays ---------------------------------
 # ADC samples are assumed synchronous to clk at the chip boundary.
@@ -52,13 +52,11 @@ set_false_path -from [get_ports spi_sclk] \
 set_false_path -from [get_ports spi_cs_n] \
                -to [get_pins u_spi/cs_n_sync1_reg/D]
 
-# Reset is asynchronously asserted. Its safe deassertion is an RDC design
-# requirement rather than a normal data-path setup check. Its delay entries
-# describe the port environment only; the false path prevents synchronous
-# setup/hold analysis from assigning meaning to its phase relative to clk.
+# Reset is connected to asynchronous control pins rather than ordinary data
+# paths. Genus therefore does not find a data timing path for a broad reset
+# false-path exception. Safe reset deassertion remains an RDC requirement.
 set_input_delay -clock clk -max 5.0 [get_ports rst_n]
 set_input_delay -clock clk -min 0.5 [get_ports rst_n]
-set_false_path -from [get_ports rst_n]
 
 # -- Output delays --------------------------------------------
 set_output_delay -clock clk -max 5.0 [get_ports {adc_channel spi_miso}]
