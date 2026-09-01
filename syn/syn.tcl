@@ -21,6 +21,11 @@ set_db lef_library [list \
 elaborate
 current_design bmi_chip_top
 
+# Structural sanity check before constraints or optimization. This catches
+# unresolved references and other elaborated-design problems independently of
+# simulation and Verilator lint.
+check_design -unresolved > check_design.rpt
+
 # -- Timing constraints ---------------------------------------
 read_sdc bmi_chip_top.sdc
 
@@ -63,5 +68,6 @@ close $f
 puts "\nOutputs:"
 puts "  bmi_chip_top_syn.v  — gate-level netlist for Innovus"
 puts "  bmi_chip_top_sym.v  — Virtuoso symbol stub (with VDD/VSS)"
+puts "  check_design.rpt     — Genus structural design checks"
 
 quit

@@ -78,7 +78,7 @@ module mlp_inference #(
 
     // Return true when [minimum, maximum] fits in a signed two's-complement
     // vector of width bits. This is evaluated at elaboration time.
-    function automatic integer signed_range_fits;
+    function automatic logic signed_range_fits;
         input integer width;
         input longint signed minimum;
         input longint signed maximum;
@@ -95,6 +95,16 @@ module mlp_inference #(
     //Scan chain loading
     logic [TOTAL_WEIGHT_BITS-1:0] scan_reg;
     localparam integer SCAN_COUNT_WIDTH = $clog2(TOTAL_WEIGHT_BITS + 1);
+    localparam logic [SCAN_COUNT_WIDTH-1:0] SCAN_LAST_COUNT =
+        SCAN_COUNT_WIDTH'(TOTAL_WEIGHT_BITS - 1);
+    localparam logic [SCAN_COUNT_WIDTH-1:0] SCAN_COMPLETE_COUNT =
+        SCAN_COUNT_WIDTH'(TOTAL_WEIGHT_BITS);
+    localparam logic [INPUT_IDX_WIDTH-1:0] LAST_INPUT_IDX =
+        INPUT_IDX_WIDTH'(N_IN - 1);
+    localparam logic [HIDDEN_IDX_WIDTH-1:0] LAST_HIDDEN_IDX =
+        HIDDEN_IDX_WIDTH'(N_HIDDEN - 1);
+    localparam logic [OUTPUT_IDX_WIDTH-1:0] LAST_OUTPUT_IDX =
+        OUTPUT_IDX_WIDTH'(N_OUT - 1);
     logic [SCAN_COUNT_WIDTH-1:0] scan_bit_count;
     logic weights_loaded_scan;
 
@@ -108,8 +118,8 @@ module mlp_inference #(
         end else begin
             scan_reg <= {scan_in, scan_reg[TOTAL_WEIGHT_BITS-1:1]};
             if (!weights_loaded_scan) begin
-                if (scan_bit_count == TOTAL_WEIGHT_BITS-1) begin
-                    scan_bit_count      <= TOTAL_WEIGHT_BITS;
+                if (scan_bit_count == SCAN_LAST_COUNT) begin
+                    scan_bit_count      <= SCAN_COMPLETE_COUNT;
                     weights_loaded_scan <= 1'b1;
                 end else begin
                     scan_bit_count <= scan_bit_count + 1'b1;
@@ -228,7 +238,7 @@ module mlp_inference #(
             S_H_MAC: begin
                 next_acc = acc + sbp_signed[input_idx] *
                            $signed(hw[hidden_idx][input_idx]);
-                if (input_idx == N_IN - 1) begin
+                if (input_idx == LAST_INPUT_IDX) begin
                     next_input_idx = '0;
                     next_state      = S_H_BIAS;
                 end else begin
@@ -250,7 +260,7 @@ module mlp_inference #(
                 next_hidden_act[hidden_idx] = acc[ACC_WIDTH-1] ? '0 : acc;
                 next_acc = '0;
 
-                if (hidden_idx == N_HIDDEN - 1) begin
+                if (hidden_idx == LAST_HIDDEN_IDX) begin
                     next_hidden_idx        = '0;
                     next_hidden_weight_idx = '0;
                     next_state      = S_O_MAC;
@@ -264,7 +274,7 @@ module mlp_inference #(
             S_O_MAC: begin
                 next_acc = acc + hidden_act[hidden_weight_idx] *
                            $signed(ow[output_idx][hidden_weight_idx]);
-                if (hidden_weight_idx == N_HIDDEN - 1) begin
+                if (hidden_weight_idx == LAST_HIDDEN_IDX) begin
                     next_hidden_weight_idx = '0;
                     next_state      = S_O_BIAS;
                 end else begin
@@ -286,7 +296,7 @@ module mlp_inference #(
                 next_class_scores[output_idx] = acc[SCORE_WIDTH-1:0];
                 next_acc = '0;
 
-                if (output_idx == N_OUT - 1) begin
+                if (output_idx == LAST_OUTPUT_IDX) begin
                     next_state = S_DONE;
                 end else begin
                     next_output_idx = output_idx + 1'b1;

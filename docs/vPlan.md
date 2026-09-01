@@ -184,7 +184,7 @@ checks in `mlp_inference.sv` reject parameter combinations that do not fit.
 | ID | Requirement | Evidence | Status |
 |---|---|---|---|
 | STA-001 | RTL compiles and runs with an open-source simulator | Icarus 40-vector regression | Implemented |
-| STA-002 | RTL is clean under lint or all waivers are documented | Verilator lint report | Planned |
+| STA-002 | RTL is clean under lint or all waivers are documented | Warning-free Verilator `-Wall`; Cadence Genus check pending | Partial (`sim/run_lint.sh`) |
 | STA-003 | Clock-domain crossings have documented protocols | CDC review of scan and SPI interfaces | Planned |
 | STA-004 | All functional paths are correctly constrained | SDC review and unconstrained-path report | Planned |
 | STA-005 | Post-route setup and hold timing meet constraints | Existing Innovus reports | Partial |

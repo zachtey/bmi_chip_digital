@@ -141,7 +141,7 @@ module tb_bmi_chip_top;
                     $display("PIPELINE FAIL: new frontend result overwrote pending work");
                     pipeline_error_count = pipeline_error_count + 1;
                 end
-                if (!dut.weights_loaded) begin
+                if (!dut.u_mlp.weights_loaded) begin
                     $display("PIPELINE FAIL: frontend completed before weights_loaded");
                     pipeline_error_count = pipeline_error_count + 1;
                 end
@@ -574,13 +574,13 @@ module tb_bmi_chip_top;
 
         // Release reset between capture edges. adc_channel starts at channel 0.
         rst_n = 1;
-        wait (dut.weights_loaded === 1'b1);
+        wait (dut.u_mlp.weights_loaded === 1'b1);
         pipeline_checks_active = 1'b1;
 
         for (vec = 0; vec < N_VECTORS; vec++) begin
             // Wait for the RTL to collect all N_CH*N_SAMPLES samples.
             // The background driver drove them continuously, one per negedge.
-            @(posedge dut.window_ready);
+            @(posedge dut.sbp_done);
 
             // Load the Python golden-model outputs for the current vector.
             $readmemh($sformatf("vectors/vec%02d_sbp.hex", vec), exp_sbp);

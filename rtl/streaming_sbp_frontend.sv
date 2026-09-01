@@ -34,6 +34,10 @@ module streaming_sbp_frontend #(
     localparam integer SAMPLE_CNT_WIDTH = (N_SAMPLES > 1) ? $clog2(N_SAMPLES) : 1;
     localparam integer ACC_WIDTH = $clog2(N_SAMPLES * (1 << (ADC_WIDTH-1)) + 1); //max accumulation value is half the adc * number of samples
     localparam logic [ADC_WIDTH-1:0] ADC_MIDPOINT = {1'b1, {(ADC_WIDTH-1){1'b0}}};
+    localparam logic [CH_IDX_WIDTH-1:0] LAST_CHANNEL =
+        CH_IDX_WIDTH'(N_CH - 1);
+    localparam logic [SAMPLE_CNT_WIDTH-1:0] LAST_SAMPLE =
+        SAMPLE_CNT_WIDTH'(N_SAMPLES - 1);
 
     typedef enum logic {COLLECT, PAUSE} state_t;
     state_t state;
@@ -68,16 +72,19 @@ module streaming_sbp_frontend #(
             unique case (state)
                 COLLECT: begin
                     deviation_sum[adc_channel] <= sum_with_sample;
-                    if (sample_cnt[adc_channel] == N_SAMPLES-1) begin
-                        sbp_features[adc_channel] <= sum_with_sample >> FEATURE_SHIFT;
-                        if (adc_channel == N_CH-1) begin
+                    if (sample_cnt[adc_channel] == LAST_SAMPLE) begin
+                        sbp_features[adc_channel] <= {
+                            {(SBP_WIDTH-(ACC_WIDTH-FEATURE_SHIFT)){1'b0}},
+                            sum_with_sample[ACC_WIDTH-1:FEATURE_SHIFT]
+                        };
+                        if (adc_channel == LAST_CHANNEL) begin
                             features_done <= 1'b1;
                             state         <= PAUSE;
                         end
                     end else begin
                         sample_cnt[adc_channel] <= sample_cnt[adc_channel] + 1'b1;
                     end
-                    if (adc_channel == N_CH-1)
+                    if (adc_channel == LAST_CHANNEL)
                         adc_channel <= '0;
                     else
                         adc_channel <= adc_channel + 1'b1;

@@ -40,7 +40,6 @@ module bmi_chip_top #(
 
     // Internal Signals
 
-    wire                          window_ready;
     wire                          sbp_done;
     wire [SBP_WIDTH-1:0]          sbp_features [0:N_CH-1];
 
@@ -69,31 +68,6 @@ module bmi_chip_top #(
         .sbp_features(sbp_features)
     );
 
-    // Preserve this legacy implementation as an easy rollback reference.
-    /*
-    sample_collection #(
-        .N_CH(N_CH), .N_SAMPLES(N_SAMPLES), .ADC_WIDTH(ADC_WIDTH)
-    ) u_sc (
-        .clk(clk), .rst_n(rst_n),
-        .adc_sample(adc_sample), .adc_channel(adc_channel),
-        .resume(packet_ready), .window_ready(window_ready),
-        .sample_window(sample_window)
-    );
-
-    sbp_feature_extraction #(
-        .N_CH(N_CH), .N_SAMPLES(N_SAMPLES),
-        .ADC_WIDTH(ADC_WIDTH), .SBP_WIDTH(SBP_WIDTH)
-    ) u_sbp (
-        .clk(clk), .rst_n(rst_n),
-        .start(window_ready), .done(sbp_done),
-        .sample_window(sample_window),
-        .sbp_features(sbp_features)
-    );
-    */
-
-    // Retained as a named top-level event for existing waveform/debug flows.
-    assign window_ready = sbp_done;
-
     mlp_inference #(
         .N_IN(N_IN), .N_HIDDEN(N_HIDDEN), .N_OUT(N_OUT),
         .IN_WIDTH(SBP_WIDTH), .W_WIDTH(W_WIDTH),
@@ -102,7 +76,7 @@ module bmi_chip_top #(
         .OUTPUT_BIAS_SCALE(OUTPUT_BIAS_SCALE)
     ) u_mlp (
         .clk(clk), .rst_n(rst_n),
-        .start(sbp_done), .done(mlp_done),
+        .start(sbp_done && weights_loaded), .done(mlp_done),
         .weights_loaded(weights_loaded),
         .sbp_features(sbp_features),
         .class_scores(class_scores),
