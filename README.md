@@ -1,4 +1,4 @@
-# BMI ASIC
+# Learned-Feature Brain-Machine Interface (BMI) ASIC: A Mixed-Signal Chip for Real-Time Neural Intent Classification
 
 Real-time brain-machine interface classifier. Eight electrode channels are read through a time-multiplexed ADC, spiking band power (SBP) features are extracted per channel, and a small MLP classifies the neural activity into one of four hand-gesture classes. Results are reported to a host over SPI.
 
