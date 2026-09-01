@@ -31,20 +31,15 @@ module streaming_sbp_frontend #(
     output logic [SBP_WIDTH-1:0]        sbp_features [0:N_CH-1]
 );
 
-    localparam integer SAMPLE_CNT_WIDTH =
-        (N_SAMPLES > 1) ? $clog2(N_SAMPLES) : 1;
-    localparam integer ACC_WIDTH =
-        $clog2(N_SAMPLES * (1 << (ADC_WIDTH-1)) + 1);
-
-    localparam logic [ADC_WIDTH-1:0] ADC_MIDPOINT =
-        {1'b1, {(ADC_WIDTH-1){1'b0}}};
+    localparam integer SAMPLE_CNT_WIDTH = (N_SAMPLES > 1) ? $clog2(N_SAMPLES) : 1;
+    localparam integer ACC_WIDTH = $clog2(N_SAMPLES * (1 << (ADC_WIDTH-1)) + 1); //max accumulation value is half the adc * number of samples
+    localparam logic [ADC_WIDTH-1:0] ADC_MIDPOINT = {1'b1, {(ADC_WIDTH-1){1'b0}}};
 
     typedef enum logic {COLLECT, PAUSE} state_t;
     state_t state;
 
     logic [SAMPLE_CNT_WIDTH-1:0] sample_cnt [0:N_CH-1];
     logic [ACC_WIDTH-1:0] deviation_sum [0:N_CH-1];
-
     logic [ADC_WIDTH-1:0] abs_deviation;
     logic [ACC_WIDTH-1:0] sum_with_sample;
 
@@ -53,11 +48,8 @@ module streaming_sbp_frontend #(
             abs_deviation = adc_sample - ADC_MIDPOINT;
         else
             abs_deviation = ADC_MIDPOINT - adc_sample;
-
-        // Include the currently presented sample when producing the final
-        // feature. Using deviation_sum alone here would drop sample 249.
-        sum_with_sample = deviation_sum[adc_channel] +
-            {{(ACC_WIDTH-ADC_WIDTH){1'b0}}, abs_deviation};
+        // Include the currently presented sample when producing the final feature. Using deviation_sum alone here would drop sample 249.
+        sum_with_sample = deviation_sum[adc_channel] + {{(ACC_WIDTH-ADC_WIDTH){1'b0}}, abs_deviation};
     end
 
     always_ff @(posedge clk or negedge rst_n) begin
@@ -76,20 +68,15 @@ module streaming_sbp_frontend #(
             unique case (state)
                 COLLECT: begin
                     deviation_sum[adc_channel] <= sum_with_sample;
-
                     if (sample_cnt[adc_channel] == N_SAMPLES-1) begin
-                        sbp_features[adc_channel] <=
-                            sum_with_sample >> FEATURE_SHIFT;
-
+                        sbp_features[adc_channel] <= sum_with_sample >> FEATURE_SHIFT;
                         if (adc_channel == N_CH-1) begin
                             features_done <= 1'b1;
                             state         <= PAUSE;
                         end
                     end else begin
-                        sample_cnt[adc_channel] <=
-                            sample_cnt[adc_channel] + 1'b1;
+                        sample_cnt[adc_channel] <= sample_cnt[adc_channel] + 1'b1;
                     end
-
                     if (adc_channel == N_CH-1)
                         adc_channel <= '0;
                     else

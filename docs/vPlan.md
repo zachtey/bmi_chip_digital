@@ -159,13 +159,13 @@ checks in `mlp_inference.sv` reject parameter combinations that do not fit.
 
 | ID | Requirement | Stimulus | Checker / coverage goal | Status |
 |---|---|---|---|---|
-| SPI-001 | Transmit 80 bits MSB-first in Mode 0 | Normal read | Compare complete received packet | Implemented |
-| SPI-002 | Present first MISO bit before first sample edge | Normal read with timing check | Protocol assertion/waveform check | Planned |
-| SPI-003 | Pulse `packet_ready` after exactly 80 sampled bits | Normal read | Edge counter and assertion | Planned |
-| SPI-004 | Abort safely when CS deasserts early | Transfers of 1–79 bits | Return to idle; no ready pulse | Planned |
-| SPI-005 | Ignore clocks while CS is inactive | Toggle SCLK with CS high | Check state/output behavior | Planned |
-| SPI-006 | Support documented SCLK/system-clock ratio | Sweep SCLK frequency and phase | Establish passing boundary and specification | Planned |
-| SPI-007 | Reset during transfer returns interface to idle | Assert reset at several bit positions | Check state, MISO, ready | Planned |
+| SPI-001 | Transmit 80 bits MSB-first in Mode 0 | Multiple non-symmetric packets | Compare complete externally sampled packet | Implemented (`tb_spi_slave.sv`, `tb_bmi_chip_top.sv`) |
+| SPI-002 | Present first MISO bit before first sample edge | Check MISO after CS synchronization and before rising SCLK | Compare against packet bit 79 | Implemented (`tb_spi_slave.sv`) |
+| SPI-003 | Pulse `packet_ready` after exactly 80 sampled bits | Monitor all 80 master sample edges | Reject early pulse; require exactly one one-cycle pulse after bit 80 | Implemented (`tb_spi_slave.sv`) |
+| SPI-004 | Abort safely when CS deasserts early | Transfers of 1, 17, and 79 bits | Return MISO low; require no ready pulse | Implemented (`tb_spi_slave.sv`) |
+| SPI-005 | Ignore clocks while CS is inactive | Toggle SCLK for 100 edges with CS high | Check MISO and ready remain inactive | Implemented (`tb_spi_slave.sv`) |
+| SPI-006 | Support `f_clk >= 8 × f_spi` | Sweep ratios 8, 10, and 12 with different phases | Compare complete packets and completion pulses | Implemented (`tb_spi_slave.sv`) |
+| SPI-007 | Reset during transfer returns interface to idle | Assert asynchronous reset after 23 bits | Check MISO, ready, abort, and subsequent recovery | Implemented (`tb_spi_slave.sv`) |
 
 ### 4.7 Top-level pipeline and reset
 

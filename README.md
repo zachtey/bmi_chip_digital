@@ -98,6 +98,8 @@ Keep the digital datapath in reset until the scan chain has been fully loaded.
 ## SPI Packet Format
 
 10-byte packet, MSB-first (byte 0 transmitted first). SPI Mode 0 (CPOL=0, CPHA=0).
+The SPI pins are oversampled into the system-clock domain; the supported clock
+relationship is `f_clk >= 8 × f_spi`.
 
 ```
 Byte 0      0xAA                    sync / framing byte

@@ -6,6 +6,9 @@
 // so that bit[PKT_BITS-1] is already on MISO before the first rising SCLK
 // edge — required for SPI Mode 0.
 // Falling SCLK edges update MISO; rising edges shift and count.
+// Because SCLK and CS_N are oversampled rather than used as clocks, require
+// f_clk >= 8*f_spi. The directed SPI regression sweeps frequency and phase at
+// and below that maximum supported SPI rate.
 
 module spi_slave #(
     parameter PKT_BYTES = 10,
