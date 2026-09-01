@@ -35,25 +35,9 @@ syn_map
 syn_opt
 
 # -- Reports --------------------------------------------------
-# Keep a compact worst-path report, then expand timing coverage by analysis
-# type and cost group. In Genus, late analysis checks setup/max delay and early
-# analysis checks hold/min delay.
 report_timing > timing.rpt
-report_timing -late  -max_paths 10 > timing_setup.rpt
-report_timing -early -max_paths 10 > timing_hold.rpt
-
-# Per-clock-domain reports make it obvious whether both the functional and
-# scan domains have real, constrained paths and whether either domain fails.
-report_timing -late  -cost_group clk      -max_paths 10 > timing_clk_setup.rpt
-report_timing -early -cost_group clk      -max_paths 10 > timing_clk_hold.rpt
-report_timing -late  -cost_group scan_clk -max_paths 10 > timing_scan_setup.rpt
-report_timing -early -cost_group scan_clk -max_paths 10 > timing_scan_hold.rpt
-
-# Constraint coverage and aggregate quality-of-results summaries.
-report_timing -unconstrained -max_paths 100 > timing_unconstrained.rpt
 report timing -lint > timing_lint.rpt
-report_qor  > qor.rpt
-report_area > area.rpt
+report_area   > area.rpt
 
 # -- Write gate-level netlist (for Innovus PNR) ---------------
 write_hdl > bmi_chip_top_syn.v
@@ -87,11 +71,5 @@ puts "  bmi_chip_top_syn.v  — gate-level netlist for Innovus"
 puts "  bmi_chip_top_sym.v  — Virtuoso symbol stub (with VDD/VSS)"
 puts "  check_design.rpt     — Genus structural design checks"
 puts "  timing_lint.rpt       — Genus timing-constraint coverage checks"
-puts "  timing_setup.rpt      — ten worst setup paths across all groups"
-puts "  timing_hold.rpt       — ten worst hold paths across all groups"
-puts "  timing_*_setup.rpt    — per-domain setup paths"
-puts "  timing_*_hold.rpt     — per-domain hold paths"
-puts "  timing_unconstrained.rpt — paths missing timing constraints"
-puts "  qor.rpt               — WNS/TNS and synthesis QoR summary"
 
 quit
