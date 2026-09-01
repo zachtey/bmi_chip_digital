@@ -88,12 +88,17 @@ ob[0..3]                                       —  4 bytes, output biases
 ```
 
 Procedure:
-1. Assert `scan_en`.
-2. Clock in all 864 bits on `scan_clk` (separate from system clock).
-3. Deassert `scan_en`.
-4. Begin normal operation — assert `rst_n` then let the pipeline run.
+1. Keep functional `rst_n` asserted low.
+2. Drive `scan_en=0` and pulse `scan_clk` once to clear the scan-length tracker.
+3. Assert `scan_en`.
+4. Clock in all 864 bits on `scan_clk` (separate from system clock).
+5. Deassert `scan_en` without another scan-clock edge.
+6. Release functional reset. A two-flop synchronizer carries the stable
+   `weights_loaded` indication into the system-clock domain.
 
-Keep the digital datapath in reset until the scan chain has been fully loaded.
+The MLP ignores `start` until all 864 bits have been counted. Model replacement
+during active inference is not supported; reload only while functional reset is
+asserted.
 
 ## SPI Packet Format
 

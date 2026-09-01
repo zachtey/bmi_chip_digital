@@ -41,6 +41,7 @@ module tb_mlp_inference;
 
     logic start;
     logic done;
+    logic weights_loaded;
     logic [IN_WIDTH-1:0] sbp_features [0:N_IN-1];
     logic signed [SCORE_WIDTH-1:0] class_scores [0:N_OUT-1];
 
@@ -78,6 +79,7 @@ module tb_mlp_inference;
         .rst_n        (rst_n),
         .start        (start),
         .done         (done),
+        .weights_loaded(weights_loaded),
         .sbp_features (sbp_features),
         .class_scores (class_scores),
         .scan_en      (scan_en),
@@ -222,6 +224,13 @@ module tb_mlp_inference;
         begin
             scan_image = '0;
 
+            // Explicitly begin a new scan session. This clock with scan_en=0
+            // clears the scan counter and deasserts the loaded indication.
+            scan_en = 1'b0;
+            scan_in = 1'b0;
+            #(SCAN_PERIOD/2) scan_clk = 1'b1;
+            #(SCAN_PERIOD/2) scan_clk = 1'b0;
+
             // Pack bytes in the same documented order used by weights.hex:
             // hidden weights, hidden biases, output weights, output biases.
             for (hidden_idx = 0; hidden_idx < N_HIDDEN; hidden_idx = hidden_idx + 1)
@@ -254,6 +263,14 @@ module tb_mlp_inference;
             scan_en = 1'b0;
             scan_in = 1'b0;
 
+            if (dut.weights_loaded_scan !== 1'b1)
+                $fatal(1, "Complete scan image did not set weights_loaded_scan");
+
+            // During model reloads, normal reset is already released. Wait for
+            // the stable loaded level to cross the two-flop synchronizer.
+            if (rst_n === 1'b1)
+                wait (weights_loaded === 1'b1);
+
             // White-box verification is appropriate here because this test is
             // specifically checking the scan layout and named parameter arrays.
             mismatches = 0;
@@ -282,6 +299,65 @@ module tb_mlp_inference;
                 $fatal(1, "Scan load failed with %0d mismatches", mismatches);
 
             $display("PASS scan load: %0d parameter bits verified", TOTAL_WEIGHT_BITS);
+        end
+    endtask
+
+    // Prove that fewer than TOTAL_WEIGHT_BITS cannot enable inference.
+    task automatic check_partial_load_guard;
+        integer bit_idx;
+        logic case_pass;
+        begin
+            case_pass = 1'b1;
+
+            scan_en = 1'b0;
+            scan_in = 1'b0;
+            #(SCAN_PERIOD/2) scan_clk = 1'b1;
+            #(SCAN_PERIOD/2) scan_clk = 1'b0;
+
+            scan_en = 1'b1;
+            for (bit_idx = 0; bit_idx < TOTAL_WEIGHT_BITS-1;
+                 bit_idx = bit_idx + 1) begin
+                scan_in = 1'b0;
+                #(SCAN_PERIOD/2) scan_clk = 1'b1;
+                #(SCAN_PERIOD/2) scan_clk = 1'b0;
+            end
+            scan_en = 1'b0;
+            scan_in = 1'b0;
+
+            @(negedge clk);
+            rst_n = 1'b1;
+            repeat (4) @(posedge clk);
+            #1;
+
+            if (weights_loaded !== 1'b0 || dut.weights_loaded_scan !== 1'b0) begin
+                $display("FAIL test 0: partial scan incorrectly marked loaded");
+                case_pass = 1'b0;
+            end
+
+            @(negedge clk);
+            start = 1'b1;
+            @(posedge clk);
+            #1;
+            @(negedge clk);
+            start = 1'b0;
+            repeat (4) @(posedge clk);
+            #1;
+
+            if (dut.state !== dut.S_IDLE || done !== 1'b0) begin
+                $display("FAIL test 0: inference started with partial weights");
+                case_pass = 1'b0;
+            end
+
+            if (case_pass) begin
+                $display("PASS test 0: partial scan load blocks inference");
+                pass_count = pass_count + 1;
+            end else begin
+                fail_count = fail_count + 1;
+            end
+
+            @(negedge clk);
+            rst_n = 1'b0;
+            start = 1'b0;
         end
     endtask
 
@@ -492,12 +568,16 @@ module tb_mlp_inference;
             class_scores[2] !== '0 || class_scores[3] !== '0)
             $fatal(1, "MLP reset values are incorrect");
 
-        // Load the first model while normal operation remains in reset.
+        // A one-bit-short scan must not permit inference.
+        check_partial_load_guard();
+
+        // Load the first complete model while normal operation remains reset.
         setup_identity_model();
         load_model();
 
         @(negedge clk);
         rst_n = 1'b1;
+        wait (weights_loaded === 1'b1);
 
         // Identity/indexing, signed output weight, and output-bias test.
         // Hand calculation: hidden=[10,20,30,40,50,60,70,80]

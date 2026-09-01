@@ -22,9 +22,7 @@ module argmax #(
     output logic                         decision_valid
 );
 
-    // -------------------------------------------------------------------------
     // Combinational: tournament comparison tree
-    // -------------------------------------------------------------------------
     logic [1:0]                   best_01, best_23, best;
     logic signed [SCORE_WIDTH-1:0] score_best_01, score_best_23;
 
@@ -36,9 +34,7 @@ module argmax #(
         best          = (score_best_01 >= score_best_23) ? best_01 : best_23;
     end
 
-    // -------------------------------------------------------------------------
     // Sequential: register result on scores_valid
-    // -------------------------------------------------------------------------
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             predicted_class <= 2'b00;

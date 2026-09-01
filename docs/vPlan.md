@@ -115,7 +115,7 @@ Status values:
 | MLP-007 | Produce four valid scores and one-cycle `done` | Repeated inference transactions | Check derived latency, all scores, pulse width, and score stability | Implemented (`tb_mlp_inference.sv`) |
 | MLP-008 | Arithmetic does not overflow configured widths | Positive/negative rail models with maximum unsigned inputs | Elaboration range checks plus reference-model comparison | Implemented (`mlp_inference.sv`, `tb_mlp_inference.sv`) |
 | MLP-009 | Ignore `start` while busy | Reassert start during hidden MAC | Check original transaction result and latency are unchanged | Implemented (`tb_mlp_inference.sv`) |
-| MLP-010 | Inference cannot start with partial weights | Incomplete scan load | Add protocol/status and negative test | Planned |
+| MLP-010 | Inference cannot start with partial weights | Shift one bit fewer than the complete image and pulse `start` | Check `weights_loaded` remains low and FSM remains idle | Implemented (`mlp_inference.sv`, `tb_mlp_inference.sv`) |
 
 For the production 8/8/4 configuration, unsigned features span 0–255 and
 signed weights/biases span −128–127. Including the configured bias scales:
@@ -171,13 +171,13 @@ checks in `mlp_inference.sv` reject parameter combinations that do not fit.
 
 | ID | Requirement | Stimulus | Checker / coverage goal | Status |
 |---|---|---|---|---|
-| TOP-001 | Process 40 vectors without deadlock | Existing regression | Timeout plus 40 completed packets | Partial |
+| TOP-001 | Process 40 vectors without deadlock | Existing regression | Independent watchdog plus 40 events at every pipeline boundary | Implemented (`tb_bmi_chip_top.sv`) |
 | TOP-002 | Match all golden intermediate/final values | Existing regression | SBP, scores, class, packet checks | Implemented |
-| TOP-003 | Do not overwrite a pending packet | Delay SPI read | Stable packet and no new collection | Planned |
-| TOP-004 | Restart collection only after packet completion | Normal and delayed SPI | Handshake assertion | Planned |
-| TOP-005 | Meet documented stage latencies | One transaction | Cycle counters per stage | Planned |
+| TOP-003 | Do not overwrite a pending packet | Delay every SPI read by five system clocks | Check packet stability and no new frontend result | Implemented (`tb_bmi_chip_top.sv`) |
+| TOP-004 | Restart collection only after packet completion | Forty delayed SPI transactions | Check frontend remains paused until ready and resumes at channel zero | Implemented (`tb_bmi_chip_top.sv`) |
+| TOP-005 | Meet documented stage latencies | All 40 transactions | Check frontend-to-MLP done, MLP-to-decision, and decision-to-packet cycles | Implemented (`tb_bmi_chip_top.sv`) |
 | TOP-006 | Recover from reset in every pipeline stage | Reset injection | Directed tests at each stage | Planned |
-| TOP-007 | No X/Z values reach valid architectural outputs | Normal and reset tests | Assertions on valid events | Planned |
+| TOP-007 | No X/Z values reach valid architectural outputs | Forty normal transactions | Check all features, scores, class, and packet at their valid events | Implemented (`tb_bmi_chip_top.sv`) |
 
 ### 4.8 Static and backend verification
 

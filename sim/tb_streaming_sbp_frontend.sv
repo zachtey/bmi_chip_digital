@@ -37,14 +37,14 @@ module tb_streaming_sbp_frontend;
     initial clk = 1'b0;
     always #(CLK_PERIOD/2) clk = ~clk;
 
-    // Produce several useful windows without storing a second sample memory.
+    // Produce a sample
     function automatic [ADC_WIDTH-1:0] sample_for_case;
         input integer pattern;
         input integer channel;
         input integer sample_index;
         begin
-            case (pattern)
-                0: sample_for_case = 8'd128; // zero deviation
+            case (pattern) //pattern selects data generation behavior
+                0: sample_for_case = 8'd128; // zero deviation, sum = 0
                 1: begin                     // both ADC rails
                     if (channel == 0)      sample_for_case = 8'd0;
                     else if (channel == 1) sample_for_case = 8'd255;
@@ -98,13 +98,12 @@ module tb_streaming_sbp_frontend;
         logic [$clog2(N_CH)-1:0] paused_channel;
         begin
             case_pass = 1'b1;
-            for (channel = 0; channel < N_CH; channel = channel + 1) begin
+            for (channel = 0; channel < N_CH; channel = channel + 1) begin //clear all counters
                 sample_index[channel] = 0;
                 expected_sum[channel] = 0;
             end
 
-            for (capture = 0; capture < N_CH*N_SAMPLES;
-                 capture = capture + 1) begin
+            for (capture = 0; capture < N_CH*N_SAMPLES; capture = capture + 1) begin
                 @(negedge clk);
                 channel = adc_channel;
 
@@ -114,24 +113,22 @@ module tb_streaming_sbp_frontend;
                     case_pass = 1'b0;
                 end
 
-                driven_sample = sample_for_case(
-                    pattern, channel, sample_index[channel]);
+                driven_sample = sample_for_case(pattern, channel, sample_index[channel]);
                 adc_sample = driven_sample;
-                expected_sum[channel] = expected_sum[channel] +
-                                        deviation(driven_sample);
+                expected_sum[channel] = expected_sum[channel] + deviation(driven_sample);
                 sample_index[channel] = sample_index[channel] + 1;
 
                 @(posedge clk);
                 #1;
             end
 
-            if (features_done !== 1'b1) begin
+            if (features_done !== 1'b1) begin //completion on the same rising edge that captures the final sample
                 $display("FAIL test %0d: features_done missing on final capture",
                          test_id);
                 case_pass = 1'b0;
             end
 
-            for (channel = 0; channel < N_CH; channel = channel + 1) begin
+            for (channel = 0; channel < N_CH; channel = channel + 1) begin // Check each channel after applying the shift.
                 expected_feature = expected_sum[channel] >> FEATURE_SHIFT;
                 if (sbp_features[channel] !== expected_feature[SBP_WIDTH-1:0]) begin
                     $display("FAIL test %0d: feature[%0d] got=%0d expected=%0d sum=%0d",
@@ -173,14 +170,15 @@ module tb_streaming_sbp_frontend;
         integer capture;
         begin
             restart_collection();
-            for (capture = 0; capture < 37; capture = capture + 1) begin
+            for (capture = 0; capture < 37; capture = capture + 1) begin //arbitrary 37 samples driven, unaligned to 8 channel round
                 @(negedge clk);
                 adc_sample = 8'd0;
                 @(posedge clk);
             end
 
+            //asserts async reset as a test
             @(negedge clk);
-            rst_n = 1'b0;
+            rst_n = 1'b0; //rst_n goes low immediatley driven low upon next falling edge of clk (same simulation timestep)
             #1;
             if (features_done !== 1'b0 || adc_channel !== '0 ||
                 sbp_features[0] !== '0) begin
@@ -195,6 +193,7 @@ module tb_streaming_sbp_frontend;
         end
     endtask
 
+    //main test sequence
     initial begin
         rst_n       = 1'b0;
         adc_sample  = 8'd128;

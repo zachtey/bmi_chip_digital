@@ -26,9 +26,7 @@ module spi_slave #(
     output logic               packet_ready
 );
 
-    // =========================================================================
     // 2-FF synchronizer for SCLK and CS_N
-    // =========================================================================
     logic sclk_sync1, sclk_sync2;
     logic cs_n_sync1, cs_n_sync2;
 
@@ -46,12 +44,10 @@ module spi_slave #(
     wire sclk_falling = (!sclk_sync1 &&  sclk_sync2);
     wire cs_active    = !cs_n_sync2;
 
-    // =========================================================================
     // FSM
-    // =========================================================================
     typedef enum logic [1:0] { S_IDLE, S_TRANSMIT, S_DONE } state_t;
-
     state_t                          state,      next_state;
+
     logic [PKT_BITS-1:0]             shift_reg;
     logic [$clog2(PKT_BITS)-1:0]     bit_cnt;
     logic                             miso_reg;
@@ -62,9 +58,7 @@ module spi_slave #(
     logic                             next_miso_reg;
     logic                             next_packet_ready;
 
-    // -------------------------------------------------------------------------
     // Combinational: next-state and datapath
-    // -------------------------------------------------------------------------
     always_comb begin
         // Defaults — hold state
         next_state        = state;
@@ -116,9 +110,7 @@ module spi_slave #(
         end
     end
 
-    // -------------------------------------------------------------------------
-    // Sequential: registers
-    // -------------------------------------------------------------------------
+    // Sequential
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             state        <= S_IDLE;

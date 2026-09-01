@@ -4,7 +4,7 @@
 //
 // Weights are loaded once at power-up via a serial scan chain. For the default
 // dimensions this is 864 bits (108 bytes): hw[8][8], hb[8], ow[4][8], ob[4].
-// Do not assert start until the scan chain has been fully loaded.
+// A scan-length guard ignores start until the complete image has been loaded.
 //
 // HIDDEN_BIAS_SCALE / OUTPUT_BIAS_SCALE come from the Python training
 // pipeline (printed in weights.hex header). They correct the quantization
@@ -30,6 +30,7 @@ module mlp_inference #(
 
     input  wire                          start,
     output logic                         done,
+    output logic                         weights_loaded,
 
     input  wire [IN_WIDTH-1:0]           sbp_features [0:N_IN-1],
     output logic signed [SCORE_WIDTH-1:0] class_scores [0:N_OUT-1],
@@ -91,11 +92,44 @@ module mlp_inference #(
         end
     endfunction
 
+    //Scan chain loading
     logic [TOTAL_WEIGHT_BITS-1:0] scan_reg;
+    localparam integer SCAN_COUNT_WIDTH = $clog2(TOTAL_WEIGHT_BITS + 1);
+    logic [SCAN_COUNT_WIDTH-1:0] scan_bit_count;
+    logic weights_loaded_scan;
 
-    always_ff @(posedge scan_clk)
-        if (scan_en)
+    // Protocol: clock scan_clk once with scan_en low to begin/clear a load,
+    // then shift exactly TOTAL_WEIGHT_BITS with scan_en high. The completed
+    // indication remains asserted until the next explicit clear clock.
+    always_ff @(posedge scan_clk) begin
+        if (!scan_en) begin
+            scan_bit_count     <= '0;
+            weights_loaded_scan <= 1'b0;
+        end else begin
             scan_reg <= {scan_in, scan_reg[TOTAL_WEIGHT_BITS-1:1]};
+            if (!weights_loaded_scan) begin
+                if (scan_bit_count == TOTAL_WEIGHT_BITS-1) begin
+                    scan_bit_count      <= TOTAL_WEIGHT_BITS;
+                    weights_loaded_scan <= 1'b1;
+                end else begin
+                    scan_bit_count <= scan_bit_count + 1'b1;
+                end
+            end
+        end
+    end
+
+    // weights_loaded_scan is stable after loading and crosses into the
+    // functional clock domain through a standard two-flop level synchronizer.
+    logic weights_loaded_meta;
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            weights_loaded_meta <= 1'b0;
+            weights_loaded      <= 1'b0;
+        end else begin
+            weights_loaded_meta <= weights_loaded_scan;
+            weights_loaded      <= weights_loaded_meta;
+        end
+    end
 
     // Combinationally unpack scan_reg into named weight arrays.
     logic signed [W_WIDTH-1:0] hw [0:N_HIDDEN-1][0:N_IN-1];
@@ -123,6 +157,9 @@ module mlp_inference #(
         end
     endgenerate
 
+//Scan Chain    -->
+//---------------------------------------------------------------------------------------------------------------
+//MLP Inference -->
     // FSM
     typedef enum logic [2:0] {
         S_IDLE,
@@ -134,7 +171,6 @@ module mlp_inference #(
         S_O_STORE,
         S_DONE
     } state_t;
-
     state_t state, next_state;
 
     logic signed [ACC_WIDTH-1:0] acc;
@@ -147,12 +183,12 @@ module mlp_inference #(
     // Next-cycle values
     logic signed [ACC_WIDTH-1:0] next_acc;
     logic signed [ACC_WIDTH-1:0] next_hidden_act [0:N_HIDDEN-1];
-    logic signed [SCORE_WIDTH-1:0] next_class_scores [0:N_OUT-1];
+    logic signed [SCORE_WIDTH-1:0] next_class_scores [0:N_OUT-1]; //output
     logic [HIDDEN_IDX_WIDTH-1:0] next_hidden_idx;
     logic [OUTPUT_IDX_WIDTH-1:0] next_output_idx;
     logic [INPUT_IDX_WIDTH-1:0]  next_input_idx;
     logic [HIDDEN_IDX_WIDTH-1:0] next_hidden_weight_idx;
-    logic next_done;
+    logic next_done; //output
 
     // Zero-extend unsigned SBP inputs to accumulator width for signed multiply
     genvar gk;
@@ -178,7 +214,7 @@ module mlp_inference #(
 
         unique case (state)
             S_IDLE: begin
-                if (start) begin
+                if (start && weights_loaded) begin
                     next_acc        = '0;
                     next_hidden_idx        = '0;
                     next_output_idx        = '0;

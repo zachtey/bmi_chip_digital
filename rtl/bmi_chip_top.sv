@@ -38,13 +38,14 @@ module bmi_chip_top #(
     input  wire                    scan_in
 );
 
-    // -- Internal signals -----------------------------------------
+    // Internal Signals
 
     wire                          window_ready;
     wire                          sbp_done;
     wire [SBP_WIDTH-1:0]          sbp_features [0:N_CH-1];
 
     wire                          mlp_done;
+    wire                          weights_loaded;
     wire signed [SCORE_WIDTH-1:0] class_scores [0:N_OUT-1];
 
     wire [1:0]                    predicted_class;
@@ -102,6 +103,7 @@ module bmi_chip_top #(
     ) u_mlp (
         .clk(clk), .rst_n(rst_n),
         .start(sbp_done), .done(mlp_done),
+        .weights_loaded(weights_loaded),
         .sbp_features(sbp_features),
         .class_scores(class_scores),
         .scan_en(scan_en), .scan_clk(scan_clk), .scan_in(scan_in)
