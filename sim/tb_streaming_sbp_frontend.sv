@@ -2,8 +2,13 @@
 
 // Permanent unit test for the streaming ADC/SBP frontend. Each case drives a
 // complete round-robin ADC window and calculates the expected feature directly
-// from the samples presented to the DUT.
-module tb_streaming_sbp_frontend;
+// from the samples presented to the DUT. Between captures (CLK_DIV-1 cycles)
+// the ADC input carries a corrupted value, so any capture on the wrong clock
+// shows up as a feature mismatch. Override ADC_SAMPLE_FREQ_HZ to regress other
+// clock/sample-rate ratios, including non-integer ones.
+module tb_streaming_sbp_frontend #(
+    parameter integer ADC_SAMPLE_FREQ_HZ = 25_000_000  // 100 MHz TB clock / 4
+);
 
     localparam integer N_CH          = 8;
     localparam integer N_SAMPLES     = 250;
@@ -11,6 +16,11 @@ module tb_streaming_sbp_frontend;
     localparam integer SBP_WIDTH     = 8;
     localparam integer FEATURE_SHIFT = 8;
     localparam integer CLK_PERIOD    = 10;
+    localparam integer CLK_FREQ_HZ   = 1_000_000_000 / CLK_PERIOD;
+    // Expected clocks per capture, computed independently of the DUT. Rounds
+    // up so the capture rate never exceeds the requested ADC rate.
+    localparam integer CLK_DIV =
+        (CLK_FREQ_HZ + ADC_SAMPLE_FREQ_HZ - 1) / ADC_SAMPLE_FREQ_HZ;
 
     logic clk;
     logic rst_n;
@@ -26,7 +36,8 @@ module tb_streaming_sbp_frontend;
     streaming_sbp_frontend #(
         .N_CH(N_CH), .N_SAMPLES(N_SAMPLES),
         .ADC_WIDTH(ADC_WIDTH), .SBP_WIDTH(SBP_WIDTH),
-        .FEATURE_SHIFT(FEATURE_SHIFT)
+        .FEATURE_SHIFT(FEATURE_SHIFT),
+        .CLK_FREQ_HZ(CLK_FREQ_HZ), .ADC_SAMPLE_FREQ_HZ(ADC_SAMPLE_FREQ_HZ)
     ) dut (
         .clk(clk), .rst_n(rst_n),
         .adc_sample(adc_sample), .adc_channel(adc_channel),
@@ -89,6 +100,7 @@ module tb_streaming_sbp_frontend;
         input integer test_id;
         input integer pattern;
         integer capture;
+        integer idle;
         integer channel;
         integer sample_index [0:N_CH-1];
         integer expected_sum [0:N_CH-1];
@@ -104,6 +116,27 @@ module tb_streaming_sbp_frontend;
             end
 
             for (capture = 0; capture < N_CH*N_SAMPLES; capture = capture + 1) begin
+                // Non-capture cycles: the MUX select must hold and nothing may
+                // be accumulated. Drive a value that would corrupt the sum.
+                for (idle = 0; idle < CLK_DIV-1; idle = idle + 1) begin
+                    @(negedge clk);
+                    channel = adc_channel;
+                    if (channel !== (capture % N_CH)) begin
+                        $display("FAIL test %0d: capture %0d idle %0d selected channel %0d, expected %0d",
+                                 test_id, capture, idle, channel, capture % N_CH);
+                        case_pass = 1'b0;
+                    end
+                    adc_sample = sample_for_case(pattern, channel,
+                                                 sample_index[channel]) ^ 8'h80;
+                    @(posedge clk);
+                    #1;
+                    if (features_done !== 1'b0) begin
+                        $display("FAIL test %0d: features_done during idle cycle",
+                                 test_id);
+                        case_pass = 1'b0;
+                    end
+                end
+
                 @(negedge clk);
                 channel = adc_channel;
 
@@ -201,6 +234,9 @@ module tb_streaming_sbp_frontend;
         pass_count  = 0;
         fail_count  = 0;
 
+        $display("CLK %0d Hz, ADC %0d Hz requested -> capture every %0d clocks",
+                 CLK_FREQ_HZ, ADC_SAMPLE_FREQ_HZ, CLK_DIV);
+
         repeat (3) @(posedge clk);
         #1;
         rst_n = 1'b1;
@@ -225,7 +261,7 @@ module tb_streaming_sbp_frontend;
     end
 
     initial begin
-        #(500000);
+        #(500000*CLK_DIV);
         $fatal(1, "Streaming frontend testbench timeout");
     end
 

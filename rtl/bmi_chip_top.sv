@@ -9,6 +9,8 @@ module bmi_chip_top #(
     parameter N_CH              = 8,
     parameter N_SAMPLES         = 250,
     parameter ADC_WIDTH         = 8,
+    parameter CLK_FREQ_HZ        = 10_000_000, // system clock frequency
+    parameter ADC_SAMPLE_FREQ_HZ = 2_500_000,  // max aggregate ADC capture rate (all channels)
     parameter SBP_WIDTH         = 8,
     parameter N_IN              = 8,
     parameter N_HIDDEN          = 8,
@@ -58,7 +60,8 @@ module bmi_chip_top #(
 
     streaming_sbp_frontend #(
         .N_CH(N_CH), .N_SAMPLES(N_SAMPLES),
-        .ADC_WIDTH(ADC_WIDTH), .SBP_WIDTH(SBP_WIDTH)
+        .ADC_WIDTH(ADC_WIDTH), .SBP_WIDTH(SBP_WIDTH),
+        .CLK_FREQ_HZ(CLK_FREQ_HZ), .ADC_SAMPLE_FREQ_HZ(ADC_SAMPLE_FREQ_HZ)
     ) u_frontend (
         .clk(clk), .rst_n(rst_n),
         .adc_sample(adc_sample),

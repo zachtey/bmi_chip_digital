@@ -1,11 +1,16 @@
 // streaming_sbp_frontend.sv
 //
 // Streaming replacement for sample_collection + sbp_feature_extraction.
-// A single time-multiplexed ADC supplies one sample every system clock. The
-// module rotates adc_channel through all channels and accumulates
-// abs(adc_sample - midpoint) immediately, so no sample window is stored or
-// reread. After N_SAMPLES have been accepted for every channel, features_done
-// pulses for one clock and collection pauses until resume is asserted.
+// A single time-multiplexed ADC supplies one sample every CLK_DIV system
+// clocks, where CLK_DIV = ceil(CLK_FREQ_HZ / ADC_SAMPLE_FREQ_HZ). The actual
+// aggregate rate (shared by all channels) is CLK_FREQ_HZ / CLK_DIV, which never
+// exceeds ADC_SAMPLE_FREQ_HZ. The module rotates adc_channel through all
+// channels and accumulates abs(adc_sample - midpoint) immediately, so no
+// sample window is stored or reread. adc_channel changes on each capture
+// edge and is then held for CLK_DIV cycles, giving the MUX/ADC that long to
+// settle and convert. After N_SAMPLES have been accepted for every channel,
+// features_done pulses for one clock and collection pauses until resume is
+// asserted.
 //
 // SBP[ch] = sum(abs(sample - 2^(ADC_WIDTH-1))) >> FEATURE_SHIFT
 
@@ -15,6 +20,8 @@ module streaming_sbp_frontend #(
     parameter integer ADC_WIDTH     = 8,
     parameter integer SBP_WIDTH     = 8,
     parameter integer FEATURE_SHIFT = 8,
+    parameter integer CLK_FREQ_HZ        = 10_000_000, // system clock frequency
+    parameter integer ADC_SAMPLE_FREQ_HZ = 2_500_000,  // max aggregate ADC capture rate
     parameter integer CH_IDX_WIDTH  = (N_CH > 1) ? $clog2(N_CH) : 1
 )(
     input  wire                         clk,
@@ -38,6 +45,11 @@ module streaming_sbp_frontend #(
         CH_IDX_WIDTH'(N_CH - 1);
     localparam logic [SAMPLE_CNT_WIDTH-1:0] LAST_SAMPLE =
         SAMPLE_CNT_WIDTH'(N_SAMPLES - 1);
+    // Round up so the capture rate never exceeds ADC_SAMPLE_FREQ_HZ.
+    localparam integer CLK_DIV =
+        (CLK_FREQ_HZ + ADC_SAMPLE_FREQ_HZ - 1) / ADC_SAMPLE_FREQ_HZ;
+    localparam integer DIV_WIDTH = (CLK_DIV > 1) ? $clog2(CLK_DIV) : 1;
+    localparam logic [DIV_WIDTH-1:0] LAST_DIV = DIV_WIDTH'(CLK_DIV - 1);
 
     typedef enum logic {COLLECT, PAUSE} state_t;
     state_t state;
@@ -46,6 +58,22 @@ module streaming_sbp_frontend #(
     logic [ACC_WIDTH-1:0] deviation_sum [0:N_CH-1];
     logic [ADC_WIDTH-1:0] abs_deviation;
     logic [ACC_WIDTH-1:0] sum_with_sample;
+
+    // Sample-rate clock enable. div_cnt is held at zero outside COLLECT so the
+    // first capture after reset or resume always lands CLK_DIV clocks later.
+    logic [DIV_WIDTH-1:0] div_cnt;
+    logic                 sample_en;
+
+    assign sample_en = (state == COLLECT) && (div_cnt == LAST_DIV);
+
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n)
+            div_cnt <= '0;
+        else if (state != COLLECT || sample_en)
+            div_cnt <= '0;
+        else
+            div_cnt <= div_cnt + 1'b1;
+    end
 
     always_comb begin
         if (adc_sample >= ADC_MIDPOINT)
@@ -71,23 +99,25 @@ module streaming_sbp_frontend #(
 
             unique case (state)
                 COLLECT: begin
-                    deviation_sum[adc_channel] <= sum_with_sample;
-                    if (sample_cnt[adc_channel] == LAST_SAMPLE) begin
-                        sbp_features[adc_channel] <= {
-                            {(SBP_WIDTH-(ACC_WIDTH-FEATURE_SHIFT)){1'b0}},
-                            sum_with_sample[ACC_WIDTH-1:FEATURE_SHIFT]
-                        };
-                        if (adc_channel == LAST_CHANNEL) begin
-                            features_done <= 1'b1;
-                            state         <= PAUSE;
+                    if (sample_en) begin
+                        deviation_sum[adc_channel] <= sum_with_sample;
+                        if (sample_cnt[adc_channel] == LAST_SAMPLE) begin
+                            sbp_features[adc_channel] <= {
+                                {(SBP_WIDTH-(ACC_WIDTH-FEATURE_SHIFT)){1'b0}},
+                                sum_with_sample[ACC_WIDTH-1:FEATURE_SHIFT]
+                            };
+                            if (adc_channel == LAST_CHANNEL) begin
+                                features_done <= 1'b1;
+                                state         <= PAUSE;
+                            end
+                        end else begin
+                            sample_cnt[adc_channel] <= sample_cnt[adc_channel] + 1'b1;
                         end
-                    end else begin
-                        sample_cnt[adc_channel] <= sample_cnt[adc_channel] + 1'b1;
+                        if (adc_channel == LAST_CHANNEL)
+                            adc_channel <= '0;
+                        else
+                            adc_channel <= adc_channel + 1'b1;
                     end
-                    if (adc_channel == LAST_CHANNEL)
-                        adc_channel <= '0;
-                    else
-                        adc_channel <= adc_channel + 1'b1;
                 end
 
                 PAUSE: begin
@@ -106,6 +136,11 @@ module streaming_sbp_frontend #(
 
 `ifndef SYNTHESIS
     initial begin
+        if (ADC_SAMPLE_FREQ_HZ < 1 || ADC_SAMPLE_FREQ_HZ > CLK_FREQ_HZ)
+            $fatal(1, "ADC_SAMPLE_FREQ_HZ must be in 1..CLK_FREQ_HZ");
+        if ((CLK_FREQ_HZ % ADC_SAMPLE_FREQ_HZ) != 0)
+            $warning("CLK_FREQ_HZ/ADC_SAMPLE_FREQ_HZ is not an integer; capturing at %0d Hz",
+                     CLK_FREQ_HZ / CLK_DIV);
         if (N_CH < 1 || N_SAMPLES < 1)
             $fatal(1, "N_CH and N_SAMPLES must be at least one");
         if (ADC_WIDTH < 2 || SBP_WIDTH < 1)

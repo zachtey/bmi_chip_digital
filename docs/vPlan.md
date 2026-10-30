@@ -89,6 +89,7 @@ Status values:
 | SC-005 | Resume at channel/sample zero after `packet_ready` | Back-to-back directed and generated windows | Check complete consecutive windows | Implemented (`tb_streaming_sbp_frontend.sv`, `tb_bmi_chip_top.sv`) |
 | SC-006 | Reset clears state, counters, accumulators, and features | Reset at startup and mid-collection | Directed asynchronous reset test | Implemented (`tb_streaming_sbp_frontend.sv`) |
 | SC-007 | Counter and accumulator widths support legal terminal values | Parameter review and rail patterns | Elaboration checks and maximum-sum comparison | Implemented (`streaming_sbp_frontend.sv`, `tb_streaming_sbp_frontend.sv`) |
+| SC-008 | Capture once every `ceil(CLK_FREQ_HZ / ADC_SAMPLE_FREQ_HZ)` clocks; hold `adc_channel` and ignore `adc_sample` between captures | Corrupted ADC data on non-capture cycles; `ADC_SAMPLE_FREQ_HZ` swept over integer and non-integer ratios (divide by 1–5) | Feature mismatch on any off-cycle capture; channel-hold check; top-level capture-spacing monitor | Implemented (`tb_streaming_sbp_frontend.sv`, `tb_bmi_chip_top.sv`) |
 
 ### 4.2 SBP feature extraction
 
@@ -189,6 +190,6 @@ checks in `mlp_inference.sv` reject parameter combinations that do not fit.
 | STA-004 | All functional paths are correctly constrained | SDC review and unconstrained-path report | Planned |
 | STA-005 | Post-route setup and hold timing meet constraints | Existing Innovus reports | Partial |
 | STA-006 | Post-route electrical design rules are clean | Transition/fanout reports | Planned |
-| GLS-001 | Gate-level outputs match golden vectors | Existing GLS testbench | Partial |
+| GLS-001 | Gate-level outputs match golden vectors | `tb_gls.sv` full-packet check (40 vectors); passes on a Yosys generic netlist, Genus netlist must be re-synthesized and re-run | Partial |
 
 

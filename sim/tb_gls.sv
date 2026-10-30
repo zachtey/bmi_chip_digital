@@ -1,4 +1,13 @@
 // tb_gls.sv  -  Gate-level simulation, 40 test vectors
+//
+// Only top-level ports and the inter-block nets that survive synthesis
+// (dut.sbp_done, dut.packet_valid, dut.packet_ready) are referenced, so this
+// bench runs against the synthesized netlist as well as the RTL.
+//
+// ADC model: presents adc_mem[adc_channel * N_SAMPLES + drv_cnt[ch]] at every
+// negedge. A channel's sample is held until the MUX moves off that channel
+// (the frontend switches adc_channel only when it captures), so the model works
+// for whatever ADC_SAMPLE_FREQ_HZ the netlist was synthesized with.
 `timescale 1ns/1ps
 
 module tb_gls;
@@ -48,6 +57,7 @@ module tb_gls;
     reg [7:0] adc_mem   [0:N_CH*N_SAMPLES-1];
     reg [7:0] exp_class [0:N_VECTORS-1];
     reg [7:0] weights   [0:TOTAL_SCAN_BITS/8-1];
+    reg signed [63:0] exp_scores [0:3];
     reg [PKT_BITS-1:0] rx_packet;
 
     integer pass_count = 0;
@@ -55,30 +65,35 @@ module tb_gls;
 
     // -- Background ADC driver state --------------------------
     integer drv_cnt [0:N_CH-1];
+    integer prev_channel;
 
     // -- Background ADC driver --------------------------------
     // Uses dut.packet_ready (a preserved top-level wire in the
     // synthesized netlist) to detect collection restart instead
-    // of the RTL-internal sample_cnt registers.
+    // of RTL-internal state.
     initial begin
         integer ch;
         for (ch = 0; ch < N_CH; ch++) drv_cnt[ch] = 0;
+        prev_channel = 0;
         wait (rst_n === 1'b1);
         forever begin
             @(negedge clk);
 
-            // packet_ready pulses for one cycle when the SPI slave
-            // finishes — this is the same event that resets sample_cnt
-            // inside sample_collection, so resetting drv_cnt here keeps
-            // the TB in sync with the RTL without needing internal access.
+            // A channel change means the frontend captured the previous
+            // channel's sample on the last rising edge.
+            ch = adc_channel;
+            if (ch != prev_channel && drv_cnt[prev_channel] < N_SAMPLES)
+                drv_cnt[prev_channel] = drv_cnt[prev_channel] + 1;
+            prev_channel = ch;
+
+            // packet_ready pulses for one cycle when the SPI slave finishes;
+            // the frontend restarts collection from sample 0 on that edge.
             if (dut.packet_ready === 1'b1)
                 for (ch = 0; ch < N_CH; ch++) drv_cnt[ch] = 0;
 
-            ch = dut.adc_channel;
+            ch = adc_channel;
             adc_sample = adc_mem[ch * N_SAMPLES +
                                  (drv_cnt[ch] < N_SAMPLES ? drv_cnt[ch] : N_SAMPLES - 1)];
-            if (drv_cnt[ch] < N_SAMPLES)
-                drv_cnt[ch] = drv_cnt[ch] + 1;
         end
     end
 
@@ -87,6 +102,12 @@ module tb_gls;
         integer i, b;
         reg [TOTAL_SCAN_BITS-1:0] scan_data;
         begin
+            // One scan_clk with scan_en low clears the scan-length tracker.
+            scan_en = 0;
+            scan_in = 0;
+            #(SCAN_PERIOD/2) scan_clk = 1;
+            #(SCAN_PERIOD/2) scan_clk = 0;
+
             for (i = 0; i < TOTAL_SCAN_BITS/8; i++)
                 scan_data[i*8 +: 8] = weights[i];
             scan_en = 1;
@@ -124,22 +145,27 @@ module tb_gls;
     endtask
 
     // -- Result checker ---------------------------------------
+    // The whole packet is checked: sync byte, class and the top 16 bits of
+    // every score, all observed through SPI only.
     task check_result;
         input integer vec;
-        reg [7:0] sync_byte, rx_class, exp;
+        reg [PKT_BITS-1:0] expected_packet;
         begin
-            sync_byte = rx_packet[PKT_BITS-1 -: 8];
-            if (sync_byte !== 8'hAA)
-                $display("  WARNING vec%02d: bad sync byte 0x%02X", vec, sync_byte);
+            expected_packet = {
+                8'hAA,
+                6'b0, exp_class[vec][1:0],
+                exp_scores[0][31:16],
+                exp_scores[1][31:16],
+                exp_scores[2][31:16],
+                exp_scores[3][31:16]
+            };
 
-            rx_class = rx_packet[PKT_BITS-9 -: 8] & 8'h03;
-            exp      = exp_class[vec] & 8'h03;
-
-            if (rx_class === exp) begin
-                $display("PASS vec%02d  got=%0d", vec, rx_class);
+            if (rx_packet === expected_packet) begin
+                $display("PASS vec%02d  class=%0d", vec, rx_packet[65:64]);
                 pass_count = pass_count + 1;
             end else begin
-                $display("FAIL vec%02d  got=%0d  expected=%0d", vec, rx_class, exp);
+                $display("FAIL vec%02d  got=0x%020X  expected=0x%020X",
+                         vec, rx_packet, expected_packet);
                 fail_count = fail_count + 1;
             end
         end
@@ -167,11 +193,15 @@ module tb_gls;
         $readmemh("vectors/all_expected.hex", exp_class);
         $readmemh("vectors/vec00_adc.hex", adc_mem);
 
+        // Prime channel 0 and release reset between capture edges.
+        adc_sample = adc_mem[0];
+        @(negedge clk);
         rst_n = 1;
 
         for (vec = 0; vec < N_VECTORS; vec++) begin
-            @(posedge dut.window_ready);
+            @(posedge dut.sbp_done);
 
+            $readmemh($sformatf("vectors/vec%02d_scores.hex", vec), exp_scores);
             if (vec + 1 < N_VECTORS)
                 $readmemh($sformatf("vectors/vec%02d_adc.hex", vec + 1), adc_mem);
 
@@ -182,12 +212,18 @@ module tb_gls;
         $display("----------------------------------------------");
         $display("GLS      %0d / %0d  PASS", pass_count, N_VECTORS);
         $display("----------------------------------------------");
-        if (fail_count == 0)
+        if (fail_count == 0) begin
             $display("ALL PASS");
-        else
-            $display("%0d FAILURES", fail_count);
+            $finish;
+        end else begin
+            $fatal(1, "%0d FAILURES", fail_count);
+        end
+    end
 
-        $finish;
+    // Watchdog sized for ADC captures as slow as one every 16 clocks.
+    initial begin
+        #(20000000);
+        $fatal(1, "GLS timeout");
     end
 
 endmodule

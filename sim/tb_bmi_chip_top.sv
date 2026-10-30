@@ -3,9 +3,12 @@
 // ADC model: a background process continuously presents
 // adc_mem[adc_channel * N_SAMPLES + drv_cnt[ch]] at every
 // negedge, exactly as a real SAR ADC behind an 8:1 MUX would.
-// When packet_ready fires (collection restart), it auto-resets
-// drv_cnt to 0 to stay in sync with sample_collection's
-// sample_cnt reset, eliminating stale captures between vectors.
+// A channel's sample is held until the MUX moves off that channel
+// (the frontend only switches adc_channel when it captures, once
+// every CLK_DIV clocks), then drv_cnt[ch] advances to the next sample.
+// When collection restarts, it auto-resets drv_cnt to 0 to stay in
+// sync with the frontend's sample_cnt reset, eliminating stale
+// captures between vectors.
 
 `timescale 1ns/1ps
 
@@ -21,6 +24,10 @@ module tb_bmi_chip_top;
     parameter TOTAL_SCAN_BITS = 864;
 
     parameter CLK_PERIOD  = 10;    // 10 ns -> 100 MHz
+    parameter CLK_FREQ_HZ        = 1_000_000_000 / CLK_PERIOD;
+    parameter ADC_SAMPLE_FREQ_HZ = 25_000_000;   // capture every 4 clocks
+    localparam integer CLK_DIV =
+        (CLK_FREQ_HZ + ADC_SAMPLE_FREQ_HZ - 1) / ADC_SAMPLE_FREQ_HZ;
     parameter SCAN_PERIOD = 40;    // 40 ns scan clock
     parameter SPI_PERIOD  = 100;   // 100 ns SPI clock (10 MHz)
 
@@ -35,7 +42,9 @@ module tb_bmi_chip_top;
     reg                  scan_en, scan_clk, scan_in;
 
     // -- DUT --------------------------------------------------
-    bmi_chip_top dut (
+    bmi_chip_top #(
+        .CLK_FREQ_HZ(CLK_FREQ_HZ), .ADC_SAMPLE_FREQ_HZ(ADC_SAMPLE_FREQ_HZ)
+    ) dut (
         .clk        (clk),
         .rst_n      (rst_n),
         .adc_sample (adc_sample),
@@ -263,23 +272,62 @@ module tb_bmi_chip_top;
         end
     end
 
+    // -- ADC capture-rate monitor -----------------------------
+    // adc_channel advances only on a capture edge, so consecutive channel
+    // changes must be exactly CLK_DIV clocks apart. Reset release and resume
+    // both count as the start of a capture interval.
+    integer capture_gap;
+    integer capture_gap_errors;
+    integer previous_monitor_channel;
+
+    always @(posedge clk) begin : capture_rate_monitor
+        #1;
+        if (!rst_n) begin
+            capture_gap = 1;
+            previous_monitor_channel = 0;
+        end else begin
+            if (dut.adc_channel !== previous_monitor_channel) begin
+                if (capture_gap != CLK_DIV) begin
+                    $display("PIPELINE FAIL: ADC capture spacing got=%0d expected=%0d clocks",
+                             capture_gap, CLK_DIV);
+                    capture_gap_errors = capture_gap_errors + 1;
+                end
+                capture_gap = 1;
+            end else if (dut.u_frontend.state === dut.u_frontend.COLLECT) begin
+                capture_gap = capture_gap + 1;
+            end else begin
+                capture_gap = 0;
+            end
+            previous_monitor_channel = dut.adc_channel;
+        end
+    end
+
     // -- Background ADC driver state --------------------------
     // Per-channel sample index, mirrors the streaming frontend counters.
     // Declared at module scope so both initial blocks can access it.
     integer drv_cnt [0:N_CH-1];
     integer frontend_was_paused;
+    integer prev_channel;
 
     // -- Background ADC driver --------------------------------
     // Runs continuously after reset. Presents adc_mem[ch*N_SAMPLES+drv_cnt[ch]]
-    // at every negedge. On collection restart (sample_cnt all reset to 0),
-    // resets drv_cnt to 0 so it stays in sync with the RTL.
+    // at every negedge. The frontend changes adc_channel only on a capture
+    // edge, so a channel change means the previous channel's sample was
+    // consumed. On collection restart (sample_cnt all reset to 0), resets
+    // drv_cnt to 0 so it stays in sync with the RTL.
     initial begin
         integer ch;
         for (ch = 0; ch < N_CH; ch++) drv_cnt[ch] = 0;
         frontend_was_paused = 0;
+        prev_channel = 0;
         wait (rst_n === 1'b1);
         forever begin
             @(negedge clk);
+
+            ch = dut.adc_channel;
+            if (ch != prev_channel && drv_cnt[prev_channel] < N_SAMPLES)
+                drv_cnt[prev_channel] = drv_cnt[prev_channel] + 1;
+            prev_channel = ch;
 
             // Detect the frontend's actual PAUSE -> COLLECT transition rather
             // than relying on the one-cycle packet_ready pulse. This keeps the
@@ -299,8 +347,6 @@ module tb_bmi_chip_top;
             ch = dut.adc_channel;
             adc_sample = adc_mem[ch * N_SAMPLES +
                                  (drv_cnt[ch] < N_SAMPLES ? drv_cnt[ch] : N_SAMPLES - 1)];
-            if (drv_cnt[ch] < N_SAMPLES)
-                drv_cnt[ch] = drv_cnt[ch] + 1;
         end
     end
 
@@ -550,6 +596,7 @@ module tb_bmi_chip_top;
         packet_event_count = 0;
         ready_event_count = 0;
         pipeline_checks_active = 1'b0;
+        capture_gap_errors = 0;
 
         repeat(4) @(posedge clk);
 
@@ -567,9 +614,9 @@ module tb_bmi_chip_top;
 
         // Prime channel 0 before releasing reset so its first sample is stable
         // before the collector's first active rising edge. The background ADC
-        // driver takes over at the following falling edge.
+        // driver takes over at the following falling edge and keeps presenting
+        // this sample until the frontend captures it and switches channel.
         adc_sample = adc_mem[0];
-        drv_cnt[0] = 1;
         @(negedge clk);
 
         // Release reset between capture edges. adc_channel starts at channel 0.
@@ -616,6 +663,9 @@ module tb_bmi_chip_top;
             pipeline_error_count = pipeline_error_count + 1;
         end
 
+        pipeline_error_count = pipeline_error_count + capture_gap_errors;
+        $display("ADC capture every %0d clocks (CLK %0d Hz, ADC %0d Hz requested)",
+                 CLK_DIV, CLK_FREQ_HZ, ADC_SAMPLE_FREQ_HZ);
         $display("PIPELINE CHECKS: %0d errors", pipeline_error_count);
 
         if (fail_count == 0 && pipeline_error_count == 0) begin
@@ -631,7 +681,7 @@ module tb_bmi_chip_top;
 
     // Independent watchdog: any pipeline deadlock fails instead of hanging.
     initial begin
-        #(5000000);
+        #(2000000 + 1000000*CLK_DIV);
         $fatal(1, "Top-level pipeline regression timeout");
     end
 

@@ -60,7 +60,11 @@ The frontend rotates through the eight ADC channels and accumulates
 feature[ch] = sum(abs(adc_sample - 128)) >> 8
 ```
 
-for 250 samples per channel. Accumulation happens as samples arrive, so the
+for 250 samples per channel. It captures one sample every
+`CLK_DIV = ceil(CLK_FREQ_HZ / ADC_SAMPLE_FREQ_HZ)` clocks (top-level parameters,
+default 10 MHz / 2.5 MS/s = every 4 clocks), so the shared ADC is never read
+faster than `ADC_SAMPLE_FREQ_HZ`. `adc_channel` is held between captures to
+give the MUX and ADC time to settle. Accumulation happens as samples arrive, so the
 current architecture does not store and reread a 2,000-sample window. When all
 features are ready, the frontend pauses while the MLP, decision logic, packet
 formatter, and SPI transmitter finish. `packet_ready` releases the frontend for
