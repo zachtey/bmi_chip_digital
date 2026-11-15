@@ -1,7 +1,9 @@
 // spi_slave.sv
 // Shifts out a PKT_BYTES-byte packet over SPI Mode 0 (CPOL=0, CPHA=0).
 //
-// SCLK and CS_N are sampled through a 2-FF synchronizer before use.
+// SCLK and CS_N are sampled through a 2-FF synchronizer before use. Only the
+// second (stable) stage is used by logic; SCLK edges are detected by comparing
+// it against a third, ordinary delay register.
 // Packet is preloaded into the shift register as soon as CS is active
 // so that bit[PKT_BITS-1] is already on MISO before the first rising SCLK
 // edge — required for SPI Mode 0.
@@ -26,22 +28,23 @@ module spi_slave #(
     output logic               packet_ready
 );
 
-    // 2-FF synchronizer for SCLK and CS_N
-    logic sclk_sync1, sclk_sync2;
+    // 2-FF synchronizer for SCLK and CS_N. sync1 may be metastable and must not
+    // feed any logic; sync3 is the previous value of sync2 for edge detection.
+    logic sclk_sync1, sclk_sync2, sclk_sync3;
     logic cs_n_sync1, cs_n_sync2;
 
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            sclk_sync1 <= 1'b0; sclk_sync2 <= 1'b0;
+            sclk_sync1 <= 1'b0; sclk_sync2 <= 1'b0; sclk_sync3 <= 1'b0;
             cs_n_sync1 <= 1'b1; cs_n_sync2 <= 1'b1;
         end else begin
-            sclk_sync1 <= spi_sclk;  sclk_sync2 <= sclk_sync1;
+            sclk_sync1 <= spi_sclk;  sclk_sync2 <= sclk_sync1; sclk_sync3 <= sclk_sync2;
             cs_n_sync1 <= spi_cs_n;  cs_n_sync2 <= cs_n_sync1;
         end
     end
 
-    wire sclk_rising  = ( sclk_sync1 && !sclk_sync2);
-    wire sclk_falling = (!sclk_sync1 &&  sclk_sync2);
+    wire sclk_rising  = ( sclk_sync2 && !sclk_sync3);
+    wire sclk_falling = (!sclk_sync2 &&  sclk_sync3);
     wire cs_active    = !cs_n_sync2;
 
     // FSM
