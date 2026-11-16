@@ -24,6 +24,7 @@ module tb_argmax;
 ) dut (
     .clk            (clk),
     .rst_n          (rst_n),
+    .clear          (1'b0),
     .class_scores   (class_scores),
     .scores_valid   (scores_valid),
     .predicted_class(predicted_class),

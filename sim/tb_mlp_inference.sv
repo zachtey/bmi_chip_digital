@@ -1,6 +1,13 @@
 `timescale 1ns/1ps
 
-// Unit testbench for mlp_inference.
+// Unit testbench for mlp_inference together with weight_scan_loader.
+//
+// The serial weight loader used to be part of mlp_inference and is now its
+// own module. Both are instantiated here, wired exactly as in bmi_chip_top, so
+// the scan-loading tests are unchanged: weights still go in through scan_en /
+// scan_clk / scan_in and reach the MLP through the loader. The only difference
+// is that the scan register and the scan-domain loaded flag are now probed in
+// u_loader instead of dut.
 //
 // The production model is already exercised by tb_bmi_chip_top. This bench
 // instead loads small synthetic models whose arithmetic is easy to understand.
@@ -63,6 +70,21 @@ module tb_mlp_inference;
     logic signed [ACC_WIDTH-1:0] expected_hidden [0:N_HIDDEN-1];
     logic signed [SCORE_WIDTH-1:0] expected_scores [0:N_OUT-1];
 
+    // Serial weight loader (was internal to mlp_inference)
+    wire [TOTAL_WEIGHT_BITS-1:0] weight_image;
+
+    weight_scan_loader #(
+        .TOTAL_WEIGHT_BITS (TOTAL_WEIGHT_BITS)
+    ) u_loader (
+        .clk           (clk),
+        .rst_n         (rst_n),
+        .scan_en       (scan_en),
+        .scan_clk      (scan_clk),
+        .scan_in       (scan_in),
+        .weight_image  (weight_image),
+        .weights_loaded(weights_loaded)
+    );
+
     // DUT
     mlp_inference #(
         .N_IN              (N_IN),
@@ -77,14 +99,13 @@ module tb_mlp_inference;
     ) dut (
         .clk          (clk),
         .rst_n        (rst_n),
+        .clear        (1'b0),
         .start        (start),
         .done         (done),
+        .weight_image (weight_image),
         .weights_loaded(weights_loaded),
         .sbp_features (sbp_features),
-        .class_scores (class_scores),
-        .scan_en      (scan_en),
-        .scan_clk     (scan_clk),
-        .scan_in      (scan_in)
+        .class_scores (class_scores)
     );
 
     // System clock. The scan clock is driven manually by load_model.
@@ -263,7 +284,7 @@ module tb_mlp_inference;
             scan_en = 1'b0;
             scan_in = 1'b0;
 
-            if (dut.weights_loaded_scan !== 1'b1)
+            if (u_loader.weights_loaded_scan !== 1'b1)
                 $fatal(1, "Complete scan image did not set weights_loaded_scan");
 
             // During model reloads, normal reset is already released. Wait for
@@ -274,7 +295,7 @@ module tb_mlp_inference;
             // White-box verification is appropriate here because this test is
             // specifically checking the scan layout and named parameter arrays.
             mismatches = 0;
-            if (dut.scan_reg !== scan_image) begin
+            if (u_loader.scan_reg !== scan_image) begin
                 $display("FAIL scan: complete scan register image mismatch");
                 mismatches = mismatches + 1;
             end
@@ -329,7 +350,7 @@ module tb_mlp_inference;
             repeat (4) @(posedge clk);
             #1;
 
-            if (weights_loaded !== 1'b0 || dut.weights_loaded_scan !== 1'b0) begin
+            if (weights_loaded !== 1'b0 || u_loader.weights_loaded_scan !== 1'b0) begin
                 $display("FAIL test 0: partial scan incorrectly marked loaded");
                 case_pass = 1'b0;
             end

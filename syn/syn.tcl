@@ -4,11 +4,21 @@
 # ============================================================
 
 # -- Read RTL (submodules before top) -------------------------
+read_hdl -sv ../rtl/cdc_sync_2ff.sv
+read_hdl -sv ../rtl/reset_synchronizer.sv
+read_hdl -sv ../rtl/cdc_handshake.sv
+read_hdl -sv ../rtl/cdc_async_fifo.sv
 read_hdl -sv ../rtl/streaming_sbp_frontend.sv
 read_hdl -sv ../rtl/mlp_inference.sv
 read_hdl -sv ../rtl/argmax.sv
-read_hdl -sv ../rtl/output_formatter.sv
-read_hdl -sv ../rtl/spi_slave.sv
+read_hdl -sv ../rtl/bmi_pipeline_ctrl.sv
+read_hdl -sv ../rtl/apb_slave.sv
+# Previous interface (scan weight loader, packet formatter, SPI transmitter).
+# These are not instantiated by bmi_chip_top any more; read them again only
+# if that interface is restored in bmi_chip_top.sv.
+# read_hdl -sv ../rtl/weight_scan_loader.sv
+# read_hdl -sv ../rtl/output_formatter.sv
+# read_hdl -sv ../rtl/spi_slave.sv
 read_hdl -sv ../rtl/bmi_chip_top.sv
 
 # -- Cell library (GPDK045 RVT, slow corner at 1.0 V) ---------
@@ -50,16 +60,20 @@ set f [open "bmi_chip_top_sym.v" w]
 puts $f "// Virtuoso symbol import stub — do NOT use for synthesis or PNR"
 puts $f "// Import into Virtuoso to create a symbol with VDD/VSS pins"
 puts $f "module bmi_chip_top ("
-puts $f "    input  wire        clk,"
-puts $f "    input  wire        rst_n,"
+puts $f "    input  wire        bmi_clk,"
+puts $f "    input  wire        pclk,"
+puts $f "    input  wire        presetn,"
 puts $f "    input  wire \[7:0\]  adc_sample,"
 puts $f "    output wire \[2:0\]  adc_channel,"
-puts $f "    input  wire        spi_sclk,"
-puts $f "    input  wire        spi_cs_n,"
-puts $f "    output wire        spi_miso,"
-puts $f "    input  wire        scan_en,"
-puts $f "    input  wire        scan_clk,"
-puts $f "    input  wire        scan_in,"
+puts $f "    input  wire        psel,"
+puts $f "    input  wire        penable,"
+puts $f "    input  wire        pwrite,"
+puts $f "    input  wire \[11:0\] paddr,"
+puts $f "    input  wire \[31:0\] pwdata,"
+puts $f "    output wire \[31:0\] prdata,"
+puts $f "    output wire        pready,"
+puts $f "    output wire        pslverr,"
+puts $f "    output wire        irq,"
 puts $f "    inout  wire        VDD,"
 puts $f "    inout  wire        VSS"
 puts $f ");"

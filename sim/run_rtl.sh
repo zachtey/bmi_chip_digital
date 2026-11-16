@@ -17,6 +17,10 @@ xrun -64bit -access r -nokey -timescale 1ns/1ps \
     ../rtl/sbp_feature_extractor.sv \
     ../rtl/mlp_inference.sv         \
     ../rtl/argmax.sv                \
-    ../rtl/output_formatter.sv      \
-    ../rtl/spi_slave.sv             \
+    ../rtl/apb_slave.sv             \
+    ../rtl/bmi_pipeline_ctrl.sv     \
+    ../rtl/cdc_sync_2ff.sv          \
+    ../rtl/reset_synchronizer.sv    \
+    ../rtl/cdc_handshake.sv         \
+    ../rtl/cdc_async_fifo.sv        \
     tb_bmi_chip_top.sv

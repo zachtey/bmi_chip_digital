@@ -6,7 +6,8 @@
 // Round 2: best    = winner of best_01 vs best_23
 //
 // Combinational comparison tree, result registered on scores_valid.
-// Latency: 1 clock cycle.
+// Latency: 1 clock cycle. clear is a synchronous reset with priority over
+// scores_valid.
 
 module argmax #(
     parameter N_CLASSES   = 4,
@@ -14,6 +15,7 @@ module argmax #(
 )(
     input  wire                          clk,
     input  wire                          rst_n,
+    input  wire                          clear,
 
     input  wire signed [SCORE_WIDTH-1:0] class_scores [0:N_CLASSES-1],
     input  wire                          scores_valid,
@@ -37,6 +39,9 @@ module argmax #(
     // Sequential: register result on scores_valid
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
+            predicted_class <= 2'b00;
+            decision_valid  <= 1'b0;
+        end else if (clear) begin
             predicted_class <= 2'b00;
             decision_valid  <= 1'b0;
         end else begin

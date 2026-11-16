@@ -45,13 +45,27 @@ editPin -pin {adc_sample[0] adc_sample[1] adc_sample[2] adc_sample[3] \
               adc_channel[0] adc_channel[1] adc_channel[2]} \
         -side TOP -layer Metal4 -spreadType SIDE
 
-editPin -pin {spi_sclk spi_cs_n spi_miso} \
+# APB slave interface. It replaces the SPI pins (RIGHT) and the scan pins
+# (BOTTOM) of the previous interface: APB inputs go on the right, APB outputs
+# and the interrupt on the bottom. Bus-bit names are built in a loop:
+# 12 address, 32 write-data, 32 read-data.
+set apb_in_pins  {psel penable pwrite}
+set apb_out_pins {pready pslverr irq}
+for {set i 0} {$i < 12} {incr i} { lappend apb_in_pins  "paddr\[$i\]" }
+for {set i 0} {$i < 32} {incr i} { lappend apb_in_pins  "pwdata\[$i\]" }
+for {set i 0} {$i < 32} {incr i} { lappend apb_out_pins "prdata\[$i\]" }
+editPin -pin $apb_in_pins \
         -side RIGHT -layer Metal4 -spreadType SIDE
-
-editPin -pin {scan_clk scan_en scan_in} \
+editPin -pin $apb_out_pins \
         -side BOTTOM -layer Metal4 -spreadType SIDE
 
-editPin -pin {clk rst_n} \
+# Previous interface (disabled):
+# editPin -pin {spi_sclk spi_cs_n spi_miso} \
+#         -side RIGHT -layer Metal4 -spreadType SIDE
+# editPin -pin {scan_clk scan_en scan_in} \
+#         -side BOTTOM -layer Metal4 -spreadType SIDE
+
+editPin -pin {bmi_clk pclk presetn} \
         -side LEFT -layer Metal4 -spreadType SIDE
 
 # -----------------------------------------------------------------------------

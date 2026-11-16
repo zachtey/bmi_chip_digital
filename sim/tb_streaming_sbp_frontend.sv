@@ -40,6 +40,7 @@ module tb_streaming_sbp_frontend #(
         .CLK_FREQ_HZ(CLK_FREQ_HZ), .ADC_SAMPLE_FREQ_HZ(ADC_SAMPLE_FREQ_HZ)
     ) dut (
         .clk(clk), .rst_n(rst_n),
+        .enable(1'b1), .clear(1'b0),   // always running; see tb_bmi_chip_top for STOP/RESTART
         .adc_sample(adc_sample), .adc_channel(adc_channel),
         .resume(resume),
         .features_done(features_done), .sbp_features(sbp_features)

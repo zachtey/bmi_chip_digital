@@ -12,6 +12,10 @@
 // features_done pulses for one clock and collection pauses until resume is
 // asserted.
 //
+// enable is a level: samples are only taken while it is high, and the first
+// capture after it rises lands CLK_DIV clocks later. clear is a synchronous
+// reset of everything in the module, with priority over enable and resume.
+//
 // SBP[ch] = sum(abs(sample - 2^(ADC_WIDTH-1))) >> FEATURE_SHIFT
 
 module streaming_sbp_frontend #(
@@ -26,6 +30,9 @@ module streaming_sbp_frontend #(
 )(
     input  wire                         clk,
     input  wire                         rst_n,
+
+    input  wire                         enable,   // level: take samples
+    input  wire                         clear,    // synchronous clear, one cycle or more
 
     input  wire [ADC_WIDTH-1:0]         adc_sample,
     output logic [CH_IDX_WIDTH-1:0]     adc_channel,
@@ -59,17 +66,18 @@ module streaming_sbp_frontend #(
     logic [ADC_WIDTH-1:0] abs_deviation;
     logic [ACC_WIDTH-1:0] sum_with_sample;
 
-    // Sample-rate clock enable. div_cnt is held at zero outside COLLECT so the
-    // first capture after reset or resume always lands CLK_DIV clocks later.
+    // Sample-rate clock enable. div_cnt is held at zero outside COLLECT and
+    // while disabled, so the first capture after reset, resume or enable
+    // always lands CLK_DIV clocks later.
     logic [DIV_WIDTH-1:0] div_cnt;
     logic                 sample_en;
 
-    assign sample_en = (state == COLLECT) && (div_cnt == LAST_DIV);
+    assign sample_en = (state == COLLECT) && enable && (div_cnt == LAST_DIV);
 
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n)
             div_cnt <= '0;
-        else if (state != COLLECT || sample_en)
+        else if (clear || !enable || state != COLLECT || sample_en)
             div_cnt <= '0;
         else
             div_cnt <= div_cnt + 1'b1;
@@ -86,6 +94,15 @@ module streaming_sbp_frontend #(
 
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
+            state         <= COLLECT;
+            adc_channel   <= '0;
+            features_done <= 1'b0;
+            for (int ch = 0; ch < N_CH; ch++) begin
+                sample_cnt[ch]    <= '0;
+                deviation_sum[ch] <= '0;
+                sbp_features[ch]  <= '0;
+            end
+        end else if (clear) begin
             state         <= COLLECT;
             adc_channel   <= '0;
             features_done <= 1'b0;

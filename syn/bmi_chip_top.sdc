@@ -1,73 +1,90 @@
 # ============================================================
 # bmi_chip_top.sdc  -  Timing constraints for Genus synthesis
 #
-# Synthesis target:  50 MHz (20 ns period)
-#   Actual operating frequency will be 2-10 MHz in silicon,
-#   giving 5-25x margin.  Synthesizing to 50 MHz ensures
-#   Genus picks reasonably optimized cells without over-driving
-#   for speed at the cost of area/power.
+# NOT YET RUN THROUGH GENUS OR INNOVUS. The instance names used in the
+# comments below are the RTL names; check them against the elaborated design.
 #
-# SPI SCLK: up to 10 MHz. It is oversampled as asynchronous data by clk;
-# it is not a clock for any sequential element in this design.
-# Scan clock: 25 MHz (40 ns), asynchronous to the functional clock.
+# Two unrelated clocks:
+#   bmi_clk  Pipeline clock. Synthesis target 50 MHz (20 ns); it runs at
+#            about 10 MHz in silicon.
+#   pclk     APB clock. The real frequency is set by the SoC bus bridge and is
+#            NOT known here. 100 MHz (10 ns) is a placeholder.
+#
+# Clock-domain crossings (all inside cdc_* instances in bmi_chip_top):
+#   Synchronizer inputs (single bit or Gray pointer, flop to flop):
+#     u_cmd_hs/req_q, u_weight_hs/req_q       -> u_*_hs/u_req_sync/meta_q
+#     u_cmd_hs/ack_q, u_weight_hs/ack_q       -> u_*_hs/u_ack_sync/meta_q
+#     u_result_fifo/wgray_q                   -> u_result_fifo/u_wptr_sync/meta_q
+#     u_result_fifo/rgray_q                   -> u_result_fifo/u_rptr_sync/meta_q
+#     u_ctrl/overflow_q                       -> u_ovf_sync/meta_q
+#   Bundled data (sampled only while the handshake guarantees it is stable):
+#     u_apb/cmd_code_q                        -> u_cmd_hs/dst_data_q
+#     u_apb/weight_word[*] (864 bits)         -> u_weight_hs/dst_data_q
+#     u_cmd_hs/dst_rsp_q                      -> u_cmd_hs/src_rsp_q
+#     u_result_fifo/mem[*]                    -> u_apb/snap_q
+#
+# These paths are NOT declared false and the clocks are NOT put in
+# asynchronous clock groups, because either would leave the crossings with no
+# delay limit at all. What each crossing needs:
+#   * a synchronizer input must settle well within one destination period;
+#   * bundled data is sampled at least two destination periods after its
+#     request/pointer was launched, so it is safe if both the data path and
+#     the request path are each shorter than one destination period;
+#   * the bits of a Gray pointer must have less than one source period of
+#     skew between them, so that at most one bit is in flight when sampled.
+# Limiting every clock-to-clock path to CDC_MAX_DELAY, the shorter of the two
+# clock periods, satisfies all three. Hold is not meaningful between
+# unrelated clocks and is disabled.
+#
+# This file does not prove the crossings are structurally correct; that needs
+# a CDC tool. The synchronizer flops (module cdc_sync_2ff and
+# reset_synchronizer) must also be kept out of retiming and placed adjacent.
 # ============================================================
 
+set BMI_CLK_PERIOD 20.0
+set PCLK_PERIOD    10.0   ;# PLACEHOLDER: replace with the bridge's PCLK period
+set CDC_MAX_DELAY  [expr {min($BMI_CLK_PERIOD, $PCLK_PERIOD)}]
+
 # -- Clocks ---------------------------------------------------
+create_clock -period $BMI_CLK_PERIOD -name bmi_clk [get_ports bmi_clk]
+create_clock -period $PCLK_PERIOD    -name pclk    [get_ports pclk]
 
-# Main system clock — synthesize to 50 MHz, operate at 2-10 MHz
-create_clock -period 20 -name clk [get_ports clk]
+# -- Clock-domain crossings (see header) ----------------------
+# If the tool supports it, add -ignore_clock_latency (Cadence) or
+# -datapath_only so clock-tree insertion delay is not counted on these paths.
+set_max_delay $CDC_MAX_DELAY -from [get_clocks pclk]    -to [get_clocks bmi_clk]
+set_max_delay $CDC_MAX_DELAY -from [get_clocks bmi_clk] -to [get_clocks pclk]
+set_false_path -hold -from [get_clocks pclk]    -to [get_clocks bmi_clk]
+set_false_path -hold -from [get_clocks bmi_clk] -to [get_clocks pclk]
 
-# Scan chain clock for weight loading at power-up (async)
-create_clock -period 40 -name scan_clk [get_ports scan_clk]
+# -- Global reset ---------------------------------------------
+# presetn is asynchronous. It only drives the asynchronous clear pins of the
+# two reset synchronizers (u_prst_sync, u_bmi_rst_sync), which release the
+# reset on a clock edge in each domain. Everything else is reset by their
+# outputs, so recovery/removal there is an ordinary same-clock check.
+set_false_path -from [get_ports presetn]
 
-# The scan registers feed the functional domain, but weights are loaded only
-# before functional operation and then held stable. Cut the real scan-to-clk
-# direction explicitly. A symmetric asynchronous clock-group exception would
-# also create a clk-to-scan exception even though no such paths exist.
-set_false_path -from [get_clocks scan_clk] -to [get_clocks clk]
+# -- ADC interface (bmi_clk) ----------------------------------
+set_input_delay  -clock bmi_clk -max 5.0 [get_ports adc_sample]
+set_input_delay  -clock bmi_clk -min 0.5 [get_ports adc_sample]
+set_output_delay -clock bmi_clk -max 5.0 [get_ports adc_channel]
+set_output_delay -clock bmi_clk -min 0.5 [get_ports adc_channel]
 
-# -- Synchronous input delays ---------------------------------
-# ADC samples are assumed synchronous to clk at the chip boundary.
-# Maximum delay checks setup; minimum delay checks hold.
-set_input_delay -clock clk -max 5.0 [get_ports adc_sample]
-set_input_delay -clock clk -min 0.5 [get_ports adc_sample]
-
-# Scan controls and data are launched by the external scan controller and
-# captured by scan_clk, so they must be constrained against scan_clk.
-set_input_delay -clock scan_clk -max 5.0 [get_ports {scan_en scan_in}]
-set_input_delay -clock scan_clk -min 0.5 [get_ports {scan_en scan_in}]
-
-# -- Asynchronous inputs --------------------------------------
-# spi_sclk and spi_cs_n are sampled by the first stage of explicit two-flop
-# synchronizers in u_spi. There is no meaningful setup/hold relationship to
-# clk at those first-stage D pins, so static timing must not analyze it.
-# Give the ports explicit external-delay metadata so timing lint knows their
-# boundary environment. The false paths below override ordinary setup/hold
-# analysis at the asynchronous first-stage synchronizer inputs.
-set_input_delay -clock clk -max 5.0 [get_ports {spi_sclk spi_cs_n}]
-set_input_delay -clock clk -min 0.5 [get_ports {spi_sclk spi_cs_n}]
-
-set_false_path -from [get_ports spi_sclk] \
-               -to [get_pins u_spi/sclk_sync1_reg/D]
-set_false_path -from [get_ports spi_cs_n] \
-               -to [get_pins u_spi/cs_n_sync1_reg/D]
-
-# Reset is connected to asynchronous control pins rather than ordinary data
-# paths. Genus therefore does not find a data timing path for a broad reset
-# false-path exception. Safe reset deassertion remains an RDC requirement.
-set_input_delay -clock clk -max 5.0 [get_ports rst_n]
-set_input_delay -clock clk -min 0.5 [get_ports rst_n]
-
-# -- Output delays --------------------------------------------
-set_output_delay -clock clk -max 5.0 [get_ports {adc_channel spi_miso}]
-set_output_delay -clock clk -min 0.5 [get_ports {adc_channel spi_miso}]
+# -- APB slave interface (pclk) -------------------------------
+# A budget of 30% of the placeholder period on each side; rescale it with the
+# real PCLK period. prdata and pslverr are combinational functions of the APB
+# inputs, so input-to-output paths exist: 10 - 3 - 3 = 4 ns through the block.
+set_input_delay  -clock pclk -max 3.0 [get_ports {psel penable pwrite paddr pwdata}]
+set_input_delay  -clock pclk -min 0.3 [get_ports {psel penable pwrite paddr pwdata}]
+set_output_delay -clock pclk -max 3.0 [get_ports {prdata pready pslverr irq}]
+set_output_delay -clock pclk -min 0.3 [get_ports {prdata pready pslverr irq}]
 
 # -- External signal slew -------------------------------------
-# Preliminary 200 ps boundary slew assumption. Replace this with characterized
-# pad/board values before signoff. Clock slew uses the clock-specific command.
-set_clock_transition 0.2 [get_clocks {clk scan_clk}]
+# Preliminary 200 ps boundary slew assumption. Replace with characterized
+# values before signoff.
+set_clock_transition 0.2 [get_clocks {bmi_clk pclk}]
 set_input_transition 0.2 \
-    [get_ports {rst_n adc_sample spi_sclk spi_cs_n scan_en scan_in}]
+    [get_ports {presetn adc_sample psel penable pwrite paddr pwdata}]
 
 # -- Load / drive strength ------------------------------------
 set_load           0.005 [all_outputs]

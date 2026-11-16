@@ -12,5 +12,6 @@ cd `dirname $0`
 
 # Only the MLP RTL and its unit testbench are needed for this regression.
 xrun -64bit -access r -nokey -timescale 1ns/1ps \
+    ../rtl/weight_scan_loader.sv \
     ../rtl/mlp_inference.sv \
     tb_mlp_inference.sv

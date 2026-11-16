@@ -2,9 +2,15 @@
 // 8->8(ReLU)->4 fully-connected MLP classifier.
 // Single shared MAC, time-multiplexed across all neurons.
 //
-// Weights are loaded once at power-up via a serial scan chain. For the default
-// dimensions this is 864 bits (108 bytes): hw[8][8], hb[8], ow[4][8], ob[4].
-// A scan-length guard ignores start until the complete image has been loaded.
+// Weights arrive as one packed image on weight_image. For the default
+// dimensions this is 864 bits (108 bytes): hw[8][8], hb[8], ow[4][8], ob[4],
+// with byte i of the image at weight_image[i*8 +: 8]. This module does not
+// store the weights or know how they were loaded: the top level supplies them
+// (the committed image from the APB weight mailbox in bmi_chip_top).
+// start is ignored until weights_loaded is high. weights_loaded must be a
+// level in the clk domain, and weight_image must be stable while it is high.
+// clear is a synchronous reset: it aborts an inference in progress and
+// returns every register, including class_scores, to its reset value.
 //
 // HIDDEN_BIAS_SCALE / OUTPUT_BIAS_SCALE come from the Python training
 // pipeline (printed in weights.hex header). They correct the quantization
@@ -27,19 +33,19 @@ module mlp_inference #(
 )(
     input  wire                          clk,
     input  wire                          rst_n,
+    input  wire                          clear,
 
     input  wire                          start,
     output logic                         done,
-    output logic                         weights_loaded,
+
+    // Weight image and its "complete and stable" level, both from the top level
+    // Order: hw[0..7][0..7], hb[0..7], ow[0..3][0..7], ob[0..3]
+    input  wire [(N_HIDDEN*N_IN + N_HIDDEN + N_OUT*N_HIDDEN + N_OUT)*W_WIDTH-1:0]
+                                         weight_image,
+    input  wire                          weights_loaded,
 
     input  wire [IN_WIDTH-1:0]           sbp_features [0:N_IN-1],
-    output logic signed [SCORE_WIDTH-1:0] class_scores [0:N_OUT-1],
-
-    // Scan chain: shift 108 bytes LSB-first on scan_clk before asserting start.
-    // Order: hw[0..7][0..7], hb[0..7], ow[0..3][0..7], ob[0..3]
-    input  wire                          scan_en,
-    input  wire                          scan_clk,
-    input  wire                          scan_in
+    output logic signed [SCORE_WIDTH-1:0] class_scores [0:N_OUT-1]
 );
 
     // Derived widths use a minimum of one bit so legal one-element layers do
@@ -47,9 +53,6 @@ module mlp_inference #(
     localparam integer HIDDEN_IDX_WIDTH = (N_HIDDEN > 1) ? $clog2(N_HIDDEN) : 1;
     localparam integer OUTPUT_IDX_WIDTH = (N_OUT    > 1) ? $clog2(N_OUT)    : 1;
     localparam integer INPUT_IDX_WIDTH  = (N_IN     > 1) ? $clog2(N_IN)     : 1;
-
-    localparam integer TOTAL_WEIGHT_BITS =
-        (N_HIDDEN*N_IN + N_HIDDEN + N_OUT*N_HIDDEN + N_OUT) * W_WIDTH;
 
     // Conservative mathematical bounds for every legal input/weight value.
     // longint keeps this calculation independent of the datapath width. The
@@ -92,56 +95,14 @@ module mlp_inference #(
         end
     endfunction
 
-    //Scan chain loading
-    logic [TOTAL_WEIGHT_BITS-1:0] scan_reg;
-    localparam integer SCAN_COUNT_WIDTH = $clog2(TOTAL_WEIGHT_BITS + 1);
-    localparam logic [SCAN_COUNT_WIDTH-1:0] SCAN_LAST_COUNT =
-        SCAN_COUNT_WIDTH'(TOTAL_WEIGHT_BITS - 1);
-    localparam logic [SCAN_COUNT_WIDTH-1:0] SCAN_COMPLETE_COUNT =
-        SCAN_COUNT_WIDTH'(TOTAL_WEIGHT_BITS);
     localparam logic [INPUT_IDX_WIDTH-1:0] LAST_INPUT_IDX =
         INPUT_IDX_WIDTH'(N_IN - 1);
     localparam logic [HIDDEN_IDX_WIDTH-1:0] LAST_HIDDEN_IDX =
         HIDDEN_IDX_WIDTH'(N_HIDDEN - 1);
     localparam logic [OUTPUT_IDX_WIDTH-1:0] LAST_OUTPUT_IDX =
         OUTPUT_IDX_WIDTH'(N_OUT - 1);
-    logic [SCAN_COUNT_WIDTH-1:0] scan_bit_count;
-    logic weights_loaded_scan;
 
-    // Protocol: clock scan_clk once with scan_en low to begin/clear a load,
-    // then shift exactly TOTAL_WEIGHT_BITS with scan_en high. The completed
-    // indication remains asserted until the next explicit clear clock.
-    always_ff @(posedge scan_clk) begin
-        if (!scan_en) begin
-            scan_bit_count     <= '0;
-            weights_loaded_scan <= 1'b0;
-        end else begin
-            scan_reg <= {scan_in, scan_reg[TOTAL_WEIGHT_BITS-1:1]};
-            if (!weights_loaded_scan) begin
-                if (scan_bit_count == SCAN_LAST_COUNT) begin
-                    scan_bit_count      <= SCAN_COMPLETE_COUNT;
-                    weights_loaded_scan <= 1'b1;
-                end else begin
-                    scan_bit_count <= scan_bit_count + 1'b1;
-                end
-            end
-        end
-    end
-
-    // weights_loaded_scan is stable after loading and crosses into the
-    // functional clock domain through a standard two-flop level synchronizer.
-    logic weights_loaded_meta;
-    always_ff @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
-            weights_loaded_meta <= 1'b0;
-            weights_loaded      <= 1'b0;
-        end else begin
-            weights_loaded_meta <= weights_loaded_scan;
-            weights_loaded      <= weights_loaded_meta;
-        end
-    end
-
-    // Combinationally unpack scan_reg into named weight arrays.
+    // Combinationally unpack weight_image into named weight arrays.
     logic signed [W_WIDTH-1:0] hw [0:N_HIDDEN-1][0:N_IN-1];
     logic signed [W_WIDTH-1:0] hb [0:N_HIDDEN-1];
     logic signed [W_WIDTH-1:0] ow [0:N_OUT-1][0:N_HIDDEN-1];
@@ -151,23 +112,23 @@ module mlp_inference #(
     generate
         for (gi = 0; gi < N_HIDDEN; gi++) begin : unpack_hw
             for (gj = 0; gj < N_IN; gj++) begin : unpack_hw_in
-                assign hw[gi][gj] = scan_reg[(gi*N_IN + gj)*W_WIDTH +: W_WIDTH];
+                assign hw[gi][gj] = weight_image[(gi*N_IN + gj)*W_WIDTH +: W_WIDTH];
             end
         end
         for (gi = 0; gi < N_HIDDEN; gi++) begin : unpack_hb
-            assign hb[gi] = scan_reg[(N_HIDDEN*N_IN + gi)*W_WIDTH +: W_WIDTH];
+            assign hb[gi] = weight_image[(N_HIDDEN*N_IN + gi)*W_WIDTH +: W_WIDTH];
         end
         for (gi = 0; gi < N_OUT; gi++) begin : unpack_ow
             for (gj = 0; gj < N_HIDDEN; gj++) begin : unpack_ow_hidden
-                assign ow[gi][gj] = scan_reg[((N_HIDDEN*N_IN + N_HIDDEN) + gi*N_HIDDEN + gj)*W_WIDTH +: W_WIDTH];
+                assign ow[gi][gj] = weight_image[((N_HIDDEN*N_IN + N_HIDDEN) + gi*N_HIDDEN + gj)*W_WIDTH +: W_WIDTH];
             end
         end
         for (gi = 0; gi < N_OUT; gi++) begin : unpack_ob
-            assign ob[gi] = scan_reg[((N_HIDDEN*N_IN + N_HIDDEN + N_OUT*N_HIDDEN) + gi)*W_WIDTH +: W_WIDTH];
+            assign ob[gi] = weight_image[((N_HIDDEN*N_IN + N_HIDDEN + N_OUT*N_HIDDEN) + gi)*W_WIDTH +: W_WIDTH];
         end
     endgenerate
 
-//Scan Chain    -->
+//Weight unpack -->
 //---------------------------------------------------------------------------------------------------------------
 //MLP Inference -->
     // FSM
@@ -309,6 +270,19 @@ module mlp_inference #(
                 next_state = S_IDLE;
             end
         endcase
+
+        // Synchronous clear overrides everything above.
+        if (clear) begin
+            next_state             = S_IDLE;
+            next_acc               = '0;
+            next_hidden_idx        = '0;
+            next_output_idx        = '0;
+            next_input_idx         = '0;
+            next_hidden_weight_idx = '0;
+            next_done              = 1'b0;
+            for (int i = 0; i < N_HIDDEN; i++) next_hidden_act[i]   = '0;
+            for (int i = 0; i < N_OUT;    i++) next_class_scores[i] = '0;
+        end
     end
 
     // Sequential
